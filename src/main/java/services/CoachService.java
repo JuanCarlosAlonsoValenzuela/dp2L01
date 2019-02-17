@@ -24,6 +24,8 @@ public class CoachService {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
+	@Autowired
+	private ProcessionService	processionService;
 
 
 	public List<Coach> showAssignedCoachs(final Procession procession) {
