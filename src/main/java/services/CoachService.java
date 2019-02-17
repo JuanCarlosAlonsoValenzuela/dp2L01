@@ -98,4 +98,18 @@ public class CoachService {
 		return res;
 	}
 
+	public void AssingCoachToProcession(final Coach coach, final Procession procession) {
+		Assert.isTrue(procession.getIsDraftMode() == true);
+		if (!(procession.getCoachs().contains(coach)))
+			procession.getCoachs().add(coach);
+		this.processionService.save(procession);
+	}
+
+	public void UnAssingCoachToProcession(final Coach coach, final Procession procession) {
+		Assert.isTrue(procession.getIsDraftMode() == true);
+		if (procession.getCoachs().contains(coach))
+			procession.getCoachs().remove(coach);
+		this.processionService.save(procession);
+	}
+
 }
