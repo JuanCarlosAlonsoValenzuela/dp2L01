@@ -148,7 +148,7 @@ public class BrotherhoodService {
 		Brotherhood brother = new Brotherhood();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		brother = this.brotherhoodRepository.getBrotherhoodByUserName(userAccount.getUsername());
+		brother = this.brotherhoodRepository.getBrotherhoodByUsername(userAccount.getUsername());
 		return brother;
 	}
 

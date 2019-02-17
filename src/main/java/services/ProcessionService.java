@@ -39,10 +39,10 @@ public class ProcessionService {
 		//Asegurar que está logueado como Brotherhood
 		//Asegurar que la Brotherhood logueada tiene un área
 		this.brotherhoodService.loggedAsBrotherhood();
-		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 
-		Procession procession = new Procession();
+		final Procession procession = new Procession();
 
 		final List<Coach> coachs = new ArrayList<>();
 		procession.setCoachs(coachs);
@@ -52,12 +52,12 @@ public class ProcessionService {
 		procession.setIsDraftMode(true);
 		procession.setMoment(null);
 
-		List<Request> requests = new ArrayList<>();
+		final List<Request> requests = new ArrayList<>();
 		procession.setRequests(requests);
 
 		procession.setRowNumber(0);
 
-		String ticker = this.generateTicker();
+		final String ticker = this.generateTicker();
 		procession.setTicker(ticker);
 
 		procession.setTitle("");
@@ -65,7 +65,7 @@ public class ProcessionService {
 		return procession;
 	}
 
-	public Procession editProcession(Procession procession, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
+	public Procession editProcession(final Procession procession, final int columnNumber, final int rowNumber, final String description, final boolean isDraftMode, final String title, final Date moment) {
 
 		//Security
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -97,7 +97,7 @@ public class ProcessionService {
 		return saved;
 	}
 
-	public void deleteProcession(Procession procession) {
+	public void deleteProcession(final Procession procession) {
 
 		//Security
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -109,10 +109,10 @@ public class ProcessionService {
 		//No debería tener Request porque está en Draft mode
 		//Tampoco hay que preocuparse por el finder porque no se pueden buscar procesiones en Draft mode
 
-		List<Coach> coachs = new ArrayList<>();
+		final List<Coach> coachs = new ArrayList<>();
 		procession.setCoachs(coachs);
 
-		List<Procession> processions = loggedBrotherhood.getProcessions();
+		final List<Procession> processions = loggedBrotherhood.getProcessions();
 		processions.remove(procession);
 		loggedBrotherhood.setProcessions(processions);
 		this.brotherhoodService.save(loggedBrotherhood);
