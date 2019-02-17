@@ -34,7 +34,7 @@ public class ProcessionService {
 
 	// Simple CRUD methods ------------------------------------------
 
-	public Procession createProcession() {
+	public Procession create() {
 
 		//Asegurar que está logueado como Brotherhood
 		//Asegurar que la Brotherhood logueada tiene un área
@@ -65,7 +65,7 @@ public class ProcessionService {
 		return procession;
 	}
 
-	public Procession editProcession(final Procession procession, final int columnNumber, final int rowNumber, final String description, final boolean isDraftMode, final String title, final Date moment) {
+	public Procession edit(Procession procession, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
 
 		//Security
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -74,7 +74,7 @@ public class ProcessionService {
 		Assert.isTrue(procession.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getProcessions().contains(procession));
 
-		final List<Procession> processions = loggedBrotherhood.getProcessions();
+		List<Procession> processions = loggedBrotherhood.getProcessions();
 		processions.remove(procession);
 
 		//procession.setCoachs(coachs);
@@ -97,7 +97,7 @@ public class ProcessionService {
 		return saved;
 	}
 
-	public void deleteProcession(final Procession procession) {
+	public void deleteProcession(Procession procession) {
 
 		//Security
 		this.brotherhoodService.loggedAsBrotherhood();
