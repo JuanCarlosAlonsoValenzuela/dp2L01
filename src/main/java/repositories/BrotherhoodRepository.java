@@ -14,7 +14,7 @@ import domain.Procession;
 @Repository
 public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Integer> {
 
-	@Query("select b.choachs from Brotherhood b where b.id = ?1")
+	@Query("select b.coachs from Brotherhood b where b.id = ?1")
 	public List<Coach> getCoachsByBrotherhood(int id);
 
 	@Query("select b.processions from Brotherhood b where b.id = ?1")

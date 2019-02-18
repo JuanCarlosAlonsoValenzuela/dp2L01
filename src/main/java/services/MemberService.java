@@ -7,8 +7,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import repositories.MemberRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 import domain.Member;
 
 @Service
@@ -49,6 +53,18 @@ public class MemberService {
 
 	public Member getMemberByUsername(String username) {
 		return this.memberRepository.getMemberByUsername(username);
+	}
+
+	// Auxiliar methods
+	public Member securityAndMember() {
+		UserAccount userAccount = LoginService.getPrincipal();
+		String username = userAccount.getUsername();
+
+		Member loggedMember = this.memberRepository.getMemberByUsername(username);
+		List<Authority> authorities = (List<Authority>) loggedMember.getUserAccount().getAuthorities();
+		Assert.isTrue(authorities.get(0).toString().equals("MEMBER"));
+
+		return loggedMember;
 	}
 
 }
