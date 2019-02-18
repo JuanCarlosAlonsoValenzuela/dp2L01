@@ -2,9 +2,7 @@
 package services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -189,64 +187,62 @@ public class AdminService {
 	}
 
 	// SERVICIO 1
-	public Map<String, Double[]> computeStatistics() {
-		this.loggedAsAdmin();
-
-		final Map<String, Double[]> result;
-		Double[] calculations1;
-		Double[] calculations2;
-		Double[] calculations3;
-		Double[] calculations4;
-		Double[] calculations5;
-		Double[] calculations6;
-
-		calculations1 = this.adminRepository.fixUpTaskPerUser();
-		calculations2 = this.adminRepository.applicationPerFixUpTask();
-		calculations3 = this.adminRepository.maxPricePerFixUpTask();
-		calculations4 = this.adminRepository.priceOferredPerApplication();
-		calculations5 = this.adminRepository.numberComplaintsPerFixUpTask();
-		calculations6 = this.adminRepository.notesPerReferee();
-
-		result = new HashMap<String, Double[]>();
-		result.put("fixUpTaskPerUser", calculations1);
-		result.put("applicationPerFixUpTask", calculations2);
-		result.put("maxPricePerFixUpTask", calculations3);
-		result.put("priceOferredPerApplication", calculations4);
-		result.put("numberComplaintsPerFixUpTask", calculations5);
-		result.put("notesPerReferee", calculations6);
-
-		return result;
-	}
-
 	/*
-	 * The ratio of pending applications. The ratio of accepted applications.
-	 * The ratio of rejected applications. The ratio of pending applications
-	 * that cannot change its status because their time period’s elapsed.
+	 * public Map<String, Double[]> computeStatistics() {
+	 * this.loggedAsAdmin();
+	 * 
+	 * final Map<String, Double[]> result;
+	 * Double[] calculations1;
+	 * Double[] calculations2;
+	 * Double[] calculations3;
+	 * Double[] calculations4;
+	 * Double[] calculations5;
+	 * Double[] calculations6;
+	 * 
+	 * calculations1 = this.adminRepository.fixUpTaskPerUser();
+	 * calculations2 = this.adminRepository.applicationPerFixUpTask();
+	 * calculations3 = this.adminRepository.maxPricePerFixUpTask();
+	 * calculations4 = this.adminRepository.priceOferredPerApplication();
+	 * calculations5 = this.adminRepository.numberComplaintsPerFixUpTask();
+	 * calculations6 = this.adminRepository.notesPerReferee();
+	 * 
+	 * result = new HashMap<String, Double[]>();
+	 * result.put("fixUpTaskPerUser", calculations1);
+	 * result.put("applicationPerFixUpTask", calculations2);
+	 * result.put("maxPricePerFixUpTask", calculations3);
+	 * result.put("priceOferredPerApplication", calculations4);
+	 * result.put("numberComplaintsPerFixUpTask", calculations5);
+	 * result.put("notesPerReferee", calculations6);
+	 * 
+	 * return result;
+	 * }
+	 * 
+	 * 
+	 * 
+	 * // SERVICIO 2
+	 * public Map<String, Double> computeStatisticsRatios() {
+	 * this.loggedAsAdmin();
+	 * 
+	 * Double ratioPendingApplications, ratioAcceptedApplications, ratioRejectedApplications, ratioPendingElapsedApplications;
+	 * Double fixUpTaskWithComplain;
+	 * final Map<String, Double> result;
+	 * 
+	 * ratioPendingApplications = this.adminRepository.ratioPendingApplications();
+	 * ratioAcceptedApplications = this.adminRepository.ratioAcceptedApplications();
+	 * ratioRejectedApplications = this.adminRepository.ratioRejectedApplications();
+	 * ratioPendingElapsedApplications = this.adminRepository.ratioPendingElapsedApplications();
+	 * fixUpTaskWithComplain = this.adminRepository.fixUpTaskWithComplain();
+	 * 
+	 * result = new HashMap<String, Double>();
+	 * result.put("ratioPendingApplications", ratioPendingApplications);
+	 * result.put("ratioAcceptedApplications", ratioAcceptedApplications);
+	 * result.put("ratioRejectedApplications", ratioRejectedApplications);
+	 * result.put("ratioPendingElapsedApplications", ratioPendingElapsedApplications);
+	 * result.put("fixUpTaskWithComplain", fixUpTaskWithComplain);
+	 * 
+	 * return result;
+	 * }
 	 */
-
-	// SERVICIO 2
-	public Map<String, Double> computeStatisticsRatios() {
-		this.loggedAsAdmin();
-
-		Double ratioPendingApplications, ratioAcceptedApplications, ratioRejectedApplications, ratioPendingElapsedApplications;
-		Double fixUpTaskWithComplain;
-		final Map<String, Double> result;
-
-		ratioPendingApplications = this.adminRepository.ratioPendingApplications();
-		ratioAcceptedApplications = this.adminRepository.ratioAcceptedApplications();
-		ratioRejectedApplications = this.adminRepository.ratioRejectedApplications();
-		ratioPendingElapsedApplications = this.adminRepository.ratioPendingElapsedApplications();
-		fixUpTaskWithComplain = this.adminRepository.fixUpTaskWithComplain();
-
-		result = new HashMap<String, Double>();
-		result.put("ratioPendingApplications", ratioPendingApplications);
-		result.put("ratioAcceptedApplications", ratioAcceptedApplications);
-		result.put("ratioRejectedApplications", ratioRejectedApplications);
-		result.put("ratioPendingElapsedApplications", ratioPendingElapsedApplications);
-		result.put("fixUpTaskWithComplain", fixUpTaskWithComplain);
-
-		return result;
-	}
 
 	public void broadcastMessage(final Message message) {
 		this.loggedAsAdmin();
@@ -286,16 +282,20 @@ public class AdminService {
 		return this.adminRepository.findAll();
 	}
 
-	public Admin getAdminByUsername(final String a) {
-		return this.adminRepository.getAdminByUserName(a);
-	}
+	/*
+	 * public Admin getAdminByUsername(final String a) {
+	 * return this.adminRepository.getAdminByUserName(a);
+	 * }
+	 */
 
 	public Admin findOne(final int adminId) {
 		return this.findOne(adminId);
 	}
 
-	public List<Admin> findAll2() {
-		return this.adminRepository.findAll2();
-	}
+	/*
+	 * public List<Admin> findAll2() {
+	 * return this.adminRepository.findAll2();
+	 * }
+	 */
 
 }
