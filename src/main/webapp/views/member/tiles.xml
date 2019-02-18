@@ -21,5 +21,9 @@
 		<put-attribute name="body" value="/views/member/finder.jsp" />
 	</definition>
 	
+	<definition name="member/requests" extends="master.page">	
+		<put-attribute name="title" value="Requests" />
+		<put-attribute name="body" value="/views/member/requests.jsp" />
+	</definition>
 
 </tiles-definitions>
