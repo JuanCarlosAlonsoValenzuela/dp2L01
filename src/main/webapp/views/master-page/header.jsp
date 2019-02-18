@@ -30,14 +30,10 @@
 			</li>
 		</security:authorize>
 		
-		<security:authorize access="hasRole('CUSTOMER')">
-			<li><a class="fNiv"><spring:message	code="master.page.customer" /></a>
-				<ul>
-					<li class="arrow"></li>
-					<li><a href="customer/action-1.do"><spring:message code="master.page.customer.action.1" /></a></li>
-					<li><a href="customer/action-2.do"><spring:message code="master.page.customer.action.2" /></a></li>					
-				</ul>
-			</li>
+		<security:authorize access="hasRole('BROTHERHOOD')">
+
+			<li><a class="fNiv" href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>		
+
 		</security:authorize>
 		
 		<security:authorize access="isAnonymous()">

@@ -51,7 +51,9 @@
 		<security:intercept-url pattern="/profile/action-2.do" access="isAuthenticated()" /> 
 		<security:intercept-url pattern="/profile/action-3.do" access="isAuthenticated()" /> 
 	
-		<security:intercept-url pattern="/**" access="hasRole('NONE')" />
+
+		
+		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 
 		<security:form-login 
 			login-page="/security/login.do"

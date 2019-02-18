@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.BrotherhoodRepository;
 import security.Authority;
@@ -31,6 +33,9 @@ public class BrotherhoodService {
 
 	@Autowired
 	private BoxService				boxService;
+
+	@Autowired
+	private Validator				validator;
 
 
 	public List<Brotherhood> findAll() {
@@ -150,6 +155,31 @@ public class BrotherhoodService {
 		userAccount = LoginService.getPrincipal();
 		brother = this.brotherhoodRepository.getBrotherhoodByUsername(userAccount.getUsername());
 		return brother;
+	}
+
+	public Boolean hasArea(Brotherhood brotherhood) {
+		try {
+			Assert.notNull(brotherhood.getArea());
+			return true;
+		} catch (Throwable oops) {
+			return false;
+		}
+	}
+
+	public Brotherhood reconstructArea(Brotherhood brotherhood, BindingResult binding) {
+		Brotherhood result;
+
+		if (brotherhood.getId() == 0)
+			result = brotherhood;
+		else {
+			result = this.brotherhoodRepository.findOne(brotherhood.getId());
+
+			result.setArea(brotherhood.getArea());
+
+			this.validator.validate(result, binding);
+		}
+
+		return result;
 	}
 
 }
