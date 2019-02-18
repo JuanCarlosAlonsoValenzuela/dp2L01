@@ -21,7 +21,6 @@ import security.UserAccount;
 import services.ConfigurationService;
 import services.FinderService;
 import services.MemberService;
-import services.ProcessionService;
 import domain.Finder;
 import domain.Member;
 import domain.Procession;
@@ -36,8 +35,6 @@ public class FinderMemberController extends AbstractController {
 	private MemberService			memberService;
 	@Autowired
 	private ConfigurationService	configurationService;
-	@Autowired
-	private ProcessionService		processionService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -51,36 +48,36 @@ public class FinderMemberController extends AbstractController {
 	public ModelAndView processionsList() {
 		ModelAndView result;
 
-		UserAccount userAccount = LoginService.getPrincipal();
-		Member member = this.memberService.getMemberByUsername(userAccount.getUsername());
+		 UserAccount userAccount = LoginService.getPrincipal();
+		 Member member = this.memberService.getMemberByUsername(userAccount.getUsername());
 
-		Finder finder = member.getFinder();
+		 Finder finder = member.getFinder();
 
 		//Current Date
-		Date currentDate = new Date();
+		 Date currentDate = new Date();
 
-		Calendar calendar = Calendar.getInstance();
+		 Calendar calendar = Calendar.getInstance();
 		calendar.setTime(currentDate);
-		Integer currentDay = calendar.get(Calendar.DATE);
-		Integer currentMonth = calendar.get(Calendar.MONTH);
-		Integer currentYear = calendar.get(Calendar.YEAR);
-		Integer currentHour = calendar.get(Calendar.HOUR);
+		 Integer currentDay = calendar.get(Calendar.DATE);
+		 Integer currentMonth = calendar.get(Calendar.MONTH);
+		 Integer currentYear = calendar.get(Calendar.YEAR);
+		 Integer currentHour = calendar.get(Calendar.HOUR);
 
 		//LastEdit Finder
-		Date lasEdit = finder.getLastEdit();
+		 Date lasEdit = finder.getLastEdit();
 		calendar.setTime(lasEdit);
-		Integer lastEditDay = calendar.get(Calendar.DATE);
-		Integer lastEditMonth = calendar.get(Calendar.MONTH);
-		Integer lastEditYear = calendar.get(Calendar.YEAR);
-		Integer lastEditHour = calendar.get(Calendar.HOUR);
+		 Integer lastEditDay = calendar.get(Calendar.DATE);
+		 Integer lastEditMonth = calendar.get(Calendar.MONTH);
+		 Integer lastEditYear = calendar.get(Calendar.YEAR);
+		 Integer lastEditHour = calendar.get(Calendar.HOUR);
 
-		Integer time = this.configurationService.getConfiguration().getTimeFinder();
+		 Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
 		List<Procession> processions = new ArrayList<>();
-		List<Procession> finderProcessions = finder.getProcessions();
+		 List<Procession> finderProcessions = finder.getProcessions();
 
 		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
-			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
+			 Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
 
 			if (finderProcessions.size() > numFinderResult)
 				for (int i = 0; i < numFinderResult; i++)
@@ -100,10 +97,10 @@ public class FinderMemberController extends AbstractController {
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public ModelAndView edit() {
 		ModelAndView result;
-		UserAccount userAccount = LoginService.getPrincipal();
-		Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
+		 UserAccount userAccount = LoginService.getPrincipal();
+		 Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
 
-		Finder finder = logguedMember.getFinder();
+		 Finder finder = logguedMember.getFinder();
 		Assert.notNull(finder);
 
 		result = this.createEditModelAndView(finder);
@@ -113,20 +110,20 @@ public class FinderMemberController extends AbstractController {
 	}
 	//Save
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid Finder finder, BindingResult binding) {
+	public ModelAndView save(@Valid  Finder finder,  BindingResult binding) {
 		ModelAndView result;
 
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(finder);
 		else
 			try {
-				Date date = new Date();
+				 Date date = new Date();
 				finder.setLastEdit(date);
 				this.finderService.save(finder);
 				this.finderService.filterProcessionsByFinder();
 
 				result = new ModelAndView("redirect:list.do");
-			} catch (Throwable oops) {
+			} catch ( Throwable oops) {
 				result = this.createEditModelAndView(finder, "finder.commit.error");
 			}
 		return result;
@@ -136,15 +133,15 @@ public class FinderMemberController extends AbstractController {
 	@RequestMapping(value = "/clean", method = RequestMethod.POST, params = "save")
 	public ModelAndView save() {
 		ModelAndView result;
-		UserAccount userAccount = LoginService.getPrincipal();
-		Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
+		 UserAccount userAccount = LoginService.getPrincipal();
+		 Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
 
-		Finder finder = logguedMember.getFinder();
+		 Finder finder = logguedMember.getFinder();
 		Assert.notNull(finder);
 
-		List<Procession> processions = this.processionService.findAll();
+		 List<Procession> processions = this.finderService.getAllPublishedProcessions();
 
-		Date date = new Date();
+		 Date date = new Date();
 
 		finder.setArea("");
 		finder.setKeyWord("");
@@ -160,7 +157,7 @@ public class FinderMemberController extends AbstractController {
 
 	}
 	//CreateEditModelAndView
-	protected ModelAndView createEditModelAndView(Finder finder) {
+	protected ModelAndView createEditModelAndView( Finder finder) {
 		ModelAndView result;
 
 		result = this.createEditModelAndView(finder, null);
@@ -168,7 +165,7 @@ public class FinderMemberController extends AbstractController {
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Finder finder, String messageCode) {
+	protected ModelAndView createEditModelAndView( Finder finder,  String messageCode) {
 		ModelAndView result;
 
 		result = new ModelAndView("member/finder");
