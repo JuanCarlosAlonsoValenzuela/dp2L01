@@ -12,14 +12,19 @@
 <security:authorize access="hasRole('MEMBER')">
 
 	<form:form action="finder/member/edit.do" modelAttribute="finder">
+	
+		<form:hidden path="id"/>
+		<form:hidden path="version"/>
+
 
 		<acme:textbox code="finder.keyWord" path="keyWord"/>
 		
 		<acme:textbox code="finder.area" path="area"/>
 		
 		<acme:datebox code="finder.minimumDate" path="minDate"/>
-		
+
 		<acme:datebox code="finder.maximumDate" path="maxDate"/>
+
 		
 		<acme:submit name="save" code="member.save"/>
 	
