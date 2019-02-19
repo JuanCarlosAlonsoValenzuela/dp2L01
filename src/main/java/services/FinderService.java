@@ -32,8 +32,6 @@ public class FinderService {
 
 	@Autowired
 	private MemberService		memberRepository;
-	@Autowired
-	private ProcessionService	processionService;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -87,16 +85,16 @@ public class FinderService {
 		Finder finder = loggedMember.getFinder();
 
 		List<Procession> filter = new ArrayList<>();
-		List<Procession> result = this.processionService.findAll();
+		List<Procession> result = this.getAllPublishedProcessions();
 
 		//KeyWord
 		if (!finder.getKeyWord().equals(null) && !finder.getKeyWord().equals("")) {
-			filter = this.finderRepository.getProcessionsByKeyWord(finder.getKeyWord());
+			filter = this.finderRepository.getProcessionsByKeyWord("%" + finder.getKeyWord() + "%");
 			result.retainAll(filter);
 		}
 		//Area
 		if (!finder.getArea().equals(null) && !finder.getArea().equals("")) {
-			filter = this.finderRepository.getProcessionsByArea(finder.getArea());
+			filter = this.finderRepository.getProcessionsByArea("%" + finder.getArea() + "%");
 			result.retainAll(filter);
 		}
 		//Dates
@@ -110,5 +108,9 @@ public class FinderService {
 		loggedMember.setFinder(finderRes);
 		this.memberRepository.save(loggedMember);
 
+	}
+
+	public List<Procession> getAllPublishedProcessions() {
+		return this.finderRepository.getPublushedProcessions();
 	}
 }
