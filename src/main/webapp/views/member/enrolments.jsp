@@ -16,7 +16,7 @@
 <security:authorize access="hasRole('MEMBER')">
 
 	<display:table pagesize="5" name="enrolments" id="row"
-		class="displaytag" requestURI="complaint/customer/list.do">
+		class="displaytag" requestURI="enrolment/member/list.do">
 
 		<display:column property="statusEnrolment" titleKey="enrolment.status" />
 

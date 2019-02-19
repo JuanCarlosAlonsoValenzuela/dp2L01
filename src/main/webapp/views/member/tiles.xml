@@ -36,5 +36,15 @@
 		<put-attribute name="title" value="Enrolments" />
 		<put-attribute name="body" value="/views/member/enrolments.jsp" />
 	</definition>
+	
+	<definition name="brotherhood/member/list" extends="master.page">	
+		<put-attribute name="title" value="Brotherhoods" />
+		<put-attribute name="body" value="/views/member/brotherhoods.jsp" />
+	</definition>
+	
+	<definition name="picture/member/listPerBrotherhood" extends="master.page">	
+		<put-attribute name="title" value="Pictures" />
+		<put-attribute name="body" value="/views/member/picturesBrotherhood.jsp" />
+	</definition>
 
 </tiles-definitions>
