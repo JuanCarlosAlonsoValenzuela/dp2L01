@@ -27,7 +27,32 @@
 					requestURI="/finder/member/list.do">
 					
 	<display:column titleKey="procession.request" >
-	
+		<jstl:set var="hasRequest" value="${0}"/>
+		<jstl:forEach
+			var="request"
+			items="${row.requests}">
+			<jstl:set var="counts" value="0"/>
+			<jstl:if test="${request.getMember().getUserAccount().getUsername().equals(member)}">	
+			<jstl:set var="counts" value="${counts+1}"/>
+			<jstl:set var="hasRequest" value="${counts}"/>
+			</jstl:if>
+		</jstl:forEach>
+		
+		<jstl:if test="${hasRequest==0}">
+			<form name="newRequest" id="newRequest" action="request/member/create.do" method="post">
+				<input type="hidden" name="processionId" id="processionId" value="${row.id}"/>
+				<acme:submit name="saveRequest" code="request.create"/>
+			</form>
+		
+			<%--
+			<spring:url var="createRequest" value="/request/member/create.do">
+				<spring:param name="processionId" value="${row.id}" />
+			</spring:url>
+			<a href="${createRequest}" onclick="return confirm('<spring:message code="request.create.confirmation" />')">
+				<spring:message code="request.create" />				
+			</a>
+			 --%>
+		</jstl:if>
 	</display:column> 
 		
 	<display:column property="title" titleKey="procession.title" /> 
@@ -50,5 +75,12 @@
 						</a>
 	</display:column>
 	</display:table>
+	
+	<jstl:if test="${flag==false}"> 
+		<p style="color:red"><spring:message code="request.create.error"/></p>
+	</jstl:if>
+	<jstl:if test="${flag==true}">
+		<p style="color:red"><spring:message code="request.create.ok"/></p>
+	</jstl:if>
 
 </security:authorize>

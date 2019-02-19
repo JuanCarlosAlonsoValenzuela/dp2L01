@@ -46,6 +46,10 @@
 				<jstl:set var="color" value="black" />
 			</jstl:otherwise>
 		</jstl:choose>
+		
+		<display:column titleKey="request.procession">
+			<jstl:out value="${row.procession.title}"/>
+		</display:column>
 					
 		<display:column property="status" titleKey="request.status" style="color:${color}"/>
 		
