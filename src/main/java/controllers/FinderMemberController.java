@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -87,6 +89,7 @@ public class FinderMemberController extends AbstractController {
 		result = new ModelAndView("member/finderResult");
 
 		result.addObject("processions", processions);
+		result.addObject("member", member.getUserAccount().getUsername());
 
 		return result;
 	}
