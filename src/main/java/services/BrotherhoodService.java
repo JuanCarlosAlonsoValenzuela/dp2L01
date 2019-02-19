@@ -182,4 +182,10 @@ public class BrotherhoodService {
 		return result;
 	}
 
+	public Brotherhood updateBrotherhood(Brotherhood brotherhood) {
+		this.loggedAsBrotherhood();
+		Assert.isTrue(brotherhood.getId() != 0);
+		return this.brotherhoodRepository.save(brotherhood);
+	}
+
 }
