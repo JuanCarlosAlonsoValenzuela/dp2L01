@@ -67,4 +67,19 @@ public class MemberService {
 		return loggedMember;
 	}
 
+	public void loggedAsMember() {
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		Assert.isTrue(authorities.get(0).toString().equals("MEMBER"));
+	}
+
+	public Member loggedMember() {
+		Member m = new Member();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		m = this.memberRepository.getMemberByUsername(userAccount.getUsername());
+		return m;
+	}
+
 }

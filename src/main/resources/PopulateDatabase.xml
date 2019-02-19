@@ -1544,7 +1544,7 @@
 		<property name="title" value="procession1" />
 		<property name="description" value="The First Procession" />
 		<property value="11/11/2020 11:11" name="moment" />
-		<property value="201111-ABCDE" name="ticker" />
+		<property value="201111-a34Gt4" name="ticker" />
 		<property value="true" name="isDraftMode" />
 		<property value="12" name="rowNumber" />
 		<property value="15" name="columnNumber" />
@@ -1560,7 +1560,7 @@
 		<property name="title" value="procession2" />
 		<property name="description" value="The Second Procession" />
 		<property value="06/07/2021 12:16" name="moment" />
-		<property value="210706-VWXYZ" name="ticker" />
+		<property value="210706-lEbI67" name="ticker" />
 		<property value="false" name="isDraftMode" />
 		<property value="3" name="rowNumber" />
 		<property value="12" name="columnNumber" />
@@ -1582,7 +1582,7 @@
 		<property name="title" value="procession3" />
 		<property name="description" value="The Third Procession" />
 		<property value="07/08/2022 12:16" name="moment" />
-		<property value="220807-EDCBA" name="ticker" />
+		<property value="220807-PLA65E" name="ticker" />
 		<property value="false" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
@@ -1605,7 +1605,7 @@
 		<property name="title" value="procession4" />
 		<property name="description" value="The Fourth Procession" />
 		<property value="07/08/2023 12:16" name="moment" />
-		<property value="230807-PASOD" name="ticker" />
+		<property value="230807-E1fgh5" name="ticker" />
 		<property value="true" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
@@ -1683,6 +1683,7 @@
 		<property name="creationMoment" value="02/01/2019 12:30" />
 		<property name="position" value="Secretary" />
 		<property name="statusEnrolment" value="DROPOUT" />
+		<property name="dropOutDate" value="12/01/2019 12:30" />
 		
 		<property name="member" ref="member1" />
 		<property name="brotherhood" ref="brotherhood1" />
@@ -1786,7 +1787,7 @@
 	</bean>
 	
 	<bean id="request2" class="domain.Request">
-		<property name="status" value="PENDING" />
+		<property name="status" value="APPROVED" />
 		<property name="rowNumber" value="1" />
 		<property name="columnNumber" value="1" />
 		<!-- <property name="reasonDescription" value="hola" />	--> 

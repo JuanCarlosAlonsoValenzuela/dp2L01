@@ -53,7 +53,7 @@
 		<security:intercept-url pattern="/profile/action-3.do" access="isAuthenticated()" /> 
 		
 		<security:intercept-url pattern="/finder/member/**" access="hasRole('MEMBER')" /> 
-	
+		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
 
 		
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
