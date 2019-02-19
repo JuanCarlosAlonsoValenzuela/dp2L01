@@ -51,8 +51,8 @@ public class AreaController extends AbstractController {
 		ModelAndView result;
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 		Area a = brotherhood.getArea();
-		List<Area> area = new ArrayList<Area>();
-		area.add(a);
+		List<Area> areas = new ArrayList<Area>();
+		areas.add(a);
 		Boolean hasArea = false;
 		try {
 			Assert.notNull(brotherhood.getArea());
@@ -62,8 +62,23 @@ public class AreaController extends AbstractController {
 		}
 
 		result = new ModelAndView("area/brotherhood/showArea");
-		result.addObject("area", area);
+		result.addObject("areas", areas);
 		result.addObject("hasArea", hasArea);
+		result.addObject("requestURI", "area/brotherhood/showArea.do");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/administrator/showAreas", method = RequestMethod.GET)
+	public ModelAndView showAreas() {
+		ModelAndView result;
+		List<Area> areas = this.areaService.findAll();
+		Boolean hasArea = true;
+
+		result = new ModelAndView("area/administrator/showAreas");
+		result.addObject("areas", areas);
+		result.addObject("hasArea", hasArea);
+		result.addObject("requestURI", "area/administrator/showAreas.do");
 
 		return result;
 	}
@@ -81,6 +96,28 @@ public class AreaController extends AbstractController {
 		return result;
 	}
 
+	@RequestMapping(value = "/administrator/create", method = RequestMethod.GET)
+	public ModelAndView addArea() {
+		ModelAndView result;
+		Area area = this.areaService.createArea();
+
+		result = this.createEditModelAndView(area);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/administrator/edit", method = RequestMethod.GET)
+	public ModelAndView editArea(@RequestParam int areaId) {
+		ModelAndView result;
+		Area area = this.areaService.findOne(areaId);
+		Boolean delete = this.areaService.brotherhoodOfAnArea(areaId).isEmpty();
+
+		result = this.createEditModelAndView(area);
+		result.addObject("delete", delete);
+
+		return result;
+	}
+
 	@RequestMapping(value = "/brotherhood/showPictures", method = RequestMethod.GET)
 	public ModelAndView showPictures(@RequestParam int areaId) {
 		ModelAndView result;
@@ -94,24 +131,97 @@ public class AreaController extends AbstractController {
 		return result;
 	}
 
+	@RequestMapping(value = "/administrator/showPictures", method = RequestMethod.GET)
+	public ModelAndView showPicturesAdmin(@RequestParam int areaId) {
+		ModelAndView result;
+		Area area = this.areaService.findOne(areaId);
+
+		result = new ModelAndView("area/administrator/showPictures");
+		result.addObject("area", area);
+		result.addObject("pictures", area.getPictures());
+		result.addObject("requestURI", "area/administrator/showPictures.do");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/administrator/edit", method = RequestMethod.POST, params = "save")
+	public ModelAndView addArea(Area area, BindingResult binding, @RequestParam String newPictures) {
+		ModelAndView result;
+		Area a;
+
+		a = this.areaService.reconstructArea(area, binding, newPictures);
+
+		if (binding.hasErrors()) {
+			result = this.createEditModelAndView(area);
+		} else {
+			try {
+				this.areaService.addArea(a);
+				result = new ModelAndView("redirect:showAreas.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(area, "area.commit.error");
+			}
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/administrator/edit", method = RequestMethod.POST, params = "edit")
+	public ModelAndView editArea(Area area, BindingResult binding, @RequestParam String newPictures) {
+		ModelAndView result;
+		Area a;
+
+		a = this.areaService.reconstructArea(area, binding, newPictures);
+
+		if (binding.hasErrors()) {
+			result = this.createEditModelAndView(area);
+		} else {
+			try {
+				this.areaService.updateArea(a);
+				result = new ModelAndView("redirect:showAreas.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(area, "area.commit.error");
+			}
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/administrator/edit", method = RequestMethod.POST, params = "delete")
+	public ModelAndView deleteArea(Area area) {
+		ModelAndView result;
+		Area a;
+		a = this.areaService.findOne(area.getId());
+		try {
+			this.areaService.deleteArea(a);
+			result = new ModelAndView("redirect:showAreas.do");
+
+		} catch (Throwable oops) {
+			result = this.createEditModelAndView(area, "area.commit.error");
+		}
+
+		return result;
+	}
+
 	@RequestMapping(value = "/brotherhood/selectArea", method = RequestMethod.POST, params = "edit")
 	public ModelAndView selectArea(Brotherhood brotherhood, BindingResult binding) {
 		ModelAndView result;
 		Brotherhood bro;
 		bro = this.brotherhoodService.reconstructArea(brotherhood, binding);
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndViewB(bro);
-		else
+		} else {
 			try {
-				this.brotherhoodService.save(bro);
+				this.brotherhoodService.updateBrotherhood(bro);
 				result = new ModelAndView("redirect:showArea.do");
 
 			} catch (Throwable oops) {
 				result = this.createEditModelAndViewB(bro, "area.commit.error");
 			}
+		}
 		return result;
 	}
+
 	protected ModelAndView createEditModelAndView(Area area) {
 		ModelAndView result;
 
@@ -123,7 +233,7 @@ public class AreaController extends AbstractController {
 	protected ModelAndView createEditModelAndView(Area area, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("area/admin/edit");
+		result = new ModelAndView("area/administrator/edit");
 		result.addObject("area", area);
 
 		result.addObject("message", messageCode);

@@ -16,10 +16,16 @@
 	</display:column>
 	
 </display:table>
-
-<input type="button"
+<security:authorize access="hasRole('BROTHERHOOD')">
+	<input type="button"
 		name="cancel"
 		value="<spring:message code="area.back"/>" onclick="javascript:relativeRedir('area/brotherhood/showArea.do');" />
-																						
+</security:authorize>
+<security:authorize access="hasRole('ADMIN')">
+	<input type="button"
+		name="cancel"
+		value="<spring:message code="area.back"/>" onclick="javascript:relativeRedir('area/administrator/showAreas.do');" />
+
+</security:authorize>																					
 
 

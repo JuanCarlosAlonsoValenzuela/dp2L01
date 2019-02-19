@@ -26,4 +26,19 @@
 		<put-attribute name="body" value="/views/administrator/action-2.jsp" />
 	</definition>
 	
+	<definition name="area/administrator/showAreas" extends="master.page">	
+		<put-attribute name="title" value="Todas las areas" />
+		<put-attribute name="body" value="/views/brotherhood/showArea.jsp" />
+	</definition>
+
+	<definition name="area/administrator/edit" extends="master.page">	
+		<put-attribute name="title" value="Editar area" />
+		<put-attribute name="body" value="/views/administrator/editArea.jsp" />
+	</definition>
+	
+	<definition name="area/administrator/showPictures" extends="master.page">	
+		<put-attribute name="title" value="Imagenes" />
+		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
+	</definition>
+	
 </tiles-definitions>
