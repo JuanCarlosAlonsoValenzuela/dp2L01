@@ -46,7 +46,6 @@
 
 					<li class="arrow"></li>
 					<li><a href="finder/member/list.do"><spring:message code="master.page.member.finder" /></a></li>			
-
 					<li><a href="procession/brotherhood/list.do"><spring:message code="master.page.brotherhood.procession.list" /></a></li>		
 				</ul>
 			</li>
