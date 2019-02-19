@@ -45,7 +45,8 @@
 					<li class="arrow"></li>
 					<li><a href="request/member/list.do"><spring:message code="master.page.member.request.list" /></a></li>
 					<li><a href="enrolment/member/list.do"><spring:message code="master.page.member.enrolment" /></a></li>	
-					<li><a href="finder/member/list.do"><spring:message code="master.page.member.finder" /></a></li>			
+					<li><a href="finder/member/list.do"><spring:message code="master.page.member.finder" /></a></li>
+					<li><a href="brotherhood/member/list.do"><spring:message code="master.pagebrotherhoods" /></a></li>			
 				</ul>	
 			</li>
 		</security:authorize>
