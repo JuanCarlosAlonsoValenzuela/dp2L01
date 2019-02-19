@@ -41,13 +41,15 @@ public class ProcessionController extends AbstractController {
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+
+		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
 
 		processions = loggedBrotherhood.getProcessions();
 
 		result = new ModelAndView("procession/brotherhood/list");
 		result.addObject("processions", processions);
 		result.addObject("requestURI", "procession/brotherhood/list.do");
+		result.addObject("hasArea", hasArea);
 
 		return result;
 	}
@@ -127,7 +129,7 @@ public class ProcessionController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveWarranty(@Valid Procession procession, BindingResult binding) {
+	public ModelAndView saveProcession(@Valid Procession procession, BindingResult binding) {
 
 		ModelAndView result;
 
