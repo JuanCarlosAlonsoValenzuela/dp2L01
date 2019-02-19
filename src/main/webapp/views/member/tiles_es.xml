@@ -32,4 +32,9 @@
 		<put-attribute name="body" value="/views/member/requests.jsp" />
 	</definition>
 	
+	<definition name="enrolment/member/list" extends="master.page">	
+		<put-attribute name="title" value="Inscripciones" />
+		<put-attribute name="body" value="/views/member/enrolments.jsp" />
+	</definition>
+	
 </tiles-definitions>
