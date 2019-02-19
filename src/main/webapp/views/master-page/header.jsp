@@ -38,13 +38,15 @@
 		<security:authorize access="hasRole('MEMBER')">
 			<li><a class="fNiv"><spring:message	code="master.page.member" /></a>
 
+			<li><a class="fNiv"><spring:message	code="master.page.brotherhood" /></a>
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="request/member/list.do"><spring:message code="master.page.member.request.list" /></a></li>
+					<li><a href="enrolment/member/list.do"><spring:message code="master.page.member.enrolment" /></a></li>	
 
 					<li class="arrow"></li>
 					<li><a href="finder/member/list.do"><spring:message code="master.page.member.finder" /></a></li>			
-
+					<li><a href="procession/brotherhood/list.do"><spring:message code="master.page.brotherhood.procession.list" /></a></li>		
 				</ul>
 			</li>
 		</security:authorize>
