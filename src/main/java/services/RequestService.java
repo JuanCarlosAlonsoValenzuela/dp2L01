@@ -93,4 +93,26 @@ public class RequestService {
 		this.delete(request);
 
 	}
+
+	public void createRequestAsMember(Member member, int processionId) {
+		Procession procession = this.processionService.findOne(processionId);
+		List<Request> requests = procession.getRequests();
+
+		Assert.isTrue(procession.getIsDraftMode() == false);
+		for (Request r : requests)
+			Assert.isTrue(!r.getMember().equals(member));
+
+		Request newRequest = this.createRequest(member, procession);
+		Request saveRequest = this.save(newRequest);
+
+		List<Request> requests2 = member.getRequests();
+		requests2.add(saveRequest);
+		member.setRequests(requests2);
+		this.memberService.save(member);
+
+		List<Request> requests3 = procession.getRequests();
+		requests3.add(saveRequest);
+		procession.setRequests(requests3);
+		this.processionService.save(procession);
+	}
 }
