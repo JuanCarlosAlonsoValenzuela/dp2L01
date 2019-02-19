@@ -2,11 +2,13 @@
 package services;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import repositories.RequestRepository;
 import domain.Member;
@@ -22,6 +24,10 @@ public class RequestService {
 
 	@Autowired
 	private RequestRepository	requestRepository;
+	@Autowired
+	private MemberService		memberService;
+	@Autowired
+	private ProcessionService	processionService;
 
 
 	//Simple CRUD methods ---------------------------------------------------------------------
@@ -61,5 +67,30 @@ public class RequestService {
 	// Other methods
 	public Collection<Request> getRequestsByMember(Member member) {
 		return this.requestRepository.getRequestsByMember(member);
+	}
+
+	public Collection<Request> getRequestsByMemberAndStatus(Member member, Status status) {
+		return this.requestRepository.getRequestsByMemberAndStatus(member, status);
+	}
+
+	public void deleteRequestAsMember(Member member, int requestId) {
+		Request request = this.findOne(requestId);
+
+		Assert.isTrue(this.getRequestsByMember(member).contains(request));
+		Assert.isTrue(request.getStatus().equals(Status.PENDING));
+
+		Procession procession = request.getProcession();
+		List<Request> requests = procession.getRequests();
+		requests.remove(request);
+		procession.setRequests(requests);
+		this.processionService.save(procession);
+
+		List<Request> requests2 = member.getRequests();
+		requests2.remove(request);
+		member.setRequests(requests2);
+		this.memberService.save(member);
+
+		this.delete(request);
+
 	}
 }
