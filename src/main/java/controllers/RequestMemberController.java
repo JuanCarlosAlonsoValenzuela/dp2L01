@@ -10,7 +10,11 @@
 
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -21,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import services.ConfigurationService;
 import services.MemberService;
 import services.RequestService;
+import domain.Finder;
 import domain.Member;
+import domain.Procession;
 import domain.Request;
 import domain.Status;
 
@@ -32,9 +39,11 @@ import domain.Status;
 public class RequestMemberController extends AbstractController {
 
 	@Autowired
-	private RequestService	requestService;
+	private RequestService			requestService;
 	@Autowired
-	private MemberService	memberService;
+	private MemberService			memberService;
+	@Autowired
+	private ConfigurationService	configurationService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -120,4 +129,68 @@ public class RequestMemberController extends AbstractController {
 		return result;
 	}
 
+	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "saveRequest")
+	public ModelAndView requestCreate(@Valid int processionId) {
+		ModelAndView result;
+
+		Member member = this.memberService.securityAndMember();
+
+		Boolean flag;
+
+		Finder finder = member.getFinder();
+
+		//Current Date
+		Date currentDate = new Date();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
+		Integer currentDay = calendar.get(Calendar.DATE);
+		Integer currentMonth = calendar.get(Calendar.MONTH);
+		Integer currentYear = calendar.get(Calendar.YEAR);
+		Integer currentHour = calendar.get(Calendar.HOUR);
+
+		//LastEdit Finder
+		Date lasEdit = finder.getLastEdit();
+		calendar.setTime(lasEdit);
+		Integer lastEditDay = calendar.get(Calendar.DATE);
+		Integer lastEditMonth = calendar.get(Calendar.MONTH);
+		Integer lastEditYear = calendar.get(Calendar.YEAR);
+		Integer lastEditHour = calendar.get(Calendar.HOUR);
+
+		Integer time = this.configurationService.getConfiguration().getTimeFinder();
+
+		List<Procession> processions = new ArrayList<>();
+		List<Procession> finderProcessions = finder.getProcessions();
+
+		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
+			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
+
+			if (finderProcessions.size() > numFinderResult)
+				for (int i = 0; i < numFinderResult; i++)
+					processions.add(finderProcessions.get(i));
+			else
+				processions = finderProcessions;
+		}
+
+		try {
+			this.requestService.createRequestAsMember(member, processionId);
+
+			result = new ModelAndView("member/finderResult");
+
+			flag = true;
+
+			result.addObject("flag", flag);
+			result.addObject("processions", processions);
+			result.addObject("member", member.getUserAccount().getUsername());
+		} catch (Throwable oops) {
+			result = new ModelAndView("member/finderResult");
+
+			flag = false;
+
+			result.addObject("flag", flag);
+			result.addObject("processions", processions);
+			result.addObject("member", member.getUserAccount().getUsername());
+		}
+		return result;
+	}
 }
