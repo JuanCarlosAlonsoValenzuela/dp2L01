@@ -24,28 +24,29 @@
 			<li><a class="fNiv"><spring:message	code="master.page.administrator" /></a>
 				<ul>
 					<li class="arrow"></li>
-					<li><a href="administrator/action-1.do"><spring:message code="master.page.administrator.action.1" /></a></li>
-					<li><a href="administrator/action-2.do"><spring:message code="master.page.administrator.action.2" /></a></li>					
+										
 				</ul>
 			</li>
 		</security:authorize>
 		
 		<security:authorize access="hasRole('BROTHERHOOD')">
-
-			<li><a class="fNiv" href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>		
+			<li><a class="fNiv"><spring:message	code="master.page.brotherhood" /></a>
+				<ul>
+					<li class="arrow"></li>
+					<li><a href="procession/brotherhood/list.do"><spring:message code="master.page.brotherhood.procession.list" /></a></li>	
+					<li><a href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>	
+				</ul>
+			</li>		
     </security:authorize>
 
 		<security:authorize access="hasRole('MEMBER')">
 			<li><a class="fNiv"><spring:message	code="master.page.member" /></a>
-
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="request/member/list.do"><spring:message code="master.page.member.request.list" /></a></li>
-
-					<li class="arrow"></li>
+					<li><a href="enrolment/member/list.do"><spring:message code="master.page.member.enrolment" /></a></li>	
 					<li><a href="finder/member/list.do"><spring:message code="master.page.member.finder" /></a></li>			
-
-				</ul>
+				</ul>	
 			</li>
 		</security:authorize>
 		
@@ -60,10 +61,7 @@
 			        (<security:authentication property="principal.username" />)
 				</a>
 				<ul>
-					<li class="arrow"></li>
-					<li><a href="profile/action-1.do"><spring:message code="master.page.profile.action.1" /></a></li>
-					<li><a href="profile/action-2.do"><spring:message code="master.page.profile.action.2" /></a></li>
-					<li><a href="profile/action-3.do"><spring:message code="master.page.profile.action.3" /></a></li>					
+					<li class="arrow"></li>					
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>
 			</li>

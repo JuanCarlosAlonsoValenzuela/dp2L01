@@ -12,11 +12,7 @@
 <security:authorize access="hasRole('MEMBER')">
 
 	<form:form action="finder/member/edit.do" modelAttribute="finder">
-	<!-- Hidden Attributes -->
-		<form:hidden path="id" />
-		<form:hidden path="version" />
-		<form:hidden path="lastEdit"/>
-		
+
 		<acme:textbox code="finder.keyWord" path="keyWord"/>
 		
 		<acme:textbox code="finder.area" path="area"/>

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import repositories.ProcessionRepository;
+import utilities.RandomString;
 import domain.Brotherhood;
 import domain.Coach;
 import domain.Procession;
@@ -125,31 +126,19 @@ public class ProcessionService {
 		String res = "";
 		Date date = null;
 		String date1;
-		final String date2 = LocalDate.now().toString();
-		int count = 5;
-
-		//Random String
-		final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		final StringBuilder builder = new StringBuilder();
-
-		while (count-- != 0) {
-			final int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
-			builder.append(ALPHA_NUMERIC_STRING.charAt(character));
-		}
-
-		final String gen = builder.toString();
-
-		final List<Procession> lc = this.processionRepository.findAll();
-		final SimpleDateFormat df_in = new SimpleDateFormat("yyMMdd");
-		final SimpleDateFormat df_output = new SimpleDateFormat("yyyy-MM-dd");
+		String date2 = LocalDate.now().toString();
+		String gen = new RandomString(6).nextString();
+		List<Procession> lc = this.processionRepository.findAll();
+		SimpleDateFormat df_in = new SimpleDateFormat("yyMMdd");
+		SimpleDateFormat df_output = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			date = df_output.parse(date2);
-		} catch (final ParseException e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		date1 = df_in.format(date);
 		res = res + date1 + "-" + gen;
-		for (final Procession c : lc)
+		for (Procession c : lc)
 			if (c.getTicker() == res)
 				return this.generateTicker();
 		return res;
@@ -159,14 +148,14 @@ public class ProcessionService {
 		return this.processionRepository.findAll();
 	}
 
-	public Procession findOne(final int id) {
+	public Procession findOne(int id) {
 		return this.processionRepository.findOne(id);
 	}
 
-	public Procession save(final Procession procession) {
+	public Procession save(Procession procession) {
 		return this.processionRepository.save(procession);
 	}
-	public void delete(final Procession procession) {
+	public void delete(Procession procession) {
 		this.processionRepository.delete(procession);
 	}
 
