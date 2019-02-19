@@ -6,12 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.FinderRepository;
 import security.Authority;
@@ -119,16 +119,23 @@ public class FinderService {
 	}
 
 	public Finder reconstruct(Finder finder, BindingResult binding) {
-		Finder result;
+		Finder result = this.getCurrentFinder();
 
-		result = this.findOne(finder.getId());
 		Date date = new Date();
 		result.setLastEdit(date);
 		result.setArea(finder.getArea());
 		result.setKeyWord(finder.getKeyWord());
-		result.setMaxDate(result.getMaxDate());
+		result.setMaxDate(finder.getMaxDate());
 		result.setMinDate(finder.getMinDate());
 
+		this.validator.validate(result, binding);
+
 		return result;
+	}
+
+	private Finder getCurrentFinder() {
+		UserAccount userAccount = LoginService.getPrincipal();
+		Member loggedMember = this.memberRepository.getMemberByUsername(userAccount.getUsername());
+		return loggedMember.getFinder();
 	}
 }

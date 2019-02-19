@@ -6,8 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -89,7 +87,6 @@ public class FinderMemberController extends AbstractController {
 		result = new ModelAndView("member/finderResult");
 
 		result.addObject("processions", processions);
-		result.addObject("member", member.getUserAccount().getUsername());
 
 		return result;
 	}
@@ -111,12 +108,12 @@ public class FinderMemberController extends AbstractController {
 	}
 	//Save
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(Finder finder, BindingResult binding) {
+	public ModelAndView save(Finder finderForm, BindingResult binding) {
 		ModelAndView result;
 
-		finder = this.finderService.reconstruct(finder, binding);
+		Finder finder = this.finderService.reconstruct(finderForm, binding);
 		if (binding.hasErrors())
-			result = this.createEditModelAndView(finder);
+			result = this.createEditModelAndView(finderForm);
 		else
 			try {
 				this.finderService.save(finder);
@@ -127,7 +124,6 @@ public class FinderMemberController extends AbstractController {
 			}
 		return result;
 	}
-
 	//Clean Filter
 	@RequestMapping(value = "/clean", method = RequestMethod.POST, params = "save")
 	public ModelAndView save() {
