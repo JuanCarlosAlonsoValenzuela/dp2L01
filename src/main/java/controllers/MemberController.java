@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
+import services.MemberService;
 import domain.Brotherhood;
 
 @Controller
@@ -19,6 +20,9 @@ public class MemberController extends AbstractController {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
+
+	@Autowired
+	private MemberService		memberService;
 
 
 	public MemberController() {
