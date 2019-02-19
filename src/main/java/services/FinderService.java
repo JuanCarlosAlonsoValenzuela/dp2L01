@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
 
 import repositories.FinderRepository;
 import security.Authority;
@@ -32,6 +34,8 @@ public class FinderService {
 
 	@Autowired
 	private MemberService		memberRepository;
+	@Autowired
+	private Validator			validator;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -112,5 +116,19 @@ public class FinderService {
 
 	public List<Procession> getAllPublishedProcessions() {
 		return this.finderRepository.getPublushedProcessions();
+	}
+
+	public Finder reconstruct(Finder finder, BindingResult binding) {
+		Finder result;
+
+		result = this.findOne(finder.getId());
+		Date date = new Date();
+		result.setLastEdit(date);
+		result.setArea(finder.getArea());
+		result.setKeyWord(finder.getKeyWord());
+		result.setMaxDate(result.getMaxDate());
+		result.setMinDate(finder.getMinDate());
+
+		return result;
 	}
 }
