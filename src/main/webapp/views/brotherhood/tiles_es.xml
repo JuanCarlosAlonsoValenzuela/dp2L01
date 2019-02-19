@@ -19,6 +19,8 @@
 	<definition name="area/brotherhood/showArea" extends="master.page">	
 		<put-attribute name="title" value="Mi area" />
 		<put-attribute name="body" value="/views/brotherhood/showArea.jsp" />
+	</definition>
+		
 	<definition name="procession/brotherhood/list" extends="master.page">	
 		<put-attribute name="title" value="Procesiones" />
 		<put-attribute name="body" value="/views/brotherhood/processionList.jsp" />
@@ -32,6 +34,8 @@
 	<definition name="area/brotherhood/showPictures" extends="master.page">	
 		<put-attribute name="title" value="Imagenes" />
 		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
+	</definition>	
+	
 	<definition name="procession/brotherhood/create" extends="master.page">	
 		<put-attribute name="title" value="Crear una Procesion" />
 		<put-attribute name="body" value="/views/brotherhood/createProcession.jsp" />
