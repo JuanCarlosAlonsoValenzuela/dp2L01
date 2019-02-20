@@ -64,7 +64,7 @@
 	<display:column titleKey="procession.float" > 
 	
 	
-	<jstl:set var="floatsize" value="${row.coachs.size()}" />
+	<jstl:set var="floatsize" value="${row.floats.size()}" />
 			<spring:url var="floatsUrl" value="/float/member/list.do">
 						<spring:param name="procession" value="${row.id}" />
 			</spring:url>

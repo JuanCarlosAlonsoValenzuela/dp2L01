@@ -19,7 +19,7 @@
 	<form:hidden path ="version"/>
 
 	<form:hidden path ="ticker"/>
-	<form:hidden path ="coachs"/>
+	<form:hidden path ="floats"/>
 	<form:hidden path ="requests"/>
 	
 	<acme:textbox code="procession.title" path="title" />

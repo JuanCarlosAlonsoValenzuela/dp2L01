@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 import repositories.ProcessionRepository;
 import utilities.RandomString;
 import domain.Brotherhood;
-import domain.Coach;
+import domain.Float;
 import domain.Procession;
 import domain.Request;
 
@@ -45,8 +45,8 @@ public class ProcessionService {
 
 		final Procession procession = new Procession();
 
-		final List<Coach> coachs = new ArrayList<>();
-		procession.setCoachs(coachs);
+		final List<Float> floats = new ArrayList<>();
+		procession.setFloats(floats);
 
 		procession.setColumnNumber(0);
 		procession.setDescription("");
@@ -78,7 +78,7 @@ public class ProcessionService {
 		List<Procession> processions = loggedBrotherhood.getProcessions();
 		processions.remove(procession);
 
-		//procession.setCoachs(coachs);
+		//procession.setFloats(floats);
 		procession.setColumnNumber(columnNumber);
 		procession.setDescription(description);
 		procession.setIsDraftMode(isDraftMode);
@@ -110,8 +110,8 @@ public class ProcessionService {
 		//No debería tener Request porque está en Draft mode
 		//Tampoco hay que preocuparse por el finder porque no se pueden buscar procesiones en Draft mode
 
-		final List<Coach> coachs = new ArrayList<>();
-		procession.setCoachs(coachs);
+		final List<Float> floats = new ArrayList<>();
+		procession.setFloats(floats);
 
 		final List<Procession> processions = loggedBrotherhood.getProcessions();
 		processions.remove(procession);

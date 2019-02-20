@@ -9,30 +9,30 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
-<p><spring:message code="coach.create" /></p>
+<p><spring:message code="float.create" /></p>
 
 <security:authorize access="hasRole('BROTHERHOOD')"> 
 
-	<form:form modelAttribute="coach" action="coach/brotherhood/edit.do">
+	<form:form modelAttribute="float" action="float/brotherhood/edit.do">
     <!--Hidden Attributes -->
 	<form:hidden path ="id"/>
 	<form:hidden path ="version"/>
 
 
-	<acme:textbox code="coach.title" path="title" />
+	<acme:textbox code="float.title" path="title" />
 	
-	<acme:textarea code="coach.description" path="description" /> 
+	<acme:textarea code="float.description" path="description" /> 
 	
- 	<acme:submit name="save" code="coach.save" />  
+ 	<acme:submit name="save" code="float.save" />  
  	
- 	<jstl:if test="${coach.id != 0 }">
- 		<acme:submit name="delete" code="coach.delete" />
+ 	<jstl:if test="${float.id != 0 }">
+ 		<acme:submit name="delete" code="float.delete" />
  	</jstl:if> 
  	
  	
  	
 	</form:form>
 	
-	<acme:cancel url="/coach/brotherhood/list.do" code="coach.cancel" />  
+	<acme:cancel url="/float/brotherhood/list.do" code="float.cancel" />  
 	
 </security:authorize>
