@@ -17,6 +17,8 @@
 
 	<display:table pagesize="5" name="enrolments" id="row"
 		class="displaytag" requestURI="enrolment/member/list.do">
+		
+		<display:column property="brotherhood.title" titleKey="enrolment.brotherhood" />
 
 		<display:column property="statusEnrolment" titleKey="enrolment.status" />
 
