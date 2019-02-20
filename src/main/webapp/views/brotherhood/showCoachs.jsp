@@ -7,40 +7,40 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
 
-<p><spring:message code="brotherhood.coach.list" /></p>
+<p><spring:message code="brotherhood.float.list" /></p>
 
 <security:authorize access="hasRole('BROTHERHOOD')">
 	
 	<jstl:choose>
 	
 	<jstl:when test="${!hasArea}">
-		<b>	<spring:message code="coach.selectArea"/>	</b>
+		<b>	<spring:message code="float.selectArea"/>	</b>
 	</jstl:when>
 	
 	<jstl:otherwise>
 	
 	<display:table
-	pagesize="5" name="allCoachs" id="row"
+	pagesize="5" name="allFloats" id="row"
 	requestURI="${requestURI}" >
 	
-	<display:column property="title" titleKey="coach.title" />
+	<display:column property="title" titleKey="float.title" />
 	
-	<display:column property="description" titleKey="coach.description" />
+	<display:column property="description" titleKey="float.description" />
 		
-	<display:column titleKey="coach.pictures">
+	<display:column titleKey="float.pictures">
         <jstl:set var="picturesSize" value="${row.pictures.size()}" />
-        <spring:url var="picturesURL" value="/coach/brotherhood/picture/list.do?coachId={coachId}">
-              <spring:param name="coachId" value="${row.id}"/>
+        <spring:url var="picturesURL" value="/float/brotherhood/picture/list.do?floatId={floatId}">
+              <spring:param name="floatId" value="${row.id}"/>
         </spring:url>
         <a href="${picturesURL}">
-              <spring:message var ="viewPictures1" code="coach.viewPictures" />
+              <spring:message var ="viewPictures1" code="float.viewPictures" />
               <jstl:out value="${viewPictures1}(${picturesSize})" />    
         </a>
     </display:column>
   	
   	<display:column>
-			<a href="coach/brotherhood/edit.do?coachId=${row.id}">
-				<spring:message code="coach.edit" />
+			<a href="float/brotherhood/edit.do?floatId=${row.id}">
+				<spring:message code="float.edit" />
 			</a>
 	</display:column>
 	
@@ -53,7 +53,7 @@
 <br />
 	
 	<jstl:if test="${hasArea}">
-		<a href="coach/brotherhood/create.do"><spring:message code="coach.create" /></a>
+		<a href="float/brotherhood/create.do"><spring:message code="float.create" /></a>
 	</jstl:if>
 	
 </security:authorize>

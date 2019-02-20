@@ -49,8 +49,8 @@
 		<bean class="converters.BrotherhoodToStringConverter" />
 		<bean class="converters.StringToBrotherhoodConverter" />
 		
-		<bean class="converters.CoachToStringConverter" />
-		<bean class="converters.StringToCoachConverter" />
+		<bean class="converters.FloatToStringConverter" />
+		<bean class="converters.StringToFloatConverter" />
 		
 		<bean class="converters.MemberToStringConverter" />
 		<bean class="converters.StringToMemberConverter" />

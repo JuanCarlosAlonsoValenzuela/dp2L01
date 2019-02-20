@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
-import services.CoachService;
+import services.FloatService;
 import domain.Brotherhood;
-import domain.Coach;
+import domain.Float;
 
 @Controller
-@RequestMapping("/coach/brotherhood")
+@RequestMapping("/floatt/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 
 	@Autowired
-	private CoachService		coachService;
+	private FloatService		floatService;
 
 
-	//Lista de todos los coach de esa brotherhood
+	//Lista de todos los floatt de esa brotherhood
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
@@ -38,13 +38,13 @@ public class BrotherhoodController extends AbstractController {
 
 		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
 
-		List<Coach> allCoachs = new ArrayList<Coach>();
-		allCoachs = this.coachService.showBrotherhoodCoachs();
+		List<Float> allFloats = new ArrayList<Float>();
+		allFloats = this.floatService.showBrotherhoodFloats();
 
-		result = new ModelAndView("coach/brotherhood/list");
+		result = new ModelAndView("floatt/brotherhood/list");
 
-		result.addObject("allCoachs", allCoachs);
-		result.addObject("requestURI", "coach/brotherhood/list.do");
+		result.addObject("allFloats", allFloats);
+		result.addObject("requestURI", "floatt/brotherhood/list.do");
 		result.addObject("hasArea", hasArea);
 		return result;
 	}
@@ -57,70 +57,70 @@ public class BrotherhoodController extends AbstractController {
 		Assert.isTrue(bro.getArea() != null);
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
-		Coach coach = new Coach();
+		Float floatt = new Float();
 
-		coach = this.coachService.create();
+		floatt = this.floatService.create();
 
-		result = this.createEditModelAndView(coach);
+		result = this.createEditModelAndView(floatt);
 		return result;
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView edit(Coach coach, BindingResult binding) {
+	public ModelAndView edit(Float floatt, BindingResult binding) {
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
 
-		coach = this.coachService.reconstruct(coach, binding);
+		floatt = this.floatService.reconstruct(floatt, binding);
 
 		if (binding.hasErrors())
-			result = this.createEditModelAndView(coach);
+			result = this.createEditModelAndView(floatt);
 		else
 			try {
-				this.coachService.save(coach);
+				this.floatService.save(floatt);
 				result = new ModelAndView("redirect:list.do");
 			} catch (final Throwable oops) {
-				result = this.createEditModelAndView(coach, "message.commit.error");
+				result = this.createEditModelAndView(floatt, "message.commit.error");
 			}
 		return result;
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
-	public ModelAndView delete(Coach coach, BindingResult binding) {
+	public ModelAndView delete(Float floatt, BindingResult binding) {
 		this.brotherhoodService.loggedAsBrotherhood();
 		ModelAndView result;
 		Brotherhood brother = new Brotherhood();
 		brother = this.brotherhoodService.loggedBrotherhood();
-		List<Coach> coachs = new ArrayList<Coach>();
+		List<Float> floatts = new ArrayList<Float>();
 
-		coachs = this.brotherhoodService.getCoachsByBrotherhood(brother);
+		floatts = this.brotherhoodService.getFloatsByBrotherhood(brother);
 
-		if (!(coachs.contains(coach)))
+		if (!(floatts.contains(floatt)))
 			return new ModelAndView("redirect:list.do");
 
 		try {
-			this.coachService.remove(coach);
+			this.floatService.remove(floatt);
 			result = new ModelAndView("redirect:list.do");
 		} catch (final Throwable oops) {
-			result = this.createEditModelAndView(coach, "message.commit.error");
+			result = this.createEditModelAndView(floatt, "message.commit.error");
 
 		}
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Coach coach) {
+	protected ModelAndView createEditModelAndView(Float floatt) {
 		ModelAndView result;
 
-		result = this.createEditModelAndView(coach, null);
+		result = this.createEditModelAndView(floatt, null);
 
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Coach coach, String messageCode) {
+	protected ModelAndView createEditModelAndView(Float floatt, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("coach/brotherhood/create");
+		result = new ModelAndView("floatt/brotherhood/create");
 
-		result.addObject("coach", coach);
+		result.addObject("floatt", floatt);
 		result.addObject("message", messageCode);
 
 		return result;

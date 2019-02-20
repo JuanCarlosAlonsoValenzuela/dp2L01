@@ -35,7 +35,7 @@
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="procession/brotherhood/list.do"><spring:message code="master.page.brotherhood.procession.list" /></a></li>	
-					<li><a href="coach/brotherhood/list.do"><spring:message code="master.page.brotherhood.coach.list" /></a></li>	
+					<li><a href="float/brotherhood/list.do"><spring:message code="master.page.brotherhood.float.list" /></a></li>	
 					<li><a href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>	
 				</ul>
 			</li>		

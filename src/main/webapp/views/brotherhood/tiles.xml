@@ -41,14 +41,14 @@
 		<put-attribute name="body" value="/views/brotherhood/createProcession.jsp" />
 	</definition>
 	
-		<definition name="coach/brotherhood/list" extends="master.page">	
+		<definition name="float/brotherhood/list" extends="master.page">	
 		<put-attribute name="title" value="Floats" />
-		<put-attribute name="body" value="/views/brotherhood/showCoachs.jsp" />
+		<put-attribute name="body" value="/views/brotherhood/showFloats.jsp" />
 	</definition>
 	
-	<definition name="coach/brotherhood/create" extends="master.page">	
+	<definition name="float/brotherhood/create" extends="master.page">	
 		<put-attribute name="title" value="Create a Float" />
-		<put-attribute name="body" value="/views/brotherhood/createCoach.jsp" />
+		<put-attribute name="body" value="/views/brotherhood/createFloat.jsp" />
 	</definition>
 	
 	

@@ -19,7 +19,7 @@ import security.LoginService;
 import security.UserAccount;
 import domain.Box;
 import domain.Brotherhood;
-import domain.Coach;
+import domain.Float;
 import domain.Enrolment;
 import domain.Procession;
 import domain.SocialProfile;
@@ -54,8 +54,8 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.findOne(id);
 	}
 
-	public List<Coach> getCoachsByBrotherhood(final Brotherhood b) {
-		return this.brotherhoodRepository.getCoachsByBrotherhood(b.getId());
+	public List<Float> getFloatsByBrotherhood(final Brotherhood b) {
+		return this.brotherhoodRepository.getFloatsByBrotherhood(b.getId());
 	}
 
 	public List<Procession> getProcessionsByBrotherhood(final Brotherhood b) {
@@ -70,7 +70,7 @@ public class BrotherhoodService {
 		final List<Enrolment> enrolments = new ArrayList<Enrolment>();
 		final List<Box> boxes = new ArrayList<Box>();
 		final List<Procession> processions = new ArrayList<Procession>();
-		final List<Coach> coachs = new ArrayList<Coach>();
+		final List<Float> floats = new ArrayList<Float>();
 
 		final UserAccount userAccount = new UserAccount();
 		final List<Authority> authorities = new ArrayList<Authority>();
@@ -104,7 +104,7 @@ public class BrotherhoodService {
 		bro.setTitle("");
 		bro.setUserAccount(userAccount);
 		bro.setProcessions(processions);
-		bro.setCoachs(coachs);
+		bro.setFloats(floats);
 
 		return bro;
 	}
