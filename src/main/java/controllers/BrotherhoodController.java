@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
 import services.FloatService;
+import services.ProcessionService;
 import domain.Brotherhood;
 import domain.Float;
 
@@ -26,6 +27,8 @@ public class BrotherhoodController extends AbstractController {
 
 	@Autowired
 	private FloatService		floatService;
+	@Autowired
+	private ProcessionService	processionService;
 
 
 	//Lista de todos los floatt de esa brotherhood
@@ -39,6 +42,7 @@ public class BrotherhoodController extends AbstractController {
 		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
 
 		List<Float> allFloats = new ArrayList<Float>();
+
 		allFloats = this.floatService.showBrotherhoodFloats();
 
 		result = new ModelAndView("float/brotherhood/list");

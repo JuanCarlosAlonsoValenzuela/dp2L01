@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -27,8 +28,8 @@ public class Procession extends DomainEntity {
 	private Date			moment;		//
 	private String			ticker;
 	private Boolean			isDraftMode;	//
-	private Integer			rowNumber;		//
-	private Integer			columnNumber;	//
+	private int				rowNumber;		//
+	private int				columnNumber;	//
 
 	private List<Float>		floats;
 	private List<Request>	requests;
@@ -78,27 +79,29 @@ public class Procession extends DomainEntity {
 		return this.isDraftMode;
 	}
 
-	public void setIsDraftMode(final Boolean isDraftMode) {
+	public void setIsDraftMode(Boolean isDraftMode) {
 		this.isDraftMode = isDraftMode;
 	}
 
 	@NotNull
 	@Min(1)
-	public Integer getRowNumber() {
+	@Digits(integer = 6, fraction = 0)
+	public int getRowNumber() {
 		return this.rowNumber;
 	}
 
-	public void setRowNumber(final Integer rowNumber) {
+	public void setRowNumber(int rowNumber) {
 		this.rowNumber = rowNumber;
 	}
 
 	@NotNull
 	@Min(1)
-	public Integer getColumnNumber() {
+	@Digits(integer = 6, fraction = 0)
+	public int getColumnNumber() {
 		return this.columnNumber;
 	}
 
-	public void setColumnNumber(final Integer columnNumber) {
+	public void setColumnNumber(int columnNumber) {
 		this.columnNumber = columnNumber;
 	}
 
@@ -107,7 +110,7 @@ public class Procession extends DomainEntity {
 		return this.floats;
 	}
 
-	public void setFloats(final List<Float> floats) {
+	public void setFloats(List<Float> floats) {
 		this.floats = floats;
 	}
 
@@ -117,7 +120,7 @@ public class Procession extends DomainEntity {
 		return this.requests;
 	}
 
-	public void setRequests(final List<Request> requests) {
+	public void setRequests(List<Request> requests) {
 		this.requests = requests;
 	}
 

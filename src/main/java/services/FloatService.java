@@ -16,6 +16,7 @@ import repositories.FloatRepository;
 import domain.Brotherhood;
 import domain.Float;
 import domain.Procession;
+import forms.FormObjectProcessionFloat;
 
 @Service
 @Transactional
@@ -77,7 +78,7 @@ public class FloatService {
 		return this.floatRepository.findOne(id);
 	}
 
-	public void remove(final Float floatt) {
+	public void remove(Float floatt) {
 		//No se pueden eliminar pasos asignados a procesiones en final mode
 
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -94,7 +95,7 @@ public class FloatService {
 		this.floatRepository.delete(floatt);
 	}
 
-	public Float save(final Float c) {
+	public Float save(Float c) {
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood bro = new Brotherhood();
@@ -107,6 +108,7 @@ public class FloatService {
 
 		bro.getFloats().add(floattSaved);
 		this.brotherhoodService.save(bro);
+
 		return floattSaved;
 	}
 
@@ -136,11 +138,22 @@ public class FloatService {
 		this.processionService.save(procession);
 	}
 
-	public void UnAssingFloatToProcession(final Float floatt, final Procession procession) {
+	public void UnAssingFloatToProcession(Float floatt, Procession procession) {
 		Assert.isTrue(procession.getIsDraftMode() == true);
 		if (procession.getFloats().contains(floatt))
 			procession.getFloats().remove(floatt);
 		this.processionService.save(procession);
+	}
+
+	public Float reconstructForm(FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
+		domain.Float result = new domain.Float();
+
+		result.setTitle(formObjectProcessionFloat.getTitle());
+		result.setDescription(formObjectProcessionFloat.getDescription());
+
+		//		this.validator.validate(result, binding);
+
+		return result;
 	}
 
 }
