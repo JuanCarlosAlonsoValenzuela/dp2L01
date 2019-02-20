@@ -4,8 +4,6 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -20,7 +18,7 @@ import domain.Brotherhood;
 import domain.Coach;
 
 @Controller
-@RequestMapping("/brotherhood")
+@RequestMapping("/coach/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
@@ -30,25 +28,28 @@ public class BrotherhoodController extends AbstractController {
 	private CoachService		coachService;
 
 
-	public BrotherhoodController() {
-		super();
-	}
-
 	//Lista de todos los coach de esa brotherhood
-	@RequestMapping(value = "/coach/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
-		List<Coach> allCoachs = new ArrayList<Coach>();
-		allCoachs = this.coachService.showAllCoachs();
 
-		result = new ModelAndView("brotherhood/coach/list");
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
+
+		List<Coach> allCoachs = new ArrayList<Coach>();
+		allCoachs = this.coachService.showBrotherhoodCoachs();
+
+		result = new ModelAndView("coach/brotherhood/list");
 
 		result.addObject("allCoachs", allCoachs);
-		result.addObject("requestURI", "brotherhood/coach/list.do");
+		result.addObject("requestURI", "coach/brotherhood/list.do");
+		result.addObject("hasArea", hasArea);
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public ModelAndView create() {
 		Brotherhood bro = new Brotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
@@ -64,25 +65,27 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView edit(@Valid final Coach coach, final BindingResult binding) {
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
+	public ModelAndView edit(Coach coach, BindingResult binding) {
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
+
+		coach = this.coachService.reconstruct(coach, binding);
 
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(coach);
 		else
 			try {
 				this.coachService.save(coach);
-				result = new ModelAndView("redirect:brotherhood/coach/list");
+				result = new ModelAndView("redirect:list.do");
 			} catch (final Throwable oops) {
 				result = this.createEditModelAndView(coach, "message.commit.error");
 			}
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/edit", method = RequestMethod.POST, params = "delete")
-	public ModelAndView delete(final Coach coach, final BindingResult binding) {
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(Coach coach, BindingResult binding) {
 		this.brotherhoodService.loggedAsBrotherhood();
 		ModelAndView result;
 		Brotherhood brother = new Brotherhood();
@@ -92,11 +95,11 @@ public class BrotherhoodController extends AbstractController {
 		coachs = this.brotherhoodService.getCoachsByBrotherhood(brother);
 
 		if (!(coachs.contains(coach)))
-			return new ModelAndView("redirect:brotherhood/coach/list");
+			return new ModelAndView("redirect:list.do");
 
 		try {
 			this.coachService.remove(coach);
-			result = new ModelAndView("redirect:brotherhood/coach/list");
+			result = new ModelAndView("redirect:list.do");
 		} catch (final Throwable oops) {
 			result = this.createEditModelAndView(coach, "message.commit.error");
 
@@ -104,7 +107,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(final Coach coach) {
+	protected ModelAndView createEditModelAndView(Coach coach) {
 		ModelAndView result;
 
 		result = this.createEditModelAndView(coach, null);
@@ -112,10 +115,10 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(final Coach coach, final String messageCode) {
+	protected ModelAndView createEditModelAndView(Coach coach, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("brotherhood/coach/create");
+		result = new ModelAndView("coach/brotherhood/create");
 
 		result.addObject("coach", coach);
 		result.addObject("message", messageCode);

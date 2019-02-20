@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.CoachRepository;
 import domain.Brotherhood;
@@ -26,9 +28,28 @@ public class CoachService {
 	private BrotherhoodService	brotherhoodService;
 	@Autowired
 	private ProcessionService	processionService;
+	@Autowired
+	private Validator			validator;
 
 
-	public List<Coach> showAssignedCoachs(final Procession procession) {
+	public Coach reconstruct(Coach coach, BindingResult binding) {
+		Coach result = new Coach();
+
+		if (coach.getId() == 0) {
+			result = coach;
+			this.validator.validate(result, binding);
+		} else {
+			result = this.coachRepository.findOne(coach.getId());
+			result.setTitle(coach.getTitle());
+			result.setDescription(coach.getDescription());
+
+			result.setPictures(coach.getPictures());
+
+			this.validator.validate(result, binding);
+		}
+		return result;
+	}
+	public List<Coach> showAssignedCoachs(Procession procession) {
 		List<Coach> coachs = new ArrayList<Coach>();
 		coachs = procession.getCoachs();
 		return coachs;
@@ -37,6 +58,14 @@ public class CoachService {
 	public List<Coach> showAllCoachs() {
 		List<Coach> coachs = new ArrayList<Coach>();
 		coachs = this.coachRepository.findAll();
+		return coachs;
+	}
+
+	public List<Coach> showBrotherhoodCoachs() {
+		Brotherhood bro = new Brotherhood();
+		bro = this.brotherhoodService.loggedBrotherhood();
+		List<Coach> coachs = new ArrayList<Coach>();
+		coachs = bro.getCoachs();
 		return coachs;
 	}
 
