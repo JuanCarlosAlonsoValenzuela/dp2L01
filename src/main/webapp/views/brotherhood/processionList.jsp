@@ -45,14 +45,14 @@
 		</jstl:if>
 	</display:column>
 		
-	<display:column titleKey="procession.coachs">
-        <jstl:set var="coachsSize" value="${row.coachs.size()}" />
-        <spring:url var="coachsUrl" value="/procession/brotherhood/coach/list.do?processionId={processionId}">
+	<display:column titleKey="procession.floats">
+        <jstl:set var="floatsSize" value="${row.floats.size()}" />
+        <spring:url var="floatsUrl" value="/procession/brotherhood/float/list.do?processionId={processionId}">
               <spring:param name="processionId" value="${row.id}"/>
         </spring:url>
-        <a href="${coachsUrl}">
-              <spring:message var ="viewCoachs1" code="procession.viewCoachs" />
-              <jstl:out value="${viewCoachs1}(${coachsSize})" />    
+        <a href="${floatsUrl}">
+              <spring:message var ="viewFloats1" code="procession.viewFloats" />
+              <jstl:out value="${viewFloats1}(${floatsSize})" />    
         </a>
     </display:column>
     

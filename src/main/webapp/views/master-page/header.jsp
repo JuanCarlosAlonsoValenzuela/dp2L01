@@ -25,6 +25,7 @@
 				<ul>
 					<li class="arrow"></li>
 										
+					<li><a href="area/administrator/showAreas.do"><spring:message code="master.page.administrator.showAreas" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>
@@ -34,7 +35,9 @@
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="procession/brotherhood/list.do"><spring:message code="master.page.brotherhood.procession.list" /></a></li>	
+					<li><a href="float/brotherhood/list.do"><spring:message code="master.page.brotherhood.float.list" /></a></li>	
 					<li><a href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>	
+					<li><a href="request/brotherhood/list.do"><spring:message code="master.page.brotherhood.request.list" /></a></li>	
 				</ul>
 			</li>		
     </security:authorize>

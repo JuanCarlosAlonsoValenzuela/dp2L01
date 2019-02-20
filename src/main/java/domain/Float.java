@@ -7,13 +7,15 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Access(AccessType.PROPERTY)
-public class Coach extends DomainEntity {
+@Table(name = "`float`")
+public class Float extends DomainEntity {
 
 	private String			title;
 	private String			description;

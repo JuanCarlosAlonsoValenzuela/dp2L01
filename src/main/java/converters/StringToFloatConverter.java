@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import repositories.CoachRepository;
-import domain.Coach;
+import repositories.FloatRepository;
+import domain.Float;
 
 @Component
 @Transactional
-public class StringToCoachConverter implements Converter<String, Coach> {
+public class StringToFloatConverter implements Converter<String, Float> {
 
 	@Autowired
-	CoachRepository	coachRepository;
+	FloatRepository	floatRepository;
 
 
 	@Override
-	public Coach convert(String text) {
+	public Float convert(String text) {
 
-		Coach result = new Coach();
+		Float result = new Float();
 		int id;
 
 		try {
@@ -29,7 +29,7 @@ public class StringToCoachConverter implements Converter<String, Coach> {
 				result = null;
 			else {
 				id = Integer.valueOf(text);
-				result = this.coachRepository.findOne(id);
+				result = this.floatRepository.findOne(id);
 			}
 
 		} catch (Throwable oops) {

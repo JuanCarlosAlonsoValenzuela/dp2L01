@@ -26,7 +26,7 @@ public class Brotherhood extends Actor {
 
 	//Relaciones
 	private Area				area;
-	private List<Coach>			coachs;
+	private List<Float>			floats;
 	private List<Procession>	processions;
 	private List<Enrolment>		enrolments;
 
@@ -72,12 +72,12 @@ public class Brotherhood extends Actor {
 
 	@Valid
 	@OneToMany
-	public List<Coach> getCoachs() {
-		return this.coachs;
+	public List<Float> getFloats() {
+		return this.floats;
 	}
 
-	public void setCoachs(final List<Coach> coachs) {
-		this.coachs = coachs;
+	public void setFloats(final List<Float> floats) {
+		this.floats = floats;
 	}
 
 	@Valid

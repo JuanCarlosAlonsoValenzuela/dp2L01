@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,27 +52,45 @@ public class EnrolmentController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
 	public ModelAndView create(@RequestParam int brotherhoodId) {
+		ModelAndView result;
 		Member m = new Member();
 		m = this.memberService.loggedMember();
 		Brotherhood brotherhood = new Brotherhood();
 		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
 
-		Assert.notNull(m);
-		ModelAndView result;
-		this.memberService.loggedAsMember();
-		Enrolment enrolment = new Enrolment();
+		List<Enrolment> enrolmentsBro = brotherhood.getEnrolments();
+		List<Enrolment> enrolmentsMem = m.getEnrolments();
+		boolean res = true;
+		enrolmentsBro.retainAll(enrolmentsMem);
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED || e.getStatusEnrolment() == StatusEnrolment.PENDING)
+				res = false;
 
-		enrolment = this.enrolmentService.create();
-		enrolment.setBrotherhood(brotherhood);
-		enrolment.setMember(m);
-		enrolment.setStatusEnrolment(StatusEnrolment.PENDING);
+		if (res == true) {
+			Assert.notNull(m);
+			this.memberService.loggedAsMember();
+			Enrolment enrolment = new Enrolment();
 
-		result = this.createEditModelAndView(enrolment);
-		result.addObject("brotherhoodId", brotherhoodId);
+			enrolment = this.enrolmentService.create();
+			enrolment.setBrotherhood(brotherhood);
+			enrolment.setMember(m);
+			enrolment.setStatusEnrolment(StatusEnrolment.PENDING);
+			List<Enrolment> enrolments = new ArrayList<>();
+			enrolments = brotherhood.getEnrolments();
+			enrolments.add(enrolment);
+			brotherhood.setEnrolments(enrolments);
+
+			this.enrolmentService.save(enrolment);
+			this.brotherhoodService.save(brotherhood);
+			result = this.createEditModelAndView(enrolment);
+			result = new ModelAndView("redirect:list.do");
+		} else
+			result = new ModelAndView("redirect:/");
 		return result;
 	}
+
 	@RequestMapping(value = "/dropout", method = RequestMethod.POST, params = "save")
 	public ModelAndView dropOut(@RequestParam int enrolmentId) {
 		ModelAndView result;
@@ -98,21 +113,21 @@ public class EnrolmentController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid Enrolment enrolment, BindingResult binding) {
-		ModelAndView result;
-
-		if (binding.hasErrors())
-			result = this.createEditModelAndView(enrolment);
-		else
-			try {
-				this.enrolmentService.createEnrolment(enrolment);
-				result = new ModelAndView("redirect:list.do");
-			} catch (Throwable oops) {
-				result = this.createEditModelAndView(enrolment, "enrolment.commit.error");
-			}
-		return result;
-	}
+	//	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
+	//	public ModelAndView save(@Valid Enrolment enrolment, BindingResult binding) {
+	//		ModelAndView result;
+	//
+	//		if (binding.hasErrors())
+	//			result = this.createEditModelAndView(enrolment);
+	//		else
+	//			try {
+	//				this.enrolmentService.createEnrolment(enrolment);
+	//				result = new ModelAndView("redirect:list.do");
+	//			} catch (Throwable oops) {
+	//				result = this.createEditModelAndView(enrolment, "enrolment.commit.error");
+	//			}
+	//		return result;
+	//	}
 
 	protected ModelAndView createEditModelAndView(Enrolment enrolment) {
 		ModelAndView result;

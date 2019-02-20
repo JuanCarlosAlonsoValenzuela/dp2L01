@@ -20,13 +20,6 @@
 <form:form action="area/brotherhood/selectArea.do" modelAttribute="brotherhood" >
 	<form:hidden path="id"/>
 	<form:hidden path="version" />
-	<form:hidden path="title"/>
-	<form:hidden path="establishmentDate" />	
-	<form:hidden path="pictures"/>
-	<form:hidden path="coachs" />
-	<form:hidden path="processions" />
-	<form:hidden path="enrolments" />
-	
 		
 	<acme:select code="brotherhood.area" path="area" items="${areas}" itemLabel="name" id="areas"/>
 	

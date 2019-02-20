@@ -349,10 +349,10 @@
 			</list>
 		</property>		
 		<property name="area" ref="area1"/>
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach1" />
-				<ref bean="coach2" />
+				<ref bean="float1" />
+				<ref bean="float2" />
 			</list>
 		</property>
 		<property name="processions">
@@ -411,10 +411,10 @@
 			</list>
 		</property>		
 		<property name="area" ref="area1"/>
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach3" />
-				<ref bean="coach4" />
+				<ref bean="float3" />
+				<ref bean="float4" />
 			</list>
 		</property>
 		<property name="processions">
@@ -469,10 +469,10 @@
 			</list>
 		</property>	
 		<property name="area" ref="area2"/>	
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach5" />
-				<ref bean="coach6" />
+				<ref bean="float5" />
+				<ref bean="float6" />
 			</list>
 		</property>
 		
@@ -1463,8 +1463,8 @@
 	
 	
 	<!-- COACH -->
-	<bean id ="coach1" class="domain.Coach">
-		<property name="title" value="coach1" />
+	<bean id ="float1" class="domain.Float">
+		<property name="title" value="float1" />
 		<property name="description" value="The First Float" />
 		<property name="pictures">
 			<list>
@@ -1475,8 +1475,8 @@
 		</property>		
 	</bean>
 	
-	<bean id ="coach2" class="domain.Coach">
-		<property name="title" value="coach2" />
+	<bean id ="float2" class="domain.Float">
+		<property name="title" value="float2" />
 		<property name="description" value="The Second Float" />
 		<property name="pictures">
 			<list>
@@ -1487,8 +1487,8 @@
 		</property>		
 	</bean>
 	
-	<bean id ="coach3" class="domain.Coach">
-		<property name="title" value="coach3" />
+	<bean id ="float3" class="domain.Float">
+		<property name="title" value="float3" />
 		<property name="description" value="The Third Float" />
 		<property name="pictures">
 			<list>
@@ -1499,8 +1499,8 @@
 		</property>		
 	</bean>
 	
-	<bean id ="coach4" class="domain.Coach">
-		<property name="title" value="coach4" />
+	<bean id ="float4" class="domain.Float">
+		<property name="title" value="float4" />
 		<property name="description" value="The Fourth Float" />
 		<property name="pictures">
 			<list>
@@ -1511,8 +1511,8 @@
 		</property>		
 	</bean>
 	
-	<bean id ="coach5" class="domain.Coach">
-		<property name="title" value="coach5" />
+	<bean id ="float5" class="domain.Float">
+		<property name="title" value="float5" />
 		<property name="description" value="The Fith Float" />
 		<property name="pictures">
 			<list>
@@ -1523,8 +1523,8 @@
 		</property>		
 	</bean>
 	
-	<bean id ="coach6" class="domain.Coach">
-		<property name="title" value="coach6" />
+	<bean id ="float6" class="domain.Float">
+		<property name="title" value="float6" />
 		<property name="description" value="The Sixth Float" />
 		<property name="pictures">
 			<list>
@@ -1548,10 +1548,10 @@
 		<property value="true" name="isDraftMode" />
 		<property value="12" name="rowNumber" />
 		<property value="15" name="columnNumber" />
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach1" />
-				<ref bean="coach2" />
+				<ref bean="float1" />
+				<ref bean="float2" />
 			</list>
 		</property>	<!-- no hay request porque es draft -->	
 	</bean>
@@ -1564,9 +1564,9 @@
 		<property value="false" name="isDraftMode" />
 		<property value="3" name="rowNumber" />
 		<property value="12" name="columnNumber" />
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach1" />
+				<ref bean="float1" />
 			</list>
 		</property>	
 		<property name="requests">
@@ -1586,9 +1586,9 @@
 		<property value="false" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
-		<property name="coachs">
+		<property name="floats">
 			<list>
-				<ref bean="coach2" />
+				<ref bean="float2" />
 			</list>
 		</property>	
 		<property name="requests">
@@ -1609,7 +1609,7 @@
 		<property value="true" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
-		<property name="coachs">
+		<property name="floats">
 			<list>
 			</list>
 		</property>		<!-- No hay Request porque es Draft -->

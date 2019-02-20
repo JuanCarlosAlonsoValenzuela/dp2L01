@@ -30,7 +30,7 @@ public class Procession extends DomainEntity {
 	private Integer			rowNumber;		//
 	private Integer			columnNumber;	//
 
-	private List<Coach>		coachs;
+	private List<Float>		floats;
 	private List<Request>	requests;
 
 
@@ -103,12 +103,12 @@ public class Procession extends DomainEntity {
 	}
 
 	@ManyToMany
-	public List<Coach> getCoachs() {
-		return this.coachs;
+	public List<Float> getFloats() {
+		return this.floats;
 	}
 
-	public void setCoachs(final List<Coach> coachs) {
-		this.coachs = coachs;
+	public void setFloats(final List<Float> floats) {
+		this.floats = floats;
 	}
 
 	@Valid

@@ -4,8 +4,6 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -15,40 +13,43 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
-import services.CoachService;
+import services.FloatService;
 import domain.Brotherhood;
-import domain.Coach;
+import domain.Float;
 
 @Controller
-@RequestMapping("/brotherhood")
+@RequestMapping("/float/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 
 	@Autowired
-	private CoachService		coachService;
+	private FloatService		floatService;
 
 
-	public BrotherhoodController() {
-		super();
-	}
-
-	//Lista de todos los coach de esa brotherhood
-	@RequestMapping(value = "/coach/list", method = RequestMethod.GET)
+	//Lista de todos los floatt de esa brotherhood
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
-		List<Coach> allCoachs = new ArrayList<Coach>();
-		allCoachs = this.coachService.showAllCoachs();
 
-		result = new ModelAndView("brotherhood/coach/list");
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		result.addObject("allCoachs", allCoachs);
-		result.addObject("requestURI", "brotherhood/coach/list.do");
+		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
+
+		List<Float> allFloats = new ArrayList<Float>();
+		allFloats = this.floatService.showBrotherhoodFloats();
+
+		result = new ModelAndView("float/brotherhood/list");
+
+		result.addObject("allFloats", allFloats);
+		result.addObject("requestURI", "float/brotherhood/list.do");
+		result.addObject("hasArea", hasArea);
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public ModelAndView create() {
 		Brotherhood bro = new Brotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
@@ -56,68 +57,70 @@ public class BrotherhoodController extends AbstractController {
 		Assert.isTrue(bro.getArea() != null);
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
-		Coach coach = new Coach();
+		Float floatt = new Float();
 
-		coach = this.coachService.create();
+		floatt = this.floatService.create();
 
-		result = this.createEditModelAndView(coach);
+		result = this.createEditModelAndView(floatt);
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView edit(@Valid final Coach coach, final BindingResult binding) {
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
+	public ModelAndView edit(Float floatt, BindingResult binding) {
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
 
+		floatt = this.floatService.reconstruct(floatt, binding);
+
 		if (binding.hasErrors())
-			result = this.createEditModelAndView(coach);
+			result = this.createEditModelAndView(floatt);
 		else
 			try {
-				this.coachService.save(coach);
-				result = new ModelAndView("redirect:brotherhood/coach/list");
+				this.floatService.save(floatt);
+				result = new ModelAndView("redirect:list.do");
 			} catch (final Throwable oops) {
-				result = this.createEditModelAndView(coach, "message.commit.error");
+				result = this.createEditModelAndView(floatt, "message.commit.error");
 			}
 		return result;
 	}
 
-	@RequestMapping(value = "/coach/edit", method = RequestMethod.POST, params = "delete")
-	public ModelAndView delete(final Coach coach, final BindingResult binding) {
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(Float floatt, BindingResult binding) {
 		this.brotherhoodService.loggedAsBrotherhood();
 		ModelAndView result;
 		Brotherhood brother = new Brotherhood();
 		brother = this.brotherhoodService.loggedBrotherhood();
-		List<Coach> coachs = new ArrayList<Coach>();
+		List<Float> floatts = new ArrayList<Float>();
 
-		coachs = this.brotherhoodService.getCoachsByBrotherhood(brother);
+		floatts = this.brotherhoodService.getFloatsByBrotherhood(brother);
 
-		if (!(coachs.contains(coach)))
-			return new ModelAndView("redirect:brotherhood/coach/list");
+		if (!(floatts.contains(floatt)))
+			return new ModelAndView("redirect:list.do");
 
 		try {
-			this.coachService.remove(coach);
-			result = new ModelAndView("redirect:brotherhood/coach/list");
+			this.floatService.remove(floatt);
+			result = new ModelAndView("redirect:list.do");
 		} catch (final Throwable oops) {
-			result = this.createEditModelAndView(coach, "message.commit.error");
+			result = this.createEditModelAndView(floatt, "message.commit.error");
 
 		}
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(final Coach coach) {
+	protected ModelAndView createEditModelAndView(Float floatt) {
 		ModelAndView result;
 
-		result = this.createEditModelAndView(coach, null);
+		result = this.createEditModelAndView(floatt, null);
 
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(final Coach coach, final String messageCode) {
+	protected ModelAndView createEditModelAndView(Float floatt, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("brotherhood/coach/create");
+		result = new ModelAndView("float/brotherhood/create");
 
-		result.addObject("coach", coach);
+		result.addObject("floatt", floatt);
 		result.addObject("message", messageCode);
 
 		return result;

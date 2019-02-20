@@ -29,6 +29,10 @@ public class ProcessionController extends AbstractController {
 	private BrotherhoodService	brotherhoodService;
 
 
+	public ProcessionController() {
+		super();
+	}
+
 	//-------------------------------------------------------------------
 	//---------------------------LIST------------------------------------
 
@@ -40,6 +44,7 @@ public class ProcessionController extends AbstractController {
 		List<Procession> processions;
 
 		this.brotherhoodService.loggedAsBrotherhood();
+
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
 		Boolean hasArea = !(loggedBrotherhood.getArea() == null);

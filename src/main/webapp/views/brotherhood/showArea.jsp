@@ -9,16 +9,35 @@
 
 <jstl:choose>
 	<jstl:when test="${hasArea}">
-		<display:table pagesize="5" name="area" id="row">
+		<display:table pagesize="5" name="areas" id="row" requestURI="${requestURI}">
 		
-			<display:column property="name" titleKey="area.name">
+			<security:authorize access="hasRole('ADMIN')">
+				<display:column >
+					<spring:url var="editAreaUrl" value="area/administrator/edit.do">
+						<spring:param name="areaId" value="${row.id}"/>
+					</spring:url>
+					<a href="${editAreaUrl}">
+						<spring:message code="area.edit" />			
+					</a>
+				</display:column>
+			</security:authorize>
+		
+			<display:column property="name" titleKey="area.name" sortable="true">
 			</display:column>
 			
 			<display:column titleKey="area.pictures">
 				<jstl:set var="picturesSize" value="${row.pictures.size()}" />
-				<spring:url var="picturesUrl" value="area/brotherhood/showPictures.do">
-					<spring:param name="areaId" value="${row.id}"/>
-				</spring:url>
+				
+				<security:authorize access="hasRole('BROTHERHOOD')">
+					<spring:url var="picturesUrl" value="area/brotherhood/showPictures.do">
+						<spring:param name="areaId" value="${row.id}"/>
+					</spring:url>
+				</security:authorize>
+					<spring:url var="picturesUrl" value="area/administrator/showPictures.do">
+						<spring:param name="areaId" value="${row.id}"/>
+					</spring:url>
+				<security:authorize access="hasRole('ADMIN')">
+				</security:authorize>
 				<a href="${picturesUrl}">
 					<spring:message var ="viewPic" code="area.pictures" />
 					<jstl:out value="${viewPic}(${picturesSize})" />		
@@ -28,13 +47,21 @@
 		</display:table>
 	
 	</jstl:when><jstl:otherwise>
-	
-		<spring:url var="selectArea" value="area/brotherhood/selectArea.do"/>
-		<a href="${selectArea}">
-			<spring:message var ="select" code="area.select" />
-			<jstl:out value="${select}" />		
-		</a>
-
-
+		<security:authorize access="hasRole('BROTHERHOOD')">
+			<spring:url var="selectArea" value="area/brotherhood/selectArea.do"/>
+			<a href="${selectArea}">
+				<spring:message var ="select" code="area.select" />
+				<jstl:out value="${select}" />		
+			</a>
+		</security:authorize>
 	</jstl:otherwise>
 </jstl:choose>
+
+<security:authorize access="hasRole('ADMIN')">
+
+	<spring:url var="createAreaUrl" value="area/administrator/create.do"/>
+	<a href="${createAreaUrl}">
+		<spring:message code="area.create" />			
+	</a>
+					
+</security:authorize>
