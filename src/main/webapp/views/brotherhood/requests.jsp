@@ -6,9 +6,9 @@
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
-<security:authorize access="hasRole('MEMBER')">		 	
+<security:authorize access="hasRole('BROTHERHOOD')">		 	
 
-	<form name="filter" id="filter" action="request/member/filter.do" method="post">
+	<form name="filter" id="filter" action="request/brotherhood/filter.do" method="post">
 		<label for="filter"><spring:message code="request.filter"/></label>
 	
 		<br/>
@@ -27,7 +27,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="requests" id="row" class="displaytag" 
-					requestURI="request/member/list.do">
+					requestURI="request/brotherhood/list.do">
 					
 		<jstl:choose>
 			<jstl:when test="${row.status.toString()=='APPROVED'}">
@@ -61,25 +61,35 @@
 		
 		<display:column titleKey="action">
 			<jstl:if test="${row.status.toString()=='PENDING'}">
-				<spring:url var="deleteRequest" value="/request/member/delete.do">
+				<spring:url var="decideRequest" value="/request/brotherhood/decide.do">
 					<spring:param name="requestId" value="${row.id}" />
 				</spring:url>
-				<a href="${deleteRequest}" onclick="return confirm('<spring:message code="request.delete.confirmation" />')">
-					<spring:message code="request.delete" />				
+				<a href="${decideRequest}">
+					<spring:message code="request.decide" />				
 				</a>
 			</jstl:if>
-			<jstl:if test="${row.status.toString()!='PENDING'}">
+			<jstl:if test="${row.status.toString()=='APPROVED'}">
+				<spring:url var="editRequest" value="/request/brotherhood/edit.do">
+					<spring:param name="requestId" value="${row.id}" />
+				</spring:url>
+				<a href="${editRequest}">
+					<spring:message code="request.edit" />				
+				</a>
+			</jstl:if>
+			<jstl:if test="${row.status.toString()=='REJECTED'}">
 				<spring:message code="no.action"/>
 			</jstl:if>
 		</display:column>
 				
 	</display:table>
 	
+	<!--
 	<jstl:if test="${flag==false}"> 
 		<p style="color:red"><spring:message code="request.delete.error"/></p>
 	</jstl:if>
 	<jstl:if test="${flag==true}">
 		<p style="color:red"><spring:message code="request.delete.ok"/></p>
 	</jstl:if>
+	 -->
 	
 </security:authorize>
