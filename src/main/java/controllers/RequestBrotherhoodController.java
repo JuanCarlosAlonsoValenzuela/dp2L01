@@ -21,9 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
-import services.MemberService;
 import services.RequestService;
-import domain.Member;
+import domain.Brotherhood;
 import domain.Request;
 import domain.Status;
 
@@ -33,8 +32,6 @@ public class RequestBrotherhoodController extends AbstractController {
 
 	@Autowired
 	private RequestService		requestService;
-	@Autowired
-	private MemberService		memberService;
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 
@@ -51,13 +48,13 @@ public class RequestBrotherhoodController extends AbstractController {
 	public ModelAndView requestsList() {
 		ModelAndView result;
 
-		Member loggedMember = this.memberService.securityAndMember();
-		Collection<Request> requests = this.requestService.getRequestsByMember(loggedMember);
+		Brotherhood loggedBrotherhood = this.brotherhoodService.securityAndBrotherhood();
+		Collection<Request> requests = this.requestService.getRequestsByBrotherhood(loggedBrotherhood);
 
-		result = new ModelAndView("member/requests");
+		result = new ModelAndView("brotherhood/requests");
 
 		result.addObject("requests", requests);
-		result.addObject("requestURI", "request/member/list.do");
+		result.addObject("requestURI", "request/brotherhood/list.do");
 
 		return result;
 	}
@@ -76,13 +73,13 @@ public class RequestBrotherhoodController extends AbstractController {
 			else if (fselect.equals("REJECTED"))
 				status = Status.REJECTED;
 
-			Member loggedMember = this.memberService.securityAndMember();
-			Collection<Request> requests = this.requestService.getRequestsByMemberAndStatus(loggedMember, status);
+			Brotherhood loggedBrotherhood = this.brotherhoodService.securityAndBrotherhood();
+			Collection<Request> requests = this.requestService.getRequestsByBrotherhoodAndStatus(loggedBrotherhood, status);
 
-			result = new ModelAndView("member/requests");
+			result = new ModelAndView("brotherhood/requests");
 
 			result.addObject("requests", requests);
-			result.addObject("requestURI", "request/member/filter.do");
+			result.addObject("requestURI", "request/brotherhood/filter.do");
 		}
 
 		return result;

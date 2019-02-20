@@ -51,7 +51,7 @@
 		<put-attribute name="body" value="/views/brotherhood/createFloat.jsp" />
 	</definition>
 	
-	<definition name="request/brotherhood/list" extends="master.page">	
+	<definition name="brotherhood/requests" extends="master.page">	
 		<put-attribute name="title" value="Requests" />
 		<put-attribute name="body" value="/views/brotherhood/requests.jsp" />
 	</definition>
