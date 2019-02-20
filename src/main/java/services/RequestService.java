@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import repositories.RequestRepository;
+import domain.Brotherhood;
 import domain.Member;
 import domain.Procession;
 import domain.Request;
@@ -71,6 +72,14 @@ public class RequestService {
 
 	public Collection<Request> getRequestsByMemberAndStatus(Member member, Status status) {
 		return this.requestRepository.getRequestsByMemberAndStatus(member, status);
+	}
+
+	public Collection<Request> getRequestsByBrotherhood(Brotherhood brotherhood) {
+		return this.requestRepository.getRequestsByBrotherhood(brotherhood);
+	}
+
+	public Collection<Request> getRequestsByBrotherhoodAndStatus(Brotherhood brotherhood, Status status) {
+		return this.requestRepository.getRequestsByBrotherhoodAndStatus(brotherhood, status);
 	}
 
 	public void deleteRequestAsMember(Member member, int requestId) {
