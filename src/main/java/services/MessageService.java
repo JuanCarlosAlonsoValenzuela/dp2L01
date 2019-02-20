@@ -85,11 +85,12 @@ public class MessageService {
 	}
 
 	// Metodo para enviar un mensaje a un ACTOR (O varios, que tambien puede ser)
-	public Message sendMessage(final Message message) {
+	public Message sendMessage(Message message) {
 
 		this.actorService.loggedAsActor();
 
-		final Actor actorRecieved = message.getReceiver();
+		Actor actorRecieved = message.getReceiver();
+		Actor senderActor = message.getReceiver();
 
 		Box boxRecieved = new Box();
 		Box boxSpam = new Box();
@@ -126,6 +127,10 @@ public class MessageService {
 			this.actorService.save(messageSaved.getSender());
 			this.actorService.save(actorRecieved);
 		}
+
+		//Calculamos la Polarity y el hasSpam
+		this.actorService.updateActorSpam(senderActor);
+		this.configurationService.computeScore(senderActor);
 		return messageSaved;
 	}
 
