@@ -19,8 +19,8 @@ import security.LoginService;
 import security.UserAccount;
 import domain.Box;
 import domain.Brotherhood;
-import domain.Float;
 import domain.Enrolment;
+import domain.Float;
 import domain.Procession;
 import domain.SocialProfile;
 
@@ -155,6 +155,17 @@ public class BrotherhoodService {
 		userAccount = LoginService.getPrincipal();
 		brother = this.brotherhoodRepository.getBrotherhoodByUsername(userAccount.getUsername());
 		return brother;
+	}
+
+	public Brotherhood securityAndBrotherhood() {
+		UserAccount userAccount = LoginService.getPrincipal();
+		String username = userAccount.getUsername();
+
+		Brotherhood loggedBrotherhood = this.brotherhoodRepository.getBrotherhoodByUsername(username);
+		List<Authority> authorities = (List<Authority>) loggedBrotherhood.getUserAccount().getAuthorities();
+		Assert.isTrue(authorities.get(0).toString().equals("BROTHERHOOD"));
+
+		return loggedBrotherhood;
 	}
 
 	public Boolean hasArea(Brotherhood brotherhood) {
