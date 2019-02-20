@@ -18,7 +18,7 @@ import domain.Brotherhood;
 import domain.Float;
 
 @Controller
-@RequestMapping("/floatt/brotherhood")
+@RequestMapping("/float/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
@@ -41,10 +41,10 @@ public class BrotherhoodController extends AbstractController {
 		List<Float> allFloats = new ArrayList<Float>();
 		allFloats = this.floatService.showBrotherhoodFloats();
 
-		result = new ModelAndView("floatt/brotherhood/list");
+		result = new ModelAndView("float/brotherhood/list");
 
 		result.addObject("allFloats", allFloats);
-		result.addObject("requestURI", "floatt/brotherhood/list.do");
+		result.addObject("requestURI", "float/brotherhood/list.do");
 		result.addObject("hasArea", hasArea);
 		return result;
 	}
@@ -118,7 +118,7 @@ public class BrotherhoodController extends AbstractController {
 	protected ModelAndView createEditModelAndView(Float floatt, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("floatt/brotherhood/create");
+		result = new ModelAndView("float/brotherhood/create");
 
 		result.addObject("floatt", floatt);
 		result.addObject("message", messageCode);
