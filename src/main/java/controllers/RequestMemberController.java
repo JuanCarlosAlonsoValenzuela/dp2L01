@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,7 +65,6 @@ public class RequestMemberController extends AbstractController {
 		result = new ModelAndView("member/requests");
 
 		result.addObject("requests", requests);
-		result.addObject("requestURI", "request/member/list.do");
 
 		return result;
 	}
@@ -89,7 +89,6 @@ public class RequestMemberController extends AbstractController {
 			result = new ModelAndView("member/requests");
 
 			result.addObject("requests", requests);
-			result.addObject("requestURI", "request/member/filter.do");
 		}
 
 		return result;
@@ -113,7 +112,6 @@ public class RequestMemberController extends AbstractController {
 
 			result.addObject("requests", requests);
 			result.addObject("flag", flag);
-			result.addObject("requestURI", "request/member/delete.do");
 		} catch (Throwable oops) {
 			Collection<Request> requests = this.requestService.getRequestsByMember(loggedMember);
 
@@ -122,21 +120,23 @@ public class RequestMemberController extends AbstractController {
 			flag = false;
 
 			result.addObject("requests", requests);
-			result.addObject("requestURI", "request/member/list.do");
 			result.addObject("flag", flag);
 		}
 
 		return result;
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "saveRequest")
-	public ModelAndView requestCreate(@Valid int processionId) {
+	@RequestMapping(value = "/create", method = RequestMethod.GET
+	//RequestMethod.POST, params = "saveRequest"
+	)
+	public ModelAndView requestCreate(@RequestParam int processionId) {
 		ModelAndView result;
 
 		Member member = this.memberService.securityAndMember();
 
 		Boolean flag;
 
+		Hibernate.initialize(member.getFinder());
 		Finder finder = member.getFinder();
 
 		//Current Date
@@ -160,6 +160,7 @@ public class RequestMemberController extends AbstractController {
 		Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
 		List<Procession> processions = new ArrayList<>();
+		Hibernate.initialize(finder.getProcessions());
 		List<Procession> finderProcessions = finder.getProcessions();
 
 		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
@@ -172,25 +173,36 @@ public class RequestMemberController extends AbstractController {
 				processions = finderProcessions;
 		}
 
-		try {
-			this.requestService.createRequestAsMember(member, processionId);
+		if (this.requestService.canRequest(member, processionId))
+			try {
+				this.requestService.createRequestAsMember(member, processionId);
 
-			result = new ModelAndView("member/finderResult");
+				result = new ModelAndView("member/finderResult");
 
-			flag = true;
+				flag = true;
 
-			result.addObject("flag", flag);
-			result.addObject("processions", processions);
-			result.addObject("member", member.getUserAccount().getUsername());
-		} catch (Throwable oops) {
+				result.addObject("flag", flag);
+				result.addObject("processions", processions);
+				result.addObject("member", member);
+			} catch (Throwable oops) {
+				result = new ModelAndView("member/finderResult");
+
+				flag = false;
+
+				result.addObject("flag", flag);
+				result.addObject("processions", processions);
+				result.addObject("member", member);
+			}
+		else {
 			result = new ModelAndView("member/finderResult");
 
 			flag = false;
 
 			result.addObject("flag", flag);
 			result.addObject("processions", processions);
-			result.addObject("member", member.getUserAccount().getUsername());
+			result.addObject("member", member);
 		}
+
 		return result;
 	}
 }

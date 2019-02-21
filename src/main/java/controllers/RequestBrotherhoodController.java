@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,6 +93,60 @@ public class RequestBrotherhoodController extends AbstractController {
 		return result;
 	}
 
+	@RequestMapping(value = "/decide", method = RequestMethod.GET)
+	public ModelAndView requestsDecide(@RequestParam int requestId) {
+		ModelAndView result;
+
+		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
+		Request request = this.requestService.findOne(requestId);
+		Procession procession = request.getProcession();
+
+		if (request.getId() != 0) {
+			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, request.getProcession());
+
+			result = new ModelAndView("brotherhood/editRequest");
+			result.addObject("request", request);
+			result.addObject("requests", requests);
+			result.addObject("procession", procession);
+		} else
+			result = new ModelAndView("redirect:list.do");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "edit")
+	public ModelAndView requestSave(Request request, BindingResult binding) {
+		ModelAndView result;
+		Request r;
+
+		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
+		Request requestFounded = this.requestService.findOne(request.getId());
+		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, requestFounded.getProcession());
+		Procession procession = requestFounded.getProcession();
+
+		r = this.requestService.reconstructRequestDecide(request, binding);
+
+		if (binding.hasErrors()) {
+			result = new ModelAndView("brotherhood/editRequest");
+			result.addObject("request", request);
+			result.addObject("requests", requests);
+			result.addObject("procession", procession);
+		} else
+			try {
+				this.requestService.saveRequestWithPreviousChecking(r);
+
+				result = new ModelAndView("redirect:list.do");
+			} catch (Throwable oops) {
+				result = new ModelAndView("brotherhood/editRequest");
+				result.addObject("request", request);
+				result.addObject("requests", requests);
+				result.addObject("procession", procession);
+				result.addObject("message", "request.commit.error");
+			}
+
+		return result;
+	}
+	
 	@RequestMapping(value = "/filterProcession", method = RequestMethod.POST, params = "refresh2")
 	public ModelAndView requestsFilterProcession(@Valid String fselect, @RequestParam int processionId) {
 		ModelAndView result;
