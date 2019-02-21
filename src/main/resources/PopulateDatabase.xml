@@ -1875,10 +1875,7 @@
 	</bean>
 	
 	<bean id="request2" class="domain.Request">
-		<property name="status" value="APPROVED" />
-		<property name="rowNumber" value="1" />
-		<property name="columnNumber" value="1" />
-		<!-- <property name="reasonDescription" value="hola" />	--> 
+		<property name="status" value="PENDING" />
 		<property name="member" ref="member1" />
 		<property name="procession" ref="procession3" />
 	</bean>
