@@ -15,10 +15,17 @@
 
 <security:authorize access="hasRole('MEMBER')">
 
+	<jstl:if test="${res}">
+		<script type="text/javascript">
+			alert("<spring:message code="enrolment.create.error"/>");
+		</script>
+	</jstl:if>
+
 	<display:table pagesize="5" name="enrolments" id="row"
 		class="displaytag" requestURI="enrolment/member/list.do">
-		
-		<display:column property="brotherhood.title" titleKey="enrolment.brotherhood" />
+
+		<display:column property="brotherhood.title"
+			titleKey="enrolment.brotherhood" />
 
 		<display:column property="statusEnrolment" titleKey="enrolment.status" />
 
