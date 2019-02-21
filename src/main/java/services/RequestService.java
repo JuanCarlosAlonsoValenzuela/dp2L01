@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.RequestRepository;
 import domain.Brotherhood;
@@ -29,6 +31,10 @@ public class RequestService {
 	private MemberService		memberService;
 	@Autowired
 	private ProcessionService	processionService;
+	@Autowired
+	private Validator			validator;
+	@Autowired
+	private BrotherhoodService	brotherhoodService;
 
 
 	//Simple CRUD methods ---------------------------------------------------------------------
@@ -77,13 +83,21 @@ public class RequestService {
 	public Collection<Request> getRequestsByBrotherhood(Brotherhood brotherhood) {
 		return this.requestRepository.getRequestsByBrotherhood(brotherhood);
 	}
+	
+	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
+		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
+	}
 
 	public Collection<Request> getRequestsByBrotherhoodAndStatus(Brotherhood brotherhood, Status status) {
 		return this.requestRepository.getRequestsByBrotherhoodAndStatus(brotherhood, status);
 	}
 
-	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
-		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
+	public Request getRequestByBrotherhoodAndRequestId(Brotherhood brotherhood, Request request) {
+		return this.requestRepository.getRequestByBrotherhoodAndRequestId(brotherhood, request);
+	}
+
+	public Collection<Request> getRequestApprovedByBrotherhoodAndProcession(Brotherhood brotherhood, Procession procession) {
+		return this.requestRepository.getRequestApprovedByBrotherhoodAndProcession(brotherhood, procession);
 	}
 
 	public void deleteRequestAsMember(Member member, int requestId) {
@@ -128,4 +142,91 @@ public class RequestService {
 		procession.setRequests(requests3);
 		this.processionService.save(procession);
 	}
+
+	public boolean canRequest(Member member, int processionId) {
+		boolean res = true;
+
+		Procession procession = this.processionService.findOne(processionId);
+		List<Request> requests = procession.getRequests();
+
+		if (procession.getIsDraftMode() == true)
+			res = false;
+		if (res == true)
+			for (Request r : requests)
+				if (r.getMember().equals(member)) {
+					res = false;
+					break;
+				}
+
+		return res;
+	}
+
+	public Request saveRequestWithPreviousChecking(Request request) {
+		Request requestSaved;
+
+		if (request.getStatus().equals(Status.APPROVED)) {
+			Assert.notNull(request.getColumnNumber());
+			Assert.notNull(request.getRowNumber());
+
+			Procession procession = request.getProcession();
+			Collection<Request> requests = procession.getRequests();
+
+			Integer col = request.getColumnNumber();
+			Integer row = request.getRowNumber();
+
+			Boolean isFree = true;
+			for (Request req : requests)
+				if (req.getColumnNumber() == col && req.getRowNumber() == row) {
+					isFree = false;
+					break;
+				}
+
+			Boolean respectMax = col <= procession.getColumnNumber() && row <= procession.getRowNumber();
+
+			Assert.isTrue(isFree && respectMax);
+
+		} else if (request.getStatus().equals(Status.REJECTED)) {
+			Assert.notNull(request.getReasonDescription());
+			Assert.isTrue(!request.getReasonDescription().trim().equals(""));
+		}
+
+		requestSaved = this.save(request);
+		return requestSaved;
+	}
+	public Request reconstructRequestDecide(Request request, BindingResult binding) {
+		this.brotherhoodService.securityAndBrotherhood();
+
+		Request result = this.requestRepository.findOne(request.getId());
+
+		Request result2 = new Request();
+
+		result2.setId(result.getId());
+		result2.setMember(result.getMember());
+		result2.setProcession(result.getProcession());
+		result2.setVersion(result.getVersion());
+
+		if (request.getStatus().equals(Status.APPROVED)) {
+			Integer col = request.getColumnNumber();
+			Integer row = request.getRowNumber();
+
+			result2.setColumnNumber(col);
+			result2.setRowNumber(row);
+			result2.setReasonDescription(null);
+			result2.setStatus(request.getStatus());
+		} else if (request.getStatus().equals(Status.REJECTED)) {
+			result2.setColumnNumber(null);
+			result2.setRowNumber(null);
+			result2.setReasonDescription(request.getReasonDescription());
+			result2.setStatus(request.getStatus());
+		} else {
+			result2.setColumnNumber(null);
+			result2.setRowNumber(null);
+			result2.setReasonDescription(null);
+			result2.setStatus(request.getStatus());
+		}
+
+		this.validator.validate(result, binding);
+		return result2;
+	}
+
 }

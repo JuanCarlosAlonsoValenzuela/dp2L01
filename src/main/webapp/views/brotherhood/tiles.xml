@@ -61,6 +61,11 @@
 		<put-attribute name="body" value="/views/brotherhood/requestsProcession.jsp" />
 	</definition>
 	
+	<definition name="brotherhood/editRequest" extends="master.page">	
+		<put-attribute name="title" value="Edit request" />
+		<put-attribute name="body" value="/views/brotherhood/editRequest.jsp" />
+	</definition>
+	
 	<definition name="picture/brotherhood/picturesFloat" extends="master.page">	
 		<put-attribute name="title" value="Pictures" />
 		<put-attribute name="body" value="/views/brotherhood/picturesFloat.jsp" />
