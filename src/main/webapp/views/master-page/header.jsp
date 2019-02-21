@@ -23,9 +23,10 @@
 		<security:authorize access="hasRole('ADMIN')">
 			<li><a class="fNiv"><spring:message	code="master.page.administrator" /></a>
 				<ul>
-					<li class="arrow"></li>
-										
+					<li class="arrow"></li>				
 					<li><a href="area/administrator/showAreas.do"><spring:message code="master.page.administrator.showAreas" /></a></li>
+					<li><a href="words/administrator/list.do"><spring:message code="master.page.administrator.goodAndBadWordsList" /></a></li>
+					<li><a href="suspicious/administrator/list.do"><spring:message code="master.page.administrator.banUnban" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>
@@ -68,6 +69,7 @@
 				</a>
 				<ul>
 					<li class="arrow"></li>					
+					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>
 			</li>

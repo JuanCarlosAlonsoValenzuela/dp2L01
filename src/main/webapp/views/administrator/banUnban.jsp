@@ -15,7 +15,7 @@
 
  	  <display:column>
  	  	<jstl:choose>
- 	  	<jstl:when test="${actorList.userAccount.isNotLocked == true && actorList.hasSpam == true}">
+ 	  	<jstl:when test="${actorList.userAccount.isNotLocked == true  && (actorList.hasSpam == true ||  actorList.polarity <= -0.5)}">
  	  		<a href="suspicious/administrator/ban.do?actorId=${actorList.id}">
 					<spring:message code="administrator.ban"/>
  	  		</a>
@@ -45,6 +45,22 @@
  	  	</jstl:otherwise>
  	  	</jstl:choose>
      
+      </display:column>
+      
+            <display:column titleKey="administrator.polarity">
+            <jstl:choose>
+            
+      		<jstl:when test="${ actorList.polarity == 0.0}">
+      		
+      		<jstl:out value="N/A" />
+      		</jstl:when>
+      		
+      		<jstl:otherwise>
+      		<jstl:out value="${actorList.polarity}" />
+      		</jstl:otherwise>
+      		
+      		</jstl:choose>
+      
       </display:column>
 </display:table>
 

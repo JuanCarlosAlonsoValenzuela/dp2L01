@@ -81,9 +81,9 @@ public class ConfigurationService {
 		Double spamPorcent = 0.;
 
 		// COMPROBANDO LAS CAJAS DEL ACTOR
-		for (final Box b : a.getBoxes()) {
+		for (Box b : a.getBoxes()) {
 			messagesCount += b.getMessages().size();
-			for (final Message g : b.getMessages())
+			for (Message g : b.getMessages())
 				if (g.getSender().equals(a) && (this.isStringSpam(g.getBody(), spamWords) || this.isStringSpam(g.getSubject(), spamWords)))
 					spamCount++;
 		}
