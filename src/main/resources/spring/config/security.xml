@@ -61,11 +61,10 @@
 		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
 		
 		<!-- Authenticated -->
-		<!-- <security:intercept-url pattern="/profile/action-1.do" access="isAuthenticated()" /> 
-		<security:intercept-url pattern="/profile/action-2.do" access="isAuthenticated()" /> 
-		<security:intercept-url pattern="/profile/action-3.do" access="isAuthenticated()" />  -->
-		
+		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
+		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
 		<!-- None -->
+		
 		<security:intercept-url pattern="/**" access="hasRole('NONE')" />
 
 		<security:form-login 

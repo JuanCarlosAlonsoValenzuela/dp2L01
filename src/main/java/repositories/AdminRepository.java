@@ -2,6 +2,7 @@
 package repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import domain.Admin;
@@ -61,4 +62,7 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	 * @Query("select a from Admin a")
 	 * public List<Admin> findAll2();
 	 */
+
+	@Query("select a from Admin a join a.userAccount u where u.username == system")
+	public Admin getSystem();
 }

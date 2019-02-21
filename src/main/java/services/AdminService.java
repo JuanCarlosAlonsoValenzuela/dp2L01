@@ -298,4 +298,8 @@ public class AdminService {
 	 * }
 	 */
 
+	public Admin getSystem() {
+		return this.adminRepository.getSystem();
+	}
+
 }
