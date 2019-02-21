@@ -89,9 +89,10 @@
 
  </jstl:choose>
 <br />
-	
+
 	<jstl:if test="${hasArea}">
 		<a href="procession/brotherhood/create.do"><spring:message code="procession.create" /></a>
 	</jstl:if>
+
 	
 </security:authorize>

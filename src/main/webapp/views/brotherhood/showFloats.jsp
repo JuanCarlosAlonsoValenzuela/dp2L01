@@ -29,8 +29,9 @@
 		
 	<display:column titleKey="float.pictures">
         <jstl:set var="picturesSize" value="${row.pictures.size()}" />
-        <spring:url var="picturesURL" value="/float/brotherhood/picture/list.do?floatId={floatId}">
-              <spring:param name="floatId" value="${row.id}"/>
+        <spring:url var="picturesURL" value="/float/brotherhood/picture/list.do?floatId={floatId}&procession={procession}">      		
+        	<spring:param name="floatId" value="${row.id}"/>
+        	<spring:param name="procession" value="${!restriction}"/>
         </spring:url>
         <a href="${picturesURL}">
               <spring:message var ="viewPictures1" code="float.viewPictures" />
@@ -38,11 +39,13 @@
         </a>
     </display:column>
   	
-  	<display:column>
+  	<jstl:if test="${!restriction}">
+  		<display:column>
 			<a href="float/brotherhood/edit.do?floatId=${row.id}">
 				<spring:message code="float.edit" />
 			</a>
-	</display:column>
+		</display:column>
+	</jstl:if>
 	
 												
 </display:table>
@@ -52,8 +55,13 @@
  </jstl:choose>
 <br />
 	
-	<jstl:if test="${hasArea}">
-		<a href="float/brotherhood/create.do"><spring:message code="float.create" /></a>
+	<jstl:if test="${!restriction}">
+		<jstl:if test="${hasArea}">
+			<a href="float/brotherhood/create.do"><spring:message code="float.create" /></a>
+		</jstl:if>
+	</jstl:if>
+	<jstl:if test="${restriction}">
+		<a href="procession/brotherhood/list.do"><spring:message code="procession.back" /></a>
 	</jstl:if>
 	
 </security:authorize>
