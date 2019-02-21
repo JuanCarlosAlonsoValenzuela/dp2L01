@@ -87,6 +87,7 @@ public class FinderMemberController extends AbstractController {
 		result = new ModelAndView("member/finderResult");
 
 		result.addObject("processions", processions);
+		result.addObject("member", member);
 
 		return result;
 	}
@@ -111,6 +112,9 @@ public class FinderMemberController extends AbstractController {
 	public ModelAndView save(Finder finderForm, BindingResult binding) {
 		ModelAndView result;
 
+		UserAccount userAccount = LoginService.getPrincipal();
+		Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
+
 		Finder finder = this.finderService.reconstruct(finderForm, binding);
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(finderForm);
@@ -121,6 +125,7 @@ public class FinderMemberController extends AbstractController {
 				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(finder, "finder.commit.error");
+				result.addObject("member", logguedMember);
 			}
 		return result;
 	}
