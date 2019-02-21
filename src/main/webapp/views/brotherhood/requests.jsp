@@ -8,6 +8,7 @@
 
 <security:authorize access="hasRole('BROTHERHOOD')">		 	
 
+
 	<form name="filter" id="filter" action="request/brotherhood/filter.do" method="post">
 		<label for="filter"><spring:message code="request.filter"/></label>
 	

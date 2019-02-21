@@ -62,13 +62,13 @@ public class EnrolmentController extends AbstractController {
 
 		List<Enrolment> enrolmentsBro = brotherhood.getEnrolments();
 		List<Enrolment> enrolmentsMem = m.getEnrolments();
-		Boolean res = false;
+		boolean res = true;
 		enrolmentsBro.retainAll(enrolmentsMem);
 		for (Enrolment e : enrolmentsBro)
 			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED || e.getStatusEnrolment() == StatusEnrolment.PENDING)
-				res = true;
+				res = false;
 
-		if (res == false) {
+		if (res == true) {
 			Assert.notNull(m);
 			this.memberService.loggedAsMember();
 			Enrolment enrolment = new Enrolment();
@@ -86,10 +86,8 @@ public class EnrolmentController extends AbstractController {
 			this.brotherhoodService.save(brotherhood);
 			result = this.createEditModelAndView(enrolment);
 			result = new ModelAndView("redirect:list.do");
-		} else {
-			result = this.list();
-			result.addObject("res", res);
-		}
+		} else
+			result = new ModelAndView("redirect:/");
 		return result;
 	}
 

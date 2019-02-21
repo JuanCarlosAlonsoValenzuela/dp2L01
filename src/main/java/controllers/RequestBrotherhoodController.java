@@ -10,7 +10,6 @@
 
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -111,8 +110,7 @@ public class RequestBrotherhoodController extends AbstractController {
 			else if (fselect.equals("REJECTED"))
 				status = Status.REJECTED;
 
-			List<Request> requests = new ArrayList<>();
-			//this.requestService.getRequestsByProcessionAndStatus(procession, status);
+			List<Request> requests = this.requestService.getRequestsByProcessionAndStatus(procession, status);
 
 			result = new ModelAndView("procession/brotherhood/requests");
 

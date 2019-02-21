@@ -86,6 +86,7 @@ public class ProcessionController extends AbstractController {
 		result.addObject("requestURI", "float/brotherhood/list.do");
 		result.addObject("hasArea", hasArea);
 		result.addObject("processionId", processionId);
+		result.addObject("restriction", true);
 
 		return result;
 	}

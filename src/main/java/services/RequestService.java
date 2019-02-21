@@ -82,6 +82,10 @@ public class RequestService {
 		return this.requestRepository.getRequestsByBrotherhoodAndStatus(brotherhood, status);
 	}
 
+	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
+		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
+	}
+
 	public void deleteRequestAsMember(Member member, int requestId) {
 		Request request = this.findOne(requestId);
 

@@ -95,23 +95,34 @@ public class FloatService {
 		this.floatRepository.delete(floatt);
 	}
 
-	public Float save(Float c) {
+	public Float save(Float floatt) {
+
+		//Obtener float list
+		//quitar float antiguo y añadir el nuevo
+		//Hacer set del float list modificado
+		//Save procession
+
+		//Obtener loggedBrotherhood
+
+		//A PARTIR DE AQUI PUEDE QUE SEA OPCIONAL
+		//Quitar procession antigua y añadir nueva
+		//Obt
 
 		this.brotherhoodService.loggedAsBrotherhood();
-		Brotherhood bro = new Brotherhood();
+		Brotherhood loggedBrotherhood = new Brotherhood();
 		Float floattSaved = new Float();
-		bro = this.brotherhoodService.loggedBrotherhood();
+		loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		Assert.isTrue(!(bro.getArea().equals(null)));
+		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 
-		floattSaved = this.floatRepository.save(c);
+		floattSaved = this.floatRepository.save(floatt);
 
-		bro.getFloats().add(floattSaved);
-		this.brotherhoodService.save(bro);
+		loggedBrotherhood.getFloats().remove(floatt);
+		loggedBrotherhood.getFloats().add(floattSaved);
+		this.brotherhoodService.save(loggedBrotherhood);
 
 		return floattSaved;
 	}
-
 	public Float create() {
 		final Float floatt = new Float();
 		final List<String> pictures = new ArrayList<String>();

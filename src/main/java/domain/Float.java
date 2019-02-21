@@ -27,7 +27,7 @@ public class Float extends DomainEntity {
 		return this.title;
 	}
 
-	public void setTitle(final String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -36,7 +36,7 @@ public class Float extends DomainEntity {
 		return this.description;
 	}
 
-	public void setDescription(final String description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
