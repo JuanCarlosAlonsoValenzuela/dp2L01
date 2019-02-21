@@ -28,6 +28,7 @@
 		<value>/views/profile/messages</value>
 		
 		<value>/views/member/messages</value>
+		<value>/views/mail/messages</value>
 	</util:list>
 
 </beans>

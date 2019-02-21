@@ -1,0 +1,285 @@
+
+package controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import security.LoginService;
+import security.UserAccount;
+import services.ActorService;
+import services.BoxService;
+import services.ConfigurationService;
+import services.MessageService;
+import domain.Actor;
+import domain.Box;
+import domain.Message;
+
+@Controller
+@RequestMapping("/message/actor")
+public class MessageController extends AbstractController {
+
+	@Autowired
+	private MessageService			messageService;
+
+	@Autowired
+	private BoxService				boxService;
+
+	@Autowired
+	private ActorService			actorService;
+
+	@Autowired
+	private ConfigurationService	configurationService;
+
+
+	//List
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public ModelAndView list(@RequestParam int boxId) {
+
+		this.actorService.loggedAsActor();
+		Box box = new Box();
+		box = this.boxService.findOne(boxId);
+		UserAccount userAccount = LoginService.getPrincipal();
+		Actor a = this.actorService.getActorByUsername(userAccount.getUsername());
+		if (!(this.actorService.getlistOfBoxes(a).contains(box))) {
+			Box boxReturn = this.actorService.getlistOfBoxes(a).get(0);
+			return new ModelAndView("redirect:list.do?boxId=" + boxReturn.getId());
+		}
+
+		ModelAndView result;
+
+		List<Message> messages;
+
+		Actor actor = new Actor();
+		List<Box> boxes = new ArrayList<Box>();
+		List<Integer> idBoxes = new ArrayList<Integer>();
+
+		idBoxes = this.boxService.getActorBoxesId();
+
+		actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		boxes = this.actorService.getlistOfBoxes(actor);
+
+		messages = this.messageService.getMessagesByBox(box);
+
+		result = new ModelAndView("message/actor/list");
+		result.addObject("messages", messages);
+		result.addObject("boxId", boxId);
+		result.addObject("boxes", boxes);
+
+		result.addObject("requestURI", "message/actor/list.do");
+
+		return result;
+	}
+
+	//Create
+	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	public ModelAndView create() {
+		this.actorService.loggedAsActor();
+		ModelAndView result;
+		Message message;
+
+		message = this.messageService.create();
+		result = this.createEditModelAndView(message);
+
+		return result;
+	}
+
+	//Save
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid Message message, BindingResult binding) {
+		this.actorService.loggedAsActor();
+		ModelAndView result;
+		Message savedMessage;
+		List<Box> boxes;
+		Box box;
+		UserAccount userAccount = LoginService.getPrincipal();
+
+		Assert.isTrue(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername()));
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(message);
+		else
+			try {
+				savedMessage = this.messageService.sendMessage(message);
+				boxes = this.boxService.getCurrentBoxByMessage(savedMessage);
+				box = boxes.get(0);
+				result = new ModelAndView("redirect:list.do?boxId=" + box.getId());
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(message, "message.commit.error");
+			}
+		return result;
+	}
+	//Create
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public ModelAndView edit(@RequestParam int rowId) {
+		this.actorService.loggedAsActor();
+		ModelAndView result;
+		Message message;
+
+		message = this.messageService.findOne(rowId);
+
+		Assert.notNull(message);
+		result = this.createEditModelAndView(message);
+
+		return result;
+	}
+
+	//Save
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(Message message, BindingResult binding) {
+		this.actorService.loggedAsActor();
+		UserAccount userAccount = LoginService.getPrincipal();
+		ModelAndView result;
+		List<Box> boxes;
+		Box box;
+		boxes = this.boxService.getCurrentBoxByMessage(message);
+		box = boxes.get(0);
+
+		if (!(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername())))
+			return new ModelAndView("redirect:list.do?boxId=" + box.getId());
+
+		try {
+
+			this.messageService.deleteMessageToTrashBox(message);
+			result = new ModelAndView("redirect:list.do?boxId=" + box.getId());
+		} catch (Throwable oops) {
+			result = this.createEditModelAndView(message, "message.commit.error");
+
+		}
+		return result;
+	}
+
+	//Create
+	@RequestMapping(value = "/createmove", method = RequestMethod.GET)
+	public ModelAndView createMove() {
+		this.actorService.loggedAsActor();
+		ModelAndView result;
+		Message message;
+
+		message = this.messageService.create();
+		result = this.createEditModelAndViewMove(message);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/move", method = RequestMethod.GET)
+	public ModelAndView update(@RequestParam int messageId, @RequestParam int boxId) {
+		this.actorService.loggedAsActor();
+		ModelAndView result;
+		Message message;
+		Box box;
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+
+		message = this.messageService.findOne(messageId);
+
+		if (!(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername())))
+			return new ModelAndView("redirect:list.do?boxId=" + boxId);
+		box = this.boxService.findOne(boxId);
+
+		try {
+			this.messageService.updateMessage(message, box);
+			result = new ModelAndView("redirect:list.do?boxId=" + boxId);
+		} catch (Throwable oops) {
+			result = this.createEditModelAndViewMove(message, "message.commit.error");
+
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/copy", method = RequestMethod.GET)
+	public ModelAndView copy(@RequestParam int messageId, @RequestParam int boxId) {
+		ModelAndView result;
+		Message message;
+		Box box;
+
+		message = this.messageService.findOne(messageId);
+		box = this.boxService.findOne(boxId);
+
+		try {
+			this.messageService.copyMessage(message, box);
+			result = new ModelAndView("redirect:list.do?boxId=" + boxId);
+		} catch (Throwable oops) {
+			result = this.createEditModelAndViewMove(message, "message.commit.error");
+
+		}
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndViewMove(Message message) {
+		ModelAndView result;
+
+		result = this.createEditModelAndViewMove(message, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndViewMove(Message message, String messageCode) {
+		ModelAndView result;
+
+		UserAccount userAccount = LoginService.getPrincipal();
+		String username = userAccount.getUsername();
+		Actor actor = new Actor();
+
+		actor = this.actorService.getActorByUsername(username);
+		List<Actor> actors = new ArrayList<Actor>();
+		actors = this.actorService.findAll();
+
+		List<Box> actorBoxes = new ArrayList<Box>();
+		actorBoxes = this.actorService.getlistOfBoxes(actor);
+		List<String> priotity = this.configurationService.getConfiguration().getPriorityLvl();
+
+		result = new ModelAndView("message/actor/move");
+		result.addObject("messageTest", message);
+		result.addObject("actors", actors);
+		result.addObject("actorBoxes", actorBoxes);
+		result.addObject("priority", priotity);
+
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+	//CreateEditModelAndView
+	protected ModelAndView createEditModelAndView(Message message) {
+		ModelAndView result;
+
+		result = this.createEditModelAndView(message, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Message message, String messageCode) {
+		ModelAndView result;
+
+		UserAccount userAccount = LoginService.getPrincipal();
+		String username = userAccount.getUsername();
+		Actor actor = new Actor();
+
+		actor = this.actorService.getActorByUsername(username);
+		List<Actor> actors = new ArrayList<Actor>();
+		actors = this.actorService.findAll();
+
+		List<Box> actorBoxes = new ArrayList<Box>();
+		actorBoxes = this.actorService.getlistOfBoxes(actor);
+
+		result = new ModelAndView("message/actor/create");
+		result.addObject("messageTest", message);
+		result.addObject("actors", actors);
+		result.addObject("actorBoxes", actorBoxes);
+		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+}
