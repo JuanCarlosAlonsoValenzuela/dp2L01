@@ -21,8 +21,10 @@ import domain.Box;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Float;
+import domain.Member;
 import domain.Procession;
 import domain.SocialProfile;
+import domain.StatusEnrolment;
 
 @Service
 @Transactional
@@ -199,4 +201,39 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.save(brotherhood);
 	}
 
+	public List<Member> getMembersOfBrotherhood() {
+		Brotherhood bro = new Brotherhood();
+		bro = this.loggedBrotherhood();
+		List<Member> members = new ArrayList<Member>();
+		List<Enrolment> enrolmentsBro = bro.getEnrolments();
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED)
+				members.add(e.getMember());
+		return members;
+	}
+
+	public Enrolment getEnrolment(Member m) {
+		Enrolment en = null;
+		Brotherhood bro = this.loggedBrotherhood();
+		List<Enrolment> broEn = bro.getEnrolments();
+		List<Enrolment> memEn = m.getEnrolments();
+		broEn.retainAll(memEn);
+		for (Enrolment e : broEn)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED) {
+				en = e;
+				break;
+			}
+		return en;
+	}
+
+	public List<Enrolment> getPengingEnrolments() {
+		Brotherhood bro = this.loggedBrotherhood();
+		List<Enrolment> enrolments = bro.getEnrolments();
+		Assert.notNull(bro);
+		List<Enrolment> res = new ArrayList<Enrolment>();
+		for (Enrolment e : enrolments)
+			if (e.getStatusEnrolment() == StatusEnrolment.PENDING)
+				res.add(e);
+		return res;
+	}
 }
