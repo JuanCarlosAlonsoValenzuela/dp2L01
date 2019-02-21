@@ -16,15 +16,6 @@
       
 <tiles-definitions>
 
-	<definition name="administrator/action-1" extends="master.page">	
-		<put-attribute name="title" value="Administrador: Acción 1" />
-		<put-attribute name="body" value="/views/administrator/action-1.jsp" />
-	</definition>
-	
-	<definition name="administrator/action-2" extends="master.page">	
-		<put-attribute name="title" value="Administrador: Acción 2" />
-		<put-attribute name="body" value="/views/administrator/action-2.jsp" />
-	</definition>
 	
 	<definition name="area/administrator/showAreas" extends="master.page">	
 		<put-attribute name="title" value="Todas las areas" />
@@ -40,5 +31,21 @@
 		<put-attribute name="title" value="Imagenes" />
 		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
 	</definition>
+	
+	<definition name="words/administrator/create" extends="master.page">	
+		<put-attribute name="title" value="Administrador: Crear buenas o malas palabras" />
+		<put-attribute name="body" value="/views/administrator/goodAndBadWordsCreate.jsp" />
+	</definition>
+	
+	<definition name="words/administrator/list" extends="master.page">	
+		<put-attribute name="title" value="Administrador: Mostrar buenas o malas palabras" />
+		<put-attribute name="body" value="/views/administrator/goodAndBadWordsList.jsp" />
+	</definition>
+	
+	<definition name="suspicious/administrator/list" extends="master.page">	
+		<put-attribute name="title" value="Administrador: Bloquear/desbloquear" />
+		<put-attribute name="body" value="/views/administrator/banUnban.jsp" />
+	</definition>
+	
 	
 </tiles-definitions>

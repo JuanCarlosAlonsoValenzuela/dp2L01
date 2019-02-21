@@ -5,39 +5,48 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
-
-
-<%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
 <p><spring:message code="procession.create" /></p>
 
-<security:authorize access="hasRole('BROTHERHOOD')"> 
 
-	<form:form modelAttribute="procession" action="procession/brotherhood/create.do">
-    <!--Hidden Attributes -->
-	<form:hidden path ="id"/>
-	<form:hidden path ="version"/>
+<form:form action="procession/brotherhood/create.do" modelAttribute="formObjectProcessionFloat" >
 
-	<form:hidden path ="ticker"/>
-	<form:hidden path ="floats"/>
-	<form:hidden path ="requests"/>
+<fieldset>
+  <legend> <spring:message code="procession.data" /> </legend>
+
+	<acme:textbox code="procession.title" path="titleProcession"/>	
+	<br />
 	
-	<acme:textbox code="procession.title" path="title" />
+	<acme:textbox code="procession.description" path="descriptionProcession"/>	
+	<br />
+		
+	<acme:datebox code="procession.moment" path="moment"/>	
+	<br />
 	
-	<acme:textarea code="procession.description" path="description" />
+	<acme:boolean code="procession.isDraftMode" trueCode="procession.true" falseCode="procession.false" path="isDraftMode"/>	
+	<br />
 	
-	<acme:date code="procession.moment" path="moment" />
+	<acme:input code="procession.rowNumber" path="rowNumber"/>	
+	<br />
 	
- 	<acme:input code="procession.rowNumber" path="rowNumber" />
+	<acme:input code="procession.columnNumber" path="columnNumber"/>	
+	<br />
 	
-	<acme:input code="procession.columnNumber" path="columnNumber" />
+</fieldset>
+
+<fieldset>
+  <legend> <spring:message code="float.data" /> </legend>
+  
+	<acme:textbox code="float.title" path="title"/>	
+	<br />
 	
-	<acme:boolean code="procession.isDraftMode" path="isDraftMode" trueCode="procession.draftMode" falseCode="procession.finalMode" /> 
+	<acme:textbox code="float.description" path="description"/>	
+	<br />
+</fieldset>
+	<br />
 	
- 	<acme:submit name="save" code="procession.save" />  
+	<acme:submit code="float.createButton" name="save" />
+	<br />
 	
-	</form:form>
-	
-	<acme:cancel url="/procession/brotherhood/list.do" code="procession.cancel" />  
-	
-</security:authorize>
+</form:form> 

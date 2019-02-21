@@ -56,5 +56,14 @@
 		<put-attribute name="body" value="/views/brotherhood/requests.jsp" />
 	</definition>
 	
+	<definition name="procession/brotherhood/requests" extends="master.page">	
+		<put-attribute name="title" value="Requests" />
+		<put-attribute name="body" value="/views/brotherhood/requestsProcession.jsp" />
+	</definition>
+	
+	<definition name="picture/brotherhood/picturesFloat" extends="master.page">	
+		<put-attribute name="title" value="Pictures" />
+		<put-attribute name="body" value="/views/brotherhood/picturesFloat.jsp" />
+	</definition>
 	
 </tiles-definitions>

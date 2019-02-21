@@ -6,11 +6,16 @@
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
-<security:authorize access="hasRole('BROTHERHOOD')">		 	
+<security:authorize access="hasRole('BROTHERHOOD')">	
 
+	<spring:url var="requestsUrl" value="request/brotherhood/filterProcession.do?processionId={processionId}">
+            	<spring:param name="processionId" value="${processionId}"/>
+        	</spring:url>	 	
 
-	<form name="filter" id="filter" action="request/brotherhood/filter.do" method="post">
-		<label for="filter"><spring:message code="request.filter"/></label>
+	<form name="filterProcession" id="filterProcession" action="${requestsUrl}" method="post">
+		<label for="filterProcession"><spring:message code="request.filter"/></label>
+	
+	
 	
 		<br/>
 	
@@ -21,14 +26,14 @@
   			<option value="REJECTED"><spring:message code="request.status.rejected"/></option>
 		</select>
 		
-		<input type="submit" name="refresh" id="refresh" value="<spring:message code ="request.filter.button"/>"/>
+		<input type="submit" name="refresh2" id="refresh2" value="<spring:message code ="request.filter.button"/>"/>
 	
 	</form>
 	
 	<br/>
 
 	<display:table pagesize="5" name="requests" id="row" class="displaytag" 
-					requestURI="request/brotherhood/list.do">
+					requestURI="procession/brotherhood/request/list.do">
 					
 		<jstl:choose>
 			<jstl:when test="${row.status.toString()=='APPROVED'}">
