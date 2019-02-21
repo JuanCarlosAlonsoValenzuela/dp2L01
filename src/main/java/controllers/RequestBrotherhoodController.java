@@ -93,7 +93,7 @@ public class RequestBrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/decide", method = RequestMethod.GET)
+	@RequestMapping(value = "/changeStatus", method = RequestMethod.GET)
 	public ModelAndView requestsDecide(@RequestParam int requestId) {
 		ModelAndView result;
 
@@ -104,10 +104,13 @@ public class RequestBrotherhoodController extends AbstractController {
 		if (request.getId() != 0) {
 			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, request.getProcession());
 
+			List<Integer> freePosition = this.requestService.getFreePosition(request);
+
 			result = new ModelAndView("brotherhood/editRequest");
 			result.addObject("request", request);
 			result.addObject("requests", requests);
 			result.addObject("procession", procession);
+			result.addObject("freePosition", freePosition);
 		} else
 			result = new ModelAndView("redirect:list.do");
 
@@ -146,7 +149,7 @@ public class RequestBrotherhoodController extends AbstractController {
 
 		return result;
 	}
-	
+
 	@RequestMapping(value = "/filterProcession", method = RequestMethod.POST, params = "refresh2")
 	public ModelAndView requestsFilterProcession(@Valid String fselect, @RequestParam int processionId) {
 		ModelAndView result;

@@ -62,7 +62,7 @@
 		
 		<display:column titleKey="action">
 			<jstl:if test="${row.status.toString()=='PENDING'}">
-				<spring:url var="decideRequest" value="/request/brotherhood/decide.do">
+				<spring:url var="decideRequest" value="/request/brotherhood/changeStatus.do">
 					<spring:param name="requestId" value="${row.id}" />
 				</spring:url>
 				<a href="${decideRequest}">

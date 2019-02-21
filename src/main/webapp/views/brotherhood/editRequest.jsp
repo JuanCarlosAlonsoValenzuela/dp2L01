@@ -32,7 +32,7 @@
 		<display:column property="columnNumber" titleKey="request.columnNumber"/>
 </display:table>
 
-<hr/>
+<hr/><br/>
 
 <form:form action="request/brotherhood/save.do" modelAttribute="request" >
 	<form:hidden path="id"/>
@@ -51,9 +51,11 @@
 	</form:select>
 	<form:errors cssClass="error" path="status" />
 	 
-	<acme:input code="request.rowNumber" path="rowNumber"/>
-	<acme:input code="request.columnNumber" path="columnNumber"/>
+	<acme:input code="request.rowNumber" path="rowNumber" value="${freePosition.get(0)}"/>
+	<acme:input code="request.columnNumber" path="columnNumber" value="${freePosition.get(1)}"/>
 	<acme:input code="request.reasonDescription" path="reasonDescription"/>
+	
+	<br/>
 	
 	<acme:submit name="edit" code="request.save"/>
 

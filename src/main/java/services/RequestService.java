@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class RequestService {
 	public Collection<Request> getRequestsByBrotherhood(Brotherhood brotherhood) {
 		return this.requestRepository.getRequestsByBrotherhood(brotherhood);
 	}
-	
+
 	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
 		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
 	}
@@ -229,4 +230,46 @@ public class RequestService {
 		return result2;
 	}
 
+	public List<Integer> getFreePosition(Request request) {
+		List<Integer> position = new ArrayList<>();
+
+		Procession procession = request.getProcession();
+
+		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
+		List<Request> requests = (List<Request>) this.getRequestApprovedByBrotherhoodAndProcession(brotherhood, procession);
+
+		List<String> occupedPositions = new ArrayList<>();
+		for (Request r : requests)
+			if (r.getRowNumber() > 0 && r.getColumnNumber() > 0)
+				occupedPositions.add(r.getRowNumber() + "-" + r.getColumnNumber());
+
+		Integer row = 0;
+		Integer col = 0;
+
+		if (occupedPositions.size() != 0) {
+
+			List<String> allPositions = new ArrayList<>();
+			for (int i = 1; i <= procession.getRowNumber(); i++)
+				for (int j = 1; j <= procession.getColumnNumber(); j++)
+					allPositions.add(i + "-" + j);
+
+			for (String all : allPositions)
+				if (!occupedPositions.contains(all)) {
+					String[] poss = all.split("-");
+
+					row = new Integer(poss[0]);
+					col = new Integer(poss[1]);
+
+					break;
+				}
+		} else {
+			row = 1;
+			col = 1;
+		}
+
+		position.add(row);
+		position.add(col);
+
+		return position;
+	}
 }
