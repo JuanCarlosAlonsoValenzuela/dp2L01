@@ -81,5 +81,4 @@
 		<put-attribute name="body" value="/views/brotherhood/pendingEnrolments.jsp" />
 	</definition>
 	
-	
 </tiles-definitions>

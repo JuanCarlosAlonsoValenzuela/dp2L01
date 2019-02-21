@@ -63,6 +63,6 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	 * public List<Admin> findAll2();
 	 */
 
-	@Query("select a from Admin a join a.userAccount u where u.username == system")
+	@Query("select a from Admin a join a.userAccount u where u.username = system")
 	public Admin getSystem();
 }
