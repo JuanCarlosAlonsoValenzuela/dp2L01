@@ -14,7 +14,7 @@
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 
 <div>
-	<a href="#"><img src="images/logo.png" alt="Acme Madruga Co., Inc." /></a>
+	<a href="#"><img src="${imageURL}" height= 180px width= 700px alt="Acme Madruga Co., Inc." /></a>
 </div>
 
 <div>
@@ -27,6 +27,7 @@
 					<li><a href="area/administrator/showAreas.do"><spring:message code="master.page.administrator.showAreas" /></a></li>
 					<li><a href="words/administrator/list.do"><spring:message code="master.page.administrator.goodAndBadWordsList" /></a></li>
 					<li><a href="suspicious/administrator/list.do"><spring:message code="master.page.administrator.banUnban" /></a></li>
+					<li><a href="configuration/administrator/list.do"><spring:message code="master.page.administrator.configuration" /></a></li>												
 				</ul>
 			</li>
 		</security:authorize>
