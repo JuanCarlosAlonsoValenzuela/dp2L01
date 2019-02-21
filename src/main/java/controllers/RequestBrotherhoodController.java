@@ -10,20 +10,25 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
-import services.MemberService;
+import services.ProcessionService;
 import services.RequestService;
-import domain.Member;
+import domain.Brotherhood;
+import domain.Procession;
 import domain.Request;
 import domain.Status;
 
@@ -34,9 +39,9 @@ public class RequestBrotherhoodController extends AbstractController {
 	@Autowired
 	private RequestService		requestService;
 	@Autowired
-	private MemberService		memberService;
-	@Autowired
 	private BrotherhoodService	brotherhoodService;
+	@Autowired
+	private ProcessionService	processionService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -51,13 +56,13 @@ public class RequestBrotherhoodController extends AbstractController {
 	public ModelAndView requestsList() {
 		ModelAndView result;
 
-		Member loggedMember = this.memberService.securityAndMember();
-		Collection<Request> requests = this.requestService.getRequestsByMember(loggedMember);
+		Brotherhood loggedBrotherhood = this.brotherhoodService.securityAndBrotherhood();
+		Collection<Request> requests = this.requestService.getRequestsByBrotherhood(loggedBrotherhood);
 
-		result = new ModelAndView("member/requests");
+		result = new ModelAndView("brotherhood/requests");
 
 		result.addObject("requests", requests);
-		result.addObject("requestURI", "request/member/list.do");
+		result.addObject("requestURI", "request/brotherhood/list.do");
 
 		return result;
 	}
@@ -76,13 +81,44 @@ public class RequestBrotherhoodController extends AbstractController {
 			else if (fselect.equals("REJECTED"))
 				status = Status.REJECTED;
 
-			Member loggedMember = this.memberService.securityAndMember();
-			Collection<Request> requests = this.requestService.getRequestsByMemberAndStatus(loggedMember, status);
+			Brotherhood loggedBrotherhood = this.brotherhoodService.securityAndBrotherhood();
+			Collection<Request> requests = this.requestService.getRequestsByBrotherhoodAndStatus(loggedBrotherhood, status);
 
-			result = new ModelAndView("member/requests");
+			result = new ModelAndView("brotherhood/requests");
 
 			result.addObject("requests", requests);
-			result.addObject("requestURI", "request/member/filter.do");
+			result.addObject("requestURI", "request/brotherhood/filter.do");
+		}
+
+		return result;
+	}
+
+	@RequestMapping(value = "/filterProcession", method = RequestMethod.POST, params = "refresh2")
+	public ModelAndView requestsFilterProcession(@Valid String fselect, @RequestParam int processionId) {
+		ModelAndView result;
+		Procession procession = new Procession();
+		procession = this.processionService.findOne(processionId);
+
+		Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getProcessions().contains(procession));
+
+		if (fselect.equals("ALL"))
+			result = new ModelAndView("redirect:listProcession.do");
+		else {
+
+			Status status = Status.APPROVED;
+			if (fselect.equals("PENDING"))
+				status = Status.PENDING;
+			else if (fselect.equals("REJECTED"))
+				status = Status.REJECTED;
+
+			List<Request> requests = new ArrayList<>();
+			//this.requestService.getRequestsByProcessionAndStatus(procession, status);
+
+			result = new ModelAndView("procession/brotherhood/requests");
+
+			result.addObject("requests", requests);
+			result.addObject("processionId", processionId);
+			result.addObject("requestURI", "request/brotherhood/filterProcession.do");
 		}
 
 		return result;

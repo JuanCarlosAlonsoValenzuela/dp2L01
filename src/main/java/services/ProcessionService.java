@@ -13,6 +13,8 @@ import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.ProcessionRepository;
 import utilities.RandomString;
@@ -20,6 +22,7 @@ import domain.Brotherhood;
 import domain.Float;
 import domain.Procession;
 import domain.Request;
+import forms.FormObjectProcessionFloat;
 
 @Service
 @Transactional
@@ -31,6 +34,8 @@ public class ProcessionService {
 	private ProcessionRepository	processionRepository;
 	@Autowired
 	private BrotherhoodService		brotherhoodService;
+	@Autowired
+	private Validator				validator;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -40,7 +45,7 @@ public class ProcessionService {
 		//Asegurar que está logueado como Brotherhood
 		//Asegurar que la Brotherhood logueada tiene un área
 		this.brotherhoodService.loggedAsBrotherhood();
-		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 
 		final Procession procession = new Procession();
@@ -53,12 +58,12 @@ public class ProcessionService {
 		procession.setIsDraftMode(true);
 		procession.setMoment(null);
 
-		final List<Request> requests = new ArrayList<>();
+		List<Request> requests = new ArrayList<>();
 		procession.setRequests(requests);
 
 		procession.setRowNumber(0);
 
-		final String ticker = this.generateTicker();
+		String ticker = this.generateTicker();
 		procession.setTicker(ticker);
 
 		procession.setTitle("");
@@ -157,6 +162,40 @@ public class ProcessionService {
 	}
 	public void delete(Procession procession) {
 		this.processionRepository.delete(procession);
+	}
+
+	public Procession reconstruct(FormObjectProcessionFloat formObjectProcessionCoach, BindingResult binding) {
+		Procession result = new Procession();
+
+		result.setTitle(formObjectProcessionCoach.getTitleProcession());
+		result.setDescription(formObjectProcessionCoach.getDescriptionProcession());
+		result.setMoment(formObjectProcessionCoach.getMoment());
+		result.setIsDraftMode(formObjectProcessionCoach.getIsDraftMode());
+		result.setRowNumber(formObjectProcessionCoach.getRowNumber());
+		result.setColumnNumber(formObjectProcessionCoach.getColumnNumber());
+
+		result.setTicker(this.generateTicker());
+
+		//		this.validator.validate(result, binding);
+
+		return result;
+	}
+
+	public Procession saveAssign(Procession procession, domain.Float newFloat) {
+
+		//procession.getFloats().add(newFloat);
+		List<domain.Float> floats = new ArrayList<>();
+		floats.add(newFloat);
+		procession.setFloats(floats);
+		Procession saved = new Procession();
+		saved = this.processionRepository.save(procession);
+
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		brotherhood.getProcessions().add(saved);
+		this.brotherhoodService.save(brotherhood);
+
+		return saved;
 	}
 
 }
