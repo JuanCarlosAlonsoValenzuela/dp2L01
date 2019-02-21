@@ -38,6 +38,8 @@
 					<li><a href="float/brotherhood/list.do"><spring:message code="master.page.brotherhood.float.list" /></a></li>	
 					<li><a href="area/brotherhood/showArea.do"><spring:message code="master.page.brotherhood.area" /></a></li>	
 					<li><a href="request/brotherhood/list.do"><spring:message code="master.page.brotherhood.request.list" /></a></li>	
+					<li><a href="member/brotherhood/list.do"><spring:message code="master.page.brotherhood.member.list" /></a></li>	
+					<li><a href="enrolment/brotherhood/list.do"><spring:message code="master.page.brotherhood.enrolment.list" /></a></li>	
 				</ul>
 			</li>		
     </security:authorize>
