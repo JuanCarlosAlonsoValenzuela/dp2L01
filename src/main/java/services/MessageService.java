@@ -8,13 +8,17 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import repositories.MessageRepository;
 import security.LoginService;
 import security.UserAccount;
 import domain.Actor;
+import domain.Admin;
 import domain.Box;
+import domain.Brotherhood;
+import domain.Member;
 import domain.Message;
 
 @Service
@@ -33,6 +37,15 @@ public class MessageService {
 	@Autowired
 	private ConfigurationService	configurationService;
 
+	@Autowired
+	private MemberService			memberService;
+
+	@Autowired
+	private AdminService			adminService;
+
+	@Autowired
+	private BrotherhoodService		brotherhoodService;
+
 
 	// Actualizar caja que tiene el mensaje EN ESTE ORDEN
 	// ACTUALIZAR CAJA SIN EL MENSAJE
@@ -41,7 +54,7 @@ public class MessageService {
 		this.messageRepository.delete(m);
 	}
 
-	public Message sendMessageBroadcasted(final Message message) {
+	public Message sendMessageBroadcasted(Message message) {
 
 		this.actorService.loggedAsActor();
 
@@ -53,9 +66,9 @@ public class MessageService {
 
 		spam = this.configurationService.getSpamWords();
 
-		final Message messageSaved = this.messageRepository.saveAndFlush(message);
-		final Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
-		final Message messageCopySaved = this.messageRepository.save(messageCopy);
+		Message messageSaved = this.messageRepository.saveAndFlush(message);
+		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		Message messageCopySaved = this.messageRepository.save(messageCopy);
 
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
 		boxRecieved = this.boxService.getRecievedBoxByActor(messageSaved.getReceiver());
@@ -100,9 +113,9 @@ public class MessageService {
 
 		spam = this.configurationService.getSpamWords();
 
-		final Message messageSaved = this.messageRepository.save(message);
-		final Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
-		final Message messageCopySaved = this.messageRepository.save(messageCopy);
+		Message messageSaved = this.messageRepository.save(message);
+		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		Message messageCopySaved = this.messageRepository.save(messageCopy);
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
 		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
 		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
@@ -132,6 +145,44 @@ public class MessageService {
 		this.actorService.updateActorSpam(senderActor);
 		this.configurationService.computeScore(senderActor);
 		return messageSaved;
+	}
+
+	public void sendNotificationDropOut(Brotherhood bro) {
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+		Member loggedMember = this.memberService.loggedMember();
+		Admin admin = this.adminService.getSystem();
+		Box sentAdmin = this.boxService.getSentBoxByActor(admin);
+		Box notMem = this.boxService.getNotificationBoxByActor(loggedMember);
+		Box notBro = this.boxService.getNotificationBoxByActor(bro);
+		Message messageBro = null;
+		Message messageMem = null;
+		Message copyBro = null;
+		Message copyMem = null;
+		if (locale == "EN") {
+			messageBro = this.create("Drop out notification", "The user " + loggedMember.getUserAccount().getUsername() + " drop out the brotherhood.", "HIGH", bro);
+			messageMem = this.create("Drop out notification", "You drop out the brotherhood " + bro.getTitle(), "HIGH", loggedMember);
+			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
+			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
+		} else if (locale == "ES") {
+			messageBro = this.create("Notificación de salida", "El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH", bro);
+			messageMem = this.create("Notificación de salida", "Has dejado la hermandad " + bro.getTitle(), "HIGH", loggedMember);
+			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
+			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
+		}
+		this.messageRepository.save(messageBro);
+		this.messageRepository.save(messageMem);
+		this.messageRepository.save(copyBro);
+		this.messageRepository.save(copyMem);
+		sentAdmin.getMessages().add(messageBro);
+		sentAdmin.getMessages().add(messageMem);
+		notMem.getMessages().add(copyMem);
+		notBro.getMessages().add(copyBro);
+		this.boxService.save(sentAdmin);
+		this.boxService.save(notMem);
+		this.boxService.save(notBro);
+		this.adminService.save(admin);
+		this.memberService.save(loggedMember);
+		this.brotherhoodService.save(bro);
 	}
 
 	public Message sendMessageAnotherSender(final Message message) {

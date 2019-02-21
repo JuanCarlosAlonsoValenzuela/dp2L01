@@ -231,10 +231,51 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<!-- system -->
+	<bean id="userAccount12" class="security.UserAccount">
+		<property name="username" value="system" />
+		<property name="password" value="54b53072540eeeb8f8e9343e71f28176" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="ADMIN" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
 	<!-- ADMIN -->
+		<!-- SYSTEM -->
+	<bean id="system" class="domain.Admin">
+		<property name="name" value="System" />
+		<property name="middleName" value="" />
+		<property name="surname" value="System" />
+		<property name="photo" value="https://www.url.com/example" />
+		<property name="email" value="system@admin.com" />
+		<property name="phoneNumber" value="+34653248752" />
+		<property name="address" value="Reino de los System" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxAdmin4" />
+				<ref bean="outBoxAdmin4" />
+				<ref bean="trashBoxAdmin4" />
+				<ref bean="spamBoxAdmin4" />
+				<ref bean="notificationBoxAdmin4" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount12" />
+		<property name="hasSpam" value = "false"/>
+		<property name="polarity" value ="0.0"/>
+	</bean>
+	
 		<!-- ADMIN1 -->
 	<bean id="admin1" class="domain.Admin">
 		<property name="name" value="Father" />
@@ -837,6 +878,53 @@
 	
 	<!-- BOXES -->
 		<!-- ADMIN -->
+		<!-- SYSTEM -->
+				<bean class="domain.Box" id="inBoxAdmin4">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxAdmin4">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxAdmin4">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxAdmin4">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxAdmin4">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			<!-- FIN SYSTEM -->
+		
 			<!-- ADMIN1 -->
 				<bean class="domain.Box" id="inBoxAdmin1">
 					<property value="INBOX" name="name" />

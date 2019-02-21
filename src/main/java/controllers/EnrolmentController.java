@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import services.BrotherhoodService;
 import services.EnrolmentService;
 import services.MemberService;
+import services.MessageService;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
@@ -33,6 +34,9 @@ public class EnrolmentController extends AbstractController {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
+
+	@Autowired
+	private MessageService		messageService;
 
 
 	public EnrolmentController() {
@@ -58,6 +62,7 @@ public class EnrolmentController extends AbstractController {
 		Member m = new Member();
 		m = this.memberService.loggedMember();
 		Brotherhood brotherhood = new Brotherhood();
+		Enrolment enrolment = new Enrolment();
 		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
 
 		List<Enrolment> enrolmentsBro = brotherhood.getEnrolments();
@@ -69,21 +74,7 @@ public class EnrolmentController extends AbstractController {
 				res = true;
 
 		if (res == false) {
-			Assert.notNull(m);
-			this.memberService.loggedAsMember();
-			Enrolment enrolment = new Enrolment();
-
-			enrolment = this.enrolmentService.create();
-			enrolment.setBrotherhood(brotherhood);
-			enrolment.setMember(m);
-			enrolment.setStatusEnrolment(StatusEnrolment.PENDING);
-			List<Enrolment> enrolments = new ArrayList<>();
-			enrolments = brotherhood.getEnrolments();
-			enrolments.add(enrolment);
-			brotherhood.setEnrolments(enrolments);
-
-			this.enrolmentService.save(enrolment);
-			this.brotherhoodService.save(brotherhood);
+			this.enrolmentService.createEnrolment(brotherhood, enrolment, m);
 			result = this.createEditModelAndView(enrolment);
 			result = new ModelAndView("redirect:list.do");
 		} else {
@@ -108,6 +99,7 @@ public class EnrolmentController extends AbstractController {
 			enrolment.setStatusEnrolment(StatusEnrolment.DROPOUT);
 			enrolment.setDropOutDate(thisMoment);
 			this.enrolmentService.save(enrolment);
+			this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
 			result = new ModelAndView("redirect:list.do");
 		} else
 			result = new ModelAndView("redirect:list.do");
