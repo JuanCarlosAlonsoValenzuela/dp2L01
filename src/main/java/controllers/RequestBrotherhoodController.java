@@ -93,8 +93,8 @@ public class RequestBrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/changeStatus", method = RequestMethod.GET)
-	public ModelAndView requestsDecide(@RequestParam int requestId) {
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public ModelAndView editRequest(@RequestParam int requestId) {
 		ModelAndView result;
 
 		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
@@ -106,11 +106,18 @@ public class RequestBrotherhoodController extends AbstractController {
 
 			List<Integer> freePosition = this.requestService.getFreePosition(request);
 
+			Boolean approved;
+			if (request.getStatus().equals(Status.APPROVED))
+				approved = true;
+			else
+				approved = false;
+
 			result = new ModelAndView("brotherhood/editRequest");
 			result.addObject("request", request);
 			result.addObject("requests", requests);
 			result.addObject("procession", procession);
 			result.addObject("freePosition", freePosition);
+			result.addObject("approved", approved);
 		} else
 			result = new ModelAndView("redirect:list.do");
 
@@ -127,13 +134,20 @@ public class RequestBrotherhoodController extends AbstractController {
 		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, requestFounded.getProcession());
 		Procession procession = requestFounded.getProcession();
 
-		r = this.requestService.reconstructRequestDecide(request, binding);
+		r = this.requestService.reconstructRequest(request, binding);
+
+		Boolean approved;
+		if (requestFounded.getStatus().equals(Status.APPROVED))
+			approved = true;
+		else
+			approved = false;
 
 		if (binding.hasErrors()) {
 			result = new ModelAndView("brotherhood/editRequest");
 			result.addObject("request", request);
 			result.addObject("requests", requests);
 			result.addObject("procession", procession);
+			result.addObject("approved", approved);
 		} else
 			try {
 				this.requestService.saveRequestWithPreviousChecking(r);
@@ -144,6 +158,7 @@ public class RequestBrotherhoodController extends AbstractController {
 				result.addObject("request", request);
 				result.addObject("requests", requests);
 				result.addObject("procession", procession);
+				result.addObject("approved", approved);
 				result.addObject("message", "request.commit.error");
 			}
 
