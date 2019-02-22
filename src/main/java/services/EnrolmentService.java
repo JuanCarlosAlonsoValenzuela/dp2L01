@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import repositories.EnrolmentRepository;
 import domain.Brotherhood;
@@ -24,6 +26,9 @@ public class EnrolmentService {
 
 	@Autowired
 	private MemberService		memberService;
+
+	@Autowired
+	private BrotherhoodService	brotherhoodService;
 
 
 	public List<Enrolment> findAll() {
@@ -82,6 +87,24 @@ public class EnrolmentService {
 
 	public List<Enrolment> getEnrolmentsPerMember(Member m) {
 		return m.getEnrolments();
+	}
+
+	public Enrolment createEnrolment(Brotherhood brotherhood, Enrolment enrolment, Member m) {
+		Assert.notNull(m);
+		this.memberService.loggedAsMember();
+
+		enrolment = this.create();
+		enrolment.setBrotherhood(brotherhood);
+		enrolment.setMember(m);
+		enrolment.setStatusEnrolment(StatusEnrolment.PENDING);
+		List<Enrolment> enrolments = new ArrayList<>();
+		enrolments = brotherhood.getEnrolments();
+		enrolments.add(enrolment);
+		brotherhood.setEnrolments(enrolments);
+
+		this.enrolmentRepository.save(enrolment);
+		this.brotherhoodService.save(brotherhood);
+		return enrolment;
 	}
 
 }

@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 @Entity
 @Access(AccessType.PROPERTY)
@@ -32,7 +33,7 @@ public class Request extends DomainEntity {
 		this.status = status;
 	}
 
-	@Valid
+	@Min(1)
 	public Integer getRowNumber() {
 		return this.rowNumber;
 	}
@@ -41,7 +42,7 @@ public class Request extends DomainEntity {
 		this.rowNumber = rowNumber;
 	}
 
-	@Valid
+	@Min(1)
 	public Integer getColumnNumber() {
 		return this.columnNumber;
 	}

@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class RequestService {
 	public Collection<Request> getRequestsByBrotherhood(Brotherhood brotherhood) {
 		return this.requestRepository.getRequestsByBrotherhood(brotherhood);
 	}
-	
+
 	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
 		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
 	}
@@ -181,9 +182,9 @@ public class RequestService {
 					break;
 				}
 
-			Boolean respectMax = col <= procession.getColumnNumber() && row <= procession.getRowNumber();
+			Boolean respectMaxAndMin = col <= procession.getColumnNumber() && row <= procession.getRowNumber() && col >= 1 && row >= 1;
 
-			Assert.isTrue(isFree && respectMax);
+			Assert.isTrue(isFree && respectMaxAndMin);
 
 		} else if (request.getStatus().equals(Status.REJECTED)) {
 			Assert.notNull(request.getReasonDescription());
@@ -193,10 +194,16 @@ public class RequestService {
 		requestSaved = this.save(request);
 		return requestSaved;
 	}
-	public Request reconstructRequestDecide(Request request, BindingResult binding) {
+	public Request reconstructRequest(Request request, BindingResult binding) {
 		this.brotherhoodService.securityAndBrotherhood();
 
 		Request result = this.requestRepository.findOne(request.getId());
+
+		Boolean approved;
+		if (result.getStatus().equals(Status.APPROVED))
+			approved = true;
+		else
+			approved = false;
 
 		Request result2 = new Request();
 
@@ -205,28 +212,77 @@ public class RequestService {
 		result2.setProcession(result.getProcession());
 		result2.setVersion(result.getVersion());
 
-		if (request.getStatus().equals(Status.APPROVED)) {
-			Integer col = request.getColumnNumber();
-			Integer row = request.getRowNumber();
+		Integer col = request.getColumnNumber();
+		Integer row = request.getRowNumber();
+
+		if (approved == false) {
+			if (request.getStatus().equals(Status.APPROVED)) {
+				result2.setColumnNumber(col);
+				result2.setRowNumber(row);
+				result2.setReasonDescription(null);
+				result2.setStatus(request.getStatus());
+			} else if (request.getStatus().equals(Status.REJECTED)) {
+				result2.setColumnNumber(null);
+				result2.setRowNumber(null);
+				result2.setReasonDescription(request.getReasonDescription());
+				result2.setStatus(request.getStatus());
+			} else {
+				result2.setColumnNumber(null);
+				result2.setRowNumber(null);
+				result2.setReasonDescription(null);
+				result2.setStatus(request.getStatus());
+			}
+		} else {
+			result2.setStatus(result.getStatus());
+			result2.setReasonDescription(result.getReasonDescription());
 
 			result2.setColumnNumber(col);
 			result2.setRowNumber(row);
-			result2.setReasonDescription(null);
-			result2.setStatus(request.getStatus());
-		} else if (request.getStatus().equals(Status.REJECTED)) {
-			result2.setColumnNumber(null);
-			result2.setRowNumber(null);
-			result2.setReasonDescription(request.getReasonDescription());
-			result2.setStatus(request.getStatus());
-		} else {
-			result2.setColumnNumber(null);
-			result2.setRowNumber(null);
-			result2.setReasonDescription(null);
-			result2.setStatus(request.getStatus());
 		}
 
 		this.validator.validate(result, binding);
 		return result2;
 	}
+	public List<Integer> getFreePosition(Request request) {
+		List<Integer> position = new ArrayList<>();
 
+		Procession procession = request.getProcession();
+
+		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
+		List<Request> requests = (List<Request>) this.getRequestApprovedByBrotherhoodAndProcession(brotherhood, procession);
+
+		List<String> occupedPositions = new ArrayList<>();
+		for (Request r : requests)
+			if (r.getRowNumber() > 0 && r.getColumnNumber() > 0)
+				occupedPositions.add(r.getRowNumber() + "-" + r.getColumnNumber());
+
+		Integer row = 0;
+		Integer col = 0;
+
+		if (occupedPositions.size() != 0) {
+
+			List<String> allPositions = new ArrayList<>();
+			for (int i = 1; i <= procession.getRowNumber(); i++)
+				for (int j = 1; j <= procession.getColumnNumber(); j++)
+					allPositions.add(i + "-" + j);
+
+			for (String all : allPositions)
+				if (!occupedPositions.contains(all)) {
+					String[] poss = all.split("-");
+
+					row = new Integer(poss[0]);
+					col = new Integer(poss[1]);
+
+					break;
+				}
+		} else {
+			row = 1;
+			col = 1;
+		}
+
+		position.add(row);
+		position.add(col);
+
+		return position;
+	}
 }

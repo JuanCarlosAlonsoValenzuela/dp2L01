@@ -32,28 +32,39 @@
 		<display:column property="columnNumber" titleKey="request.columnNumber"/>
 </display:table>
 
-<hr/>
+<hr/><br/>
 
 <form:form action="request/brotherhood/save.do" modelAttribute="request" >
 	<form:hidden path="id"/>
 	<form:hidden path="version"/>
 	
-	<form:label path="status">
-		<spring:message code="request.status" />	
-	</form:label>
-	<form:select path="status">
-		<spring:message var="approved" code="request.status.approved"/>
-		<form:option label="${approved}" value="APPROVED" />		
-		<spring:message var="pending" code="request.status.pending"/>							
-		<form:option label="${pending}" value="PENDING" />	
-		<spring:message var="rejected" code="request.status.rejected"/>
-		<form:option label="${rejected}" value="REJECTED" />
-	</form:select>
-	<form:errors cssClass="error" path="status" />
-	 
-	<acme:input code="request.rowNumber" path="rowNumber"/>
-	<acme:input code="request.columnNumber" path="columnNumber"/>
-	<acme:input code="request.reasonDescription" path="reasonDescription"/>
+	<jstl:if test="${approved == false}">
+		<form:label path="status">
+			<spring:message code="request.status" />	
+		</form:label>
+		<form:select path="status">
+			<spring:message var="approved" code="request.status.approved"/>
+			<form:option label="${approved}" value="APPROVED" />		
+			<spring:message var="pending" code="request.status.pending"/>							
+			<form:option label="${pending}" value="PENDING" />	
+			<spring:message var="rejected" code="request.status.rejected"/>
+			<form:option label="${rejected}" value="REJECTED" />
+		</form:select>
+		<form:errors cssClass="error" path="status" />
+		
+		<acme:input code="request.reasonDescription" path="reasonDescription"/>
+		
+		<acme:input code="request.rowNumber" path="rowNumber" value="${freePosition.get(0)}"/>
+		<acme:input code="request.columnNumber" path="columnNumber" value="${freePosition.get(1)}"/>
+	</jstl:if>
+	
+	<jstl:if test="${approved == true}">
+		<acme:input code="request.rowNumber" path="rowNumber"/>
+		<acme:input code="request.columnNumber" path="columnNumber"/>
+	</jstl:if>
+	
+	
+	<br/>
 	
 	<acme:submit name="edit" code="request.save"/>
 
