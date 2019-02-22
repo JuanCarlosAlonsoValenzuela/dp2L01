@@ -27,7 +27,8 @@
 					<li><a href="area/administrator/showAreas.do"><spring:message code="master.page.administrator.showAreas" /></a></li>
 					<li><a href="words/administrator/list.do"><spring:message code="master.page.administrator.goodAndBadWordsList" /></a></li>
 					<li><a href="suspicious/administrator/list.do"><spring:message code="master.page.administrator.banUnban" /></a></li>
-					<li><a href="configuration/administrator/list.do"><spring:message code="master.page.administrator.configuration" /></a></li>												
+					<li><a href="configuration/administrator/list.do"><spring:message code="master.page.administrator.configuration" /></a></li>	
+					<li><a href="positions/administrator/list.do"><spring:message code="master.page.administrator.positions" /></a></li>																							
 				</ul>
 			</li>
 		</security:authorize>
