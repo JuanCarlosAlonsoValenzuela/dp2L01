@@ -48,17 +48,6 @@
 				<value>LOW</value>
 			</list>
 		</property>
-		<property name="positions">
-			<list>
-				<value>President ; Presidente</value>
-				<value>Vice President ; Vicepresidente</value>
-				<value>Secretary ; Secretario</value>
-				<value>Treasurer ; Tesorero</value>
-				<value>Historian ; Historiador</value>
-				<value>Fundraiser ; Promotor</value>
-				<value>Officer ; Vocal</value>
-			</list>
-		</property>
 		<property name="goodWords" value="good, fantastic, excellent, great, amazing, terrific, beautiful, bueno, fantastico, excelente, increible, estupendo, hermoso" />
 		<property name="badWords" value="not, bad, horrible, average, disaster, no, malo, horrible, mediocre, desastre " />
 		
@@ -1769,7 +1758,7 @@
 		<!-- MEMBER1 -->
 	<bean id="enrolment1" class="domain.Enrolment">
 		<property name="creationMoment" value="02/01/2019 12:30" />
-		<property name="position" value="Secretary" />
+		<property name="position" ref="position3" />
 		<property name="statusEnrolment" value="DROPOUT" />
 		<property name="dropOutDate" value="01/12/2019 12:30" />
 		
@@ -1779,16 +1768,14 @@
 	
 	<bean id="enrolment2" class="domain.Enrolment">
 		<property name="creationMoment" value="02/02/2019 11:30" />
-		<property name="position" value="President" />
+		<property name="position" ref="position1" />
 		<property name="statusEnrolment" value="ACCEPTED" />
-		
 		<property name="member" ref="member1" />
 		<property name="brotherhood" ref="brotherhood1" />
 	</bean>
 	
 	<bean id="enrolment3" class="domain.Enrolment">
 		<property name="creationMoment" value="02/02/2017 20:43" />
-		<property name="position" value="" />
 		<property name="statusEnrolment" value="REJECTED" />
 		
 		<property name="member" ref="member1" />
@@ -1800,7 +1787,7 @@
 		<!-- MEMBER2 -->
 	<bean id="enrolment4" class="domain.Enrolment">
 		<property name="creationMoment" value="12/11/1998 19:27" />
-		<property name="position" value="Fundraiser" />
+		<property name="position" ref="position6" />
 		<property name="statusEnrolment" value="ACCEPTED" />
 		
 		<property name="member" ref="member2" />
@@ -1812,7 +1799,7 @@
 		<!-- MEMBER3 -->
 	<bean id="enrolment5" class="domain.Enrolment">
 		<property name="creationMoment" value="12/11/1988 14:30" />
-		<property name="position" value="Fundraiser" />
+		<property name="position" ref="position6" />
 		<property name="statusEnrolment" value="ACCEPTED" />
 		
 		<property name="member" ref="member3" />
@@ -1821,7 +1808,7 @@
 	
 	<bean id="enrolment6" class="domain.Enrolment">
 		<property name="creationMoment" value="07/07/2001 18:42" />
-		<property name="position" value="Fundraiser" />
+		<property name="position" ref="position6" />
 		<property name="statusEnrolment" value="ACCEPTED" />
 		
 		<property name="member" ref="member3" />
@@ -1830,7 +1817,7 @@
 	
 	<bean id="enrolment7" class="domain.Enrolment">
 		<property name="creationMoment" value="10/09/1988 19:27" />
-		<property name="position" value="Fundraiser" />
+		<property name="position" ref="position6" />
 		<property name="statusEnrolment" value="ACCEPTED" />
 		
 		<property name="member" ref="member3" />
@@ -1842,7 +1829,7 @@
 		<!-- MEMBER 4 -->
 	<bean id="enrolment8" class="domain.Enrolment">
 		<property name="creationMoment" value="10/09/1988 19:27" />
-		<property name="position" value="Secretary" />
+		<property name="position" ref="position3" />
 		<property name="statusEnrolment" value="ACCEPTED" />
 		
 		<property name="member" ref="member4" />
@@ -1851,7 +1838,7 @@
 	
 	<bean id="enrolment9" class="domain.Enrolment">
 		<property name="creationMoment" value="10/09/1977 09:51" />
-		<property name="position" value="Secretary" />
+		<property name="position" ref="position3" />
 		<property name="statusEnrolment" value="EXPELLED" />
 		
 		<property name="member" ref="member4" />
@@ -1926,4 +1913,41 @@
 		
 	FIN REQUEST
 	 -->
+	 
+	 <!-- POSITION -->
+	 
+	 <bean id ="position1" class="domain.Position">
+		<property name="titleEnglish" value="President" />
+		<property name="titleSpanish" value="Presidente"/>	
+	</bean>
+	
+	<bean id ="position2" class="domain.Position">
+		<property name="titleEnglish" value="Vice President" />
+		<property name="titleSpanish" value="Vicepresidente"/>	
+	</bean>
+	
+	<bean id ="position3" class="domain.Position">
+		<property name="titleEnglish" value="Secretary" />
+		<property name="titleSpanish" value="Secretario"/>	
+	</bean>
+	
+	<bean id ="position4" class="domain.Position">
+		<property name="titleEnglish" value="Treasurer" />
+		<property name="titleSpanish" value="Tesorero"/>	
+	</bean>
+	
+	<bean id ="position5" class="domain.Position">
+		<property name="titleEnglish" value="Historian" />
+		<property name="titleSpanish" value="Historiador"/>	
+	</bean>
+	
+	<bean id ="position6" class="domain.Position">
+		<property name="titleEnglish" value="Fundraiser" />
+		<property name="titleSpanish" value="Promotor"/>	
+	</bean>
+	
+	<bean id ="position7" class="domain.Position">
+		<property name="titleEnglish" value="Officer" />
+		<property name="titleSpanish" value="Vocal"/>	
+	</bean>
 </beans>
