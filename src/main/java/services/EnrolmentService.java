@@ -15,6 +15,7 @@ import repositories.EnrolmentRepository;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
+import domain.Position;
 import domain.StatusEnrolment;
 
 @Service
@@ -52,7 +53,7 @@ public class EnrolmentService {
 
 		Date creationMoment = new Date();
 		creationMoment.setTime(creationMoment.getTime() - 1);
-		String position = null;
+		Position position = null;
 		StatusEnrolment statusEnrolment = StatusEnrolment.PENDING;
 		Date dropOutDate = null;
 		Member member = null;
