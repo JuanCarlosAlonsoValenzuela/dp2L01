@@ -175,6 +175,10 @@ public class RequestService {
 			Integer col = request.getColumnNumber();
 			Integer row = request.getRowNumber();
 
+			Request requestFound = this.findOne(request.getId());
+			if (request.getColumnNumber() != null && request.getRowNumber() != null)
+				requests.remove(requestFound);
+
 			Boolean isFree = true;
 			for (Request req : requests)
 				if (req.getColumnNumber() == col && req.getRowNumber() == row) {

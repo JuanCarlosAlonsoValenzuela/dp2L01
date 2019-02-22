@@ -20,7 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Enrolment extends DomainEntity {
 
 	private Date			creationMoment;
-	private String			position;
+	private Position		position;
 	private StatusEnrolment	statusEnrolment;
 	private Date			dropOutDate;
 
@@ -39,11 +39,12 @@ public class Enrolment extends DomainEntity {
 	}
 
 	@Valid
-	public String getPosition() {
+	@ManyToOne(optional = true)
+	public Position getPosition() {
 		return this.position;
 	}
 
-	public void setPosition(final String position) {
+	public void setPosition(final Position position) {
 		this.position = position;
 	}
 
