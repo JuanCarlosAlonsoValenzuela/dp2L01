@@ -2,7 +2,9 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -23,6 +25,7 @@ import domain.Float;
 import domain.Procession;
 import domain.Request;
 import forms.FormObjectProcessionFloat;
+import forms.FormObjectProcessionFloatCheckbox;
 
 @Controller
 @RequestMapping("/procession/brotherhood")
@@ -115,88 +118,86 @@ public class ProcessionController extends AbstractController {
 		return result;
 	}
 
-	//-------------------------------------------------------------------
-	//---------------------------CREATE----------------------------------
+	//CREATE PROCESSION Y CHECKBOX
+	@RequestMapping(value = "/createCheckbox", method = RequestMethod.GET)
+	public ModelAndView createProcessionCheckbox() {
+		ModelAndView result;
+		Procession procession;
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
+		FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox = new FormObjectProcessionFloatCheckbox();
+
+		//NUEVO
+		List<Integer> floats = new ArrayList<>();
+		formObjectProcessionFloatCheckbox.setFloats(floats);
+		//FIN NUEVO
+
+		result = this.createEditModelAndView(formObjectProcessionFloatCheckbox);
+
+		return result;
+	}
+
+	//EDIT PROCESSION Y CHECKBOX
+	@RequestMapping(value = "/editCheckbox", method = RequestMethod.GET)
+	public ModelAndView edit(@RequestParam int processionId) {
+		ModelAndView result;
+
+		FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox = this.processionService.prepareFormObjectProcessionFloatCheckbox(processionId);
+
+		result = this.createEditModelAndView(formObjectProcessionFloatCheckbox);
+
+		return result;
+
+	}
+	@RequestMapping(value = "/editCheckbox", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox, BindingResult binding) {
 
 		ModelAndView result;
 
 		Procession procession = new Procession();
 		procession = this.processionService.create();
 
-		domain.Float coach = new domain.Float();
-		coach = this.floatService.create();
-
-		procession = this.processionService.reconstruct(formObjectProcessionFloat, binding);
-		coach = this.floatService.reconstructForm(formObjectProcessionFloat, binding);
-
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(procession);
 		else
 			try {
-				domain.Float savedFloat = this.floatService.save(coach);
-				this.processionService.saveAssign(procession, savedFloat);
-				//this.processionService.save(procession);
+
+				List<domain.Float> floats = this.floatService.reconstructList(formObjectProcessionFloatCheckbox);
+
+				procession = this.processionService.reconstructCheckbox(formObjectProcessionFloatCheckbox, binding);
+
+				this.processionService.saveAssignList(procession, floats);
+
 				result = new ModelAndView("redirect:/procession/brotherhood/list.do");
+
 			} catch (Throwable oops) {
+
 				result = this.createEditModelAndView(procession, "brotherhood.commit.error");
 
 			}
 		return result;
 	}
-	//CREATE PROCESSION
-	@RequestMapping(value = "/create", method = RequestMethod.GET)
-	public ModelAndView createProcession() {
+
+	//MODEL AND VIEW PROCESSION CHECKBOX
+	protected ModelAndView createEditModelAndView(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox) {
 		ModelAndView result;
-		Procession procession;
 
-		//procession = this.processionService.create();
-
-		FormObjectProcessionFloat formObjectProcessionFloat = new FormObjectProcessionFloat();
-
-		//result = this.createEditModelAndView(procession);
-
-		result = this.createEditModelAndView(formObjectProcessionFloat);
+		result = this.createEditModelAndView(formObjectProcessionFloatCheckbox, null);
 
 		return result;
 	}
 
-	//	//SAVE PROCESSION
-	//	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
-	//	public ModelAndView save(@Valid Procession procession, BindingResult binding) {
-	//
-	//		ModelAndView result;
-	//
-	//		if (binding.hasErrors())
-	//			result = this.createEditModelAndView(procession);
-	//		else
-	//			try {
-	//				this.processionService.save(procession);
-	//				result = new ModelAndView("redirect:/procession/brotherhood/list.do");
-	//			} catch (Throwable oops) {
-	//				result = this.createEditModelAndView(procession, "brotherhood.commit.error");
-	//			}
-	//		return result;
-	//	}
-	//
-
-	//MODEL AND VIEW PROCESSION
-	protected ModelAndView createEditModelAndView(FormObjectProcessionFloat formObjectProcessionFloat) {
+	protected ModelAndView createEditModelAndView(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox, String messageCode) {
 		ModelAndView result;
 
-		result = this.createEditModelAndView(formObjectProcessionFloat, null);
+		Map<Integer, String> map = new HashMap<>();
 
-		return result;
-	}
+		map = this.floatService.getMapAvailableFloats();
 
-	protected ModelAndView createEditModelAndView(FormObjectProcessionFloat formObjectProcessionFloat, String messageCode) {
-		ModelAndView result;
-
-		result = new ModelAndView("procession/brotherhood/create");
-		result.addObject("formObjectProcessionFloat", formObjectProcessionFloat);
+		result = new ModelAndView("procession/brotherhood/createCheckbox");
+		result.addObject("formObjectProcessionFloatCheckbox", formObjectProcessionFloatCheckbox);
 		result.addObject("message", messageCode);
+		result.addObject("map", map);
+		result.addObject("processionId", formObjectProcessionFloatCheckbox.getId());
 
 		return result;
 	}
@@ -213,53 +214,99 @@ public class ProcessionController extends AbstractController {
 	protected ModelAndView createEditModelAndView(Procession procession, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("procession/brotherhood/create");
+		Map<Integer, String> map = new HashMap<>();
+
+		map = this.floatService.getMapAvailableFloats();
+
+		result = new ModelAndView("procession/brotherhood/createCheckbox");
 		result.addObject("procession", procession);
 		result.addObject("message", messageCode);
+		result.addObject("map", map);
+		result.addObject("processionId", procession.getId());
 
 		return result;
 	}
 
 	//-------------------------------------------------------------------
-	//---------------------------EDIT------------------------------------
+	//---------------------------DELETE----------------------------------
+	@RequestMapping(value = "/editCheckbox", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox, BindingResult binding) {
 
-	//Edit Procession
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public ModelAndView edit(@RequestParam int processionId) {
+		ModelAndView result;
+
+		try {
+			this.processionService.delete(formObjectProcessionFloatCheckbox);
+			result = new ModelAndView("redirect:/procession/brotherhood/list.do");
+		} catch (Throwable oops) {
+			result = this.createEditModelAndView(formObjectProcessionFloatCheckbox, "procession.commit.error");
+		}
+		return result;
+	}
+
+	//-----------------------------------------------------------------------------------------
+	//---------------------------PROCESSION Y FLOAT A LA VEZ ----------------------------------
+	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
+
+		ModelAndView result;
+
+		Procession procession = new Procession();
+		procession = this.processionService.create();
+
+		domain.Float coach = new domain.Float();
+		coach = this.floatService.create();
+
+		procession = this.processionService.reconstruct(formObjectProcessionFloat, binding);
+		coach = this.floatService.reconstructForm(formObjectProcessionFloat, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView1(procession);
+		else
+			try {
+				domain.Float savedFloat = this.floatService.save(coach);
+				this.processionService.saveAssign(procession, savedFloat);
+				//this.processionService.save(procession);
+				result = new ModelAndView("redirect:/procession/brotherhood/list.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView1(procession, "brotherhood.commit.error");
+
+			}
+		return result;
+	}
+
+	//CREATE PROCESSION
+	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	public ModelAndView createProcession() {
 		ModelAndView result;
 		Procession procession;
 
-		this.brotherhoodService.loggedAsBrotherhood();
-		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
-		procession = this.processionService.findOne(processionId);
-		Assert.notNull(procession);
-		Assert.isTrue(procession.getIsDraftMode());
-		Assert.isTrue(loggedBrotherhood.getProcessions().contains(procession));
+		FormObjectProcessionFloat formObjectProcessionFloat = new FormObjectProcessionFloat();
 
-		result = this.createEditModelAndView1(procession);
+		result = this.createEditModelAndView1(formObjectProcessionFloat);
 
 		return result;
 	}
 
-	//	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	//	public ModelAndView saveProcession(@Valid Procession procession, BindingResult binding) {
-	//
-	//		ModelAndView result;
-	//
-	//		if (binding.hasErrors())
-	//			result = this.createEditModelAndView(procession);
-	//		else
-	//			try {
-	//				this.processionService.save(procession);
-	//				result = new ModelAndView("redirect:/procession/brotherhood/list.do");
-	//			} catch (Throwable oops) {
-	//				result = this.createEditModelAndView(procession, "procession.commit.error");
-	//			}
-	//		return result;
-	//	}
+	//MODEL AND VIEW PROCESSION
+	protected ModelAndView createEditModelAndView1(FormObjectProcessionFloat formObjectProcessionFloat) {
+		ModelAndView result;
 
-	//MODEL AND VIEW 
+		result = this.createEditModelAndView1(formObjectProcessionFloat, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView1(FormObjectProcessionFloat formObjectProcessionFloat, String messageCode) {
+		ModelAndView result;
+
+		result = new ModelAndView("procession/brotherhood/create");
+		result.addObject("formObjectProcessionFloat", formObjectProcessionFloat);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
+	//MODEL AND VIEW PROCESSION
 	protected ModelAndView createEditModelAndView1(Procession procession) {
 		ModelAndView result;
 
@@ -271,33 +318,10 @@ public class ProcessionController extends AbstractController {
 	protected ModelAndView createEditModelAndView1(Procession procession, String messageCode) {
 		ModelAndView result;
 
-		result = new ModelAndView("procession/brotherhood/edit");
+		result = new ModelAndView("procession/brotherhood/create");
 		result.addObject("procession", procession);
-		result.addObject("processionId", procession.getId());
 		result.addObject("message", messageCode);
 
-		return result;
-	}
-
-	//-------------------------------------------------------------------
-	//---------------------------DELETE----------------------------------
-	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
-	public ModelAndView delete(Procession procession, BindingResult binding) {
-
-		ModelAndView result;
-
-		this.brotherhoodService.loggedAsBrotherhood();
-		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
-		Assert.isTrue(procession.getIsDraftMode());
-		Assert.isTrue(loggedBrotherhood.getProcessions().contains(procession));
-
-		try {
-			this.processionService.delete(procession);
-			result = new ModelAndView("redirect:/procession/brotherhood/list.do");
-		} catch (Throwable oops) {
-			result = this.createEditModelAndView1(procession, "procession.commit.error");
-		}
 		return result;
 	}
 

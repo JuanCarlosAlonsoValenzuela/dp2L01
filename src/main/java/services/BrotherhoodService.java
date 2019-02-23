@@ -64,6 +64,10 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.getProcessionsByBrotherhood(b.getId());
 	}
 
+	public List<Procession> getProcessionsByBrotherhoodFinal(final Brotherhood b) {
+		return this.brotherhoodRepository.getProcessionsByBrotherhoodFinal(b.getId());
+	}
+
 	public Brotherhood create() {
 		final Brotherhood bro = new Brotherhood();
 

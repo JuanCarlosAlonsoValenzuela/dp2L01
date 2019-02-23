@@ -45,13 +45,17 @@ public class BrotherhoodController extends AbstractController {
 
 		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
 
-		List<Float> allFloats = new ArrayList<Float>();
+		List<domain.Float> allFloats = new ArrayList<domain.Float>();
+
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
 
 		allFloats = this.floatService.showBrotherhoodFloats();
 
 		result = new ModelAndView("float/brotherhood/list");
 
 		result.addObject("allFloats", allFloats);
+		result.addObject("floatFinalMode", floatFinalMode);
 		result.addObject("requestURI", "float/brotherhood/list.do");
 		result.addObject("hasArea", hasArea);
 		return result;
@@ -91,7 +95,7 @@ public class BrotherhoodController extends AbstractController {
 		Assert.isTrue(bro.getArea() != null);
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
-		Float floatt = new Float();
+		domain.Float floatt = new domain.Float();
 
 		floatt = this.floatService.create();
 
@@ -100,7 +104,7 @@ public class BrotherhoodController extends AbstractController {
 	}
 
 	//EDIT
-	@RequestMapping(value = "edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam int floatId) {
 		ModelAndView result;
 
@@ -118,22 +122,25 @@ public class BrotherhoodController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveFloat(@Valid domain.Float floatt, BindingResult binding) {
+	public ModelAndView saveFloat(domain.Float floatt, BindingResult binding) {
 
 		ModelAndView result;
 		this.brotherhoodService.loggedAsBrotherhood();
-		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
-		//floatt = this.floatService.reconstruct(floatt, binding);
-		//floatt = this.floatService.reconstruct(floatt, binding);
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		Assert.notNull(loggedBrotherhood.getArea());
+
+		domain.Float f;
+
+		f = this.floatService.reconstruct(floatt, binding);
 
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(floatt);
 		else
 			try {
-				this.floatService.save(floatt);
-				//TODO:
-				result = new ModelAndView("redirect:/float/brotherhood/list.do");
+				this.floatService.save(f);
+
+				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(floatt, "brotherhood.commit.error");
 
@@ -141,7 +148,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Float floatt) {
+	protected ModelAndView createEditModelAndView(domain.Float floatt) {
 		ModelAndView result;
 
 		result = this.createEditModelAndView(floatt, null);
@@ -149,7 +156,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Float floatt, String messageCode) {
+	protected ModelAndView createEditModelAndView(domain.Float floatt, String messageCode) {
 		ModelAndView result;
 
 		result = new ModelAndView("float/brotherhood/create");
@@ -167,7 +174,7 @@ public class BrotherhoodController extends AbstractController {
 		ModelAndView result;
 		Brotherhood brother = new Brotherhood();
 		brother = this.brotherhoodService.loggedBrotherhood();
-		List<Float> floatts = new ArrayList<Float>();
+		List<domain.Float> floatts = new ArrayList<domain.Float>();
 
 		floatts = this.brotherhoodService.getFloatsByBrotherhood(brother);
 
