@@ -75,25 +75,15 @@ public class AreaService {
 	public Area reconstructArea(Area a, BindingResult binding, String s) {
 		this.loggedAsAdmin();
 		Area result;
-		Area result2;
 		List<String> pictures = new ArrayList<String>();
 		pictures.add(s);
 
-		if (a.getId() == 0) {
-			result = a;
-			result.setPictures(this.listUrlsArea(pictures));
-		} else {
-			result2 = this.areaRepository.findOne(a.getId());
+		result = a;
+		result.setPictures(this.listUrlsArea(pictures));
 
-			result = a;
-			result.setPictures(this.listUrlsArea(pictures));
-			result.setVersion(result2.getVersion());
-
-		}
 		this.validator.validate(result, binding);
 		return result;
 	}
-
 	public List<String> listUrlsArea(List<String> list) {
 		List<String> pic = new ArrayList<String>();
 
@@ -101,11 +91,9 @@ public class AreaService {
 			String picture = list.get(0).trim();
 			List<String> pictures = Arrays.asList(picture.split(","));
 
-			for (String s : pictures) {
-				if (!s.isEmpty() && !pic.contains(s.trim()) && this.isUrl(s)) {
+			for (String s : pictures)
+				if (!s.isEmpty() && !pic.contains(s.trim()) && this.isUrl(s))
 					pic.add(s.trim());
-				}
-			}
 		}
 		return pic;
 	}

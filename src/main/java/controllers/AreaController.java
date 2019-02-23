@@ -169,23 +169,24 @@ public class AreaController extends AbstractController {
 	public ModelAndView editArea(Area area, BindingResult binding, @RequestParam String newPictures) {
 		ModelAndView result;
 		Area a;
+		Boolean delete = this.areaService.brotherhoodOfAnArea(area.getId()).isEmpty();
 
 		a = this.areaService.reconstructArea(area, binding, newPictures);
 
 		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(area);
-		} else {
+			result.addObject("delete", delete);
+		} else
 			try {
 				this.areaService.updateArea(a);
 				result = new ModelAndView("redirect:showAreas.do");
 
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(area, "area.commit.error");
+				result.addObject("delete", delete);
 			}
-		}
 		return result;
 	}
-
 	@RequestMapping(value = "/administrator/edit", method = RequestMethod.POST, params = "delete")
 	public ModelAndView deleteArea(Area area) {
 		ModelAndView result;

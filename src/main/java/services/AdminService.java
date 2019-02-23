@@ -18,7 +18,9 @@ import security.UserAccountService;
 import domain.Actor;
 import domain.Admin;
 import domain.Box;
+import domain.Member;
 import domain.Message;
+import domain.Procession;
 import domain.SocialProfile;
 
 @Service
@@ -39,6 +41,15 @@ public class AdminService {
 
 	@Autowired
 	private BoxService			boxService;
+
+	@Autowired
+	private ProcessionService	processionService;
+
+	@Autowired
+	private RequestService		requestService;
+
+	@Autowired
+	private AreaService			areaService;
 
 
 	// 1. Create user accounts for new administrators.
@@ -292,14 +303,106 @@ public class AdminService {
 		return this.findOne(adminId);
 	}
 
+	public List<Float> showStatistics() {
+		List<Float> statistics = new ArrayList<Float>();
+		statistics.add(this.adminRepository.avgMembersPerBrotherhood());
+		statistics.add(this.minMembersBrotherhood());
+		statistics.add(this.maxMembersBrotherhood());
+		statistics.add(this.adminRepository.stddevMembersPerBrotherhood());
+
+		if (this.requestService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+		} else {
+			statistics.add(this.adminRepository.ratioPendingRequests());
+			statistics.add(this.adminRepository.ratioApprovedRequests());
+			statistics.add(this.adminRepository.ratioRejectedRequests());
+		}
+
+		statistics.add(this.minBrotherhoodsArea());
+		statistics.add(this.maxBrotherhoodsArea());
+		statistics.add(this.adminRepository.avgNumberBrotherhoodPerArea());
+		statistics.add(this.adminRepository.stddevNumberBrotherhoodPerArea());
+
+		statistics.add(this.adminRepository.minResultFinders());
+		statistics.add(this.adminRepository.maxResultFinders());
+		statistics.add(this.adminRepository.avgResultFinders());
+		statistics.add(this.adminRepository.stddevResultFinders());
+		if (this.adminRepository.numberNonEmptyFinders() == 0)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioEmptyFinder());
+		return statistics;
+	}
+	public Float maxMembersBrotherhood() {
+		return this.adminRepository.maxNumberMembersPerBrotherhood();
+	}
+
+	public Float minMembersBrotherhood() {
+		return this.adminRepository.minNumberMembersPerBrotherhood();
+	}
+
+	public Float maxBrotherhoodsArea() {
+		return this.adminRepository.maxNumberBrotherhoodPerArea();
+	}
+
+	public Float minBrotherhoodsArea() {
+		return this.adminRepository.minNumberBrotherhoodPerArea();
+	}
+
+	public List<Float> countBrotherhoodsArea() {
+		return this.adminRepository.numberBrotherhoodsPerArea();
+	}
+
+	public List<String> largestBrotherhoods() {
+		return this.adminRepository.largestOrSmallestBrotherhoods(this.maxMembersBrotherhood());
+
+	}
+	public List<String> smallestBrotherhoods() {
+		return this.adminRepository.largestOrSmallestBrotherhoods(this.minMembersBrotherhood());
+
+	}
+	public List<Float> ratioBrotherhoodPerArea() {
+		if (this.areaService.findAll().isEmpty())
+			return new ArrayList<Float>();
+		else
+			return this.adminRepository.ratioBrotherhoodPerArea();
+	}
+
+	public List<Float> ratioRequestApprovedByProcession() {
+		return this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions());
+	}
+
+	public List<Float> ratioRequestPendingByProcession() {
+		return this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions());
+	}
+
+	public List<Float> ratioRequestRejectedByProcession() {
+		return this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions());
+	}
+
+	public List<String> processionsOfNextMonth() {
+		return this.adminRepository.listProcessionBeforeDate(this.adminRepository.dateFuture());
+	}
+
+	public List<Member> membersAtLeastTenPercentRequestsApproved() {
+		return this.adminRepository.listMembersAtLeastTenPercentRequestApproved();
+	}
+
+	public List<Float> noZeroDivision(List<Float> result) {
+		List<Procession> pro = this.processionService.findAll();
+		Assert.isTrue(result.size() == pro.size());
+		for (Procession p : pro)
+			if (p.getRequests().size() == 0)
+				result.set(pro.indexOf(p), (float) 0);
+		return result;
+
+	}
 	/*
 	 * public List<Admin> findAll2() {
 	 * return this.adminRepository.findAll2();
 	 * }
 	 */
-
-	public Admin getSystem() {
-		return this.adminRepository.getSystem();
-	}
 
 }
