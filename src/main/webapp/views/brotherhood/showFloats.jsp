@@ -5,6 +5,7 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
 <p><spring:message code="brotherhood.float.list" /></p>
@@ -40,11 +41,13 @@
     </display:column>
   	
   	<jstl:if test="${!restriction}">
-  		<display:column>
-			<a href="float/brotherhood/edit.do?floatId=${row.id}">
-				<spring:message code="float.edit" />
-			</a>
-		</display:column>
+  		<display:column>	
+			<jstl:if test="${not fn:containsIgnoreCase(floatFinalMode, row)}">
+				<a href="float/brotherhood/edit.do?floatId=${row.id}">
+					<spring:message code="float.edit" />
+				</a>
+		</jstl:if>
+	</display:column>
 	</jstl:if>
 	
 												

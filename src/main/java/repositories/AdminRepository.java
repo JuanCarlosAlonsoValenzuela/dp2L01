@@ -1,11 +1,15 @@
 
 package repositories;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import domain.Admin;
+import domain.Member;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
@@ -63,6 +67,85 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	 * public List<Admin> findAll2();
 	 */
 
-	@Query("select a from Admin a join a.userAccount u where u.username = system")
-	public Admin getSystem();
+	@Query("select cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) from Brotherhood a")
+	public List<Float> listNumberMembersPerBrotherhood();
+
+	@Query("select max(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a")
+	public Float maxNumberMembersPerBrotherhood();
+
+	@Query("select min(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a")
+	public Float minNumberMembersPerBrotherhood();
+
+	@Query("select avg(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a")
+	public Float avgMembersPerBrotherhood();
+
+	@Query("select stddev(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a")
+	public Float stddevMembersPerBrotherhood();
+
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='APPROVED') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	public Float ratioApprovedRequests();
+
+	@Query("select (cast((select count(a1.status) from Request a1 where status='APPROVED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
+	public List<Float> ratioApprovedRequestsByProcessions();
+
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='PENDING') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	public Float ratioPendingRequests();
+
+	@Query("select (cast((select count(a1.status) from Request a1 where status='PENDING' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
+	public List<Float> ratioPendingRequestsByProcessions();
+
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='REJECTED') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	public Float ratioRejectedRequests();
+
+	@Query("select (cast((select count(a1.status) from Request a1 where status='REJECTED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
+	public List<Float> ratioRejectedRequestsByProcessions();
+
+	@Query("select a.title from Brotherhood a where cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) = ?1")
+	public List<String> largestOrSmallestBrotherhoods(Float maxOrMinMembers);
+
+	@Query("select  a from Member a where cast((select count(b) from Request b where b.status = 'APPROVED' and b.member = a) as float) >= (cast((select count(b) from Request b where b.member = a) as float) * 0.1) and (select count(b) from Request b where b.member = a) > 0")
+	public List<Member> listMembersAtLeastTenPercentRequestApproved();
+
+	@Query("select (cast((select count(a) from Brotherhood a where a.area = b) as float)/(select count(c) from Area c)) from Area b")
+	public List<Float> ratioBrotherhoodPerArea();
+
+	@Query("select cast((select count(a) from Brotherhood a where a.area = b) as float) from Area b")
+	public List<Float> numberBrotherhoodsPerArea();
+
+	@Query("select avg(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
+	public Float avgNumberBrotherhoodPerArea();
+
+	@Query("select max(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
+	public Float maxNumberBrotherhoodPerArea();
+
+	@Query("select min(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
+	public Float minNumberBrotherhoodPerArea();
+
+	@Query("select stddev(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
+	public Float stddevNumberBrotherhoodPerArea();
+
+	@Query("select a.title from Procession a where a.moment between (NOW()) and ?1")
+	public List<String> listProcessionBeforeDate(Date d);
+
+	@Query("select (NOW() + 030000000) from Configuration c")
+	public Date dateFuture();
+
+	@Query("select min(a.processions.size) from Finder a")
+	public Float minResultFinders();
+
+	@Query("select max(a.processions.size) from Finder a")
+	public Float maxResultFinders();
+
+	@Query("select avg(a.processions.size) from Finder a")
+	public Float avgResultFinders();
+
+	@Query("select stddev(a.processions.size) from Finder a")
+	public Float stddevResultFinders();
+
+	@Query("select (cast((select count(a) from Finder a where a.processions.size = 0) as float)/(select count(c) from Finder c where c.processions.size > 0)) from Configuration b")
+	public Float ratioEmptyFinder();
+
+	@Query("select count(c) from Finder c where c.processions.size > 0")
+	public Integer numberNonEmptyFinders();
+
 }
