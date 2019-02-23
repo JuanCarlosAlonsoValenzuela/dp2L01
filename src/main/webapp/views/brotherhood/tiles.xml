@@ -79,6 +79,8 @@
 	<definition name="enrolment/brotherhood/list" extends="master.page">	
 		<put-attribute name="title" value="Pending enrolments" />
 		<put-attribute name="body" value="/views/brotherhood/pendingEnrolments.jsp" />
+	</definition>
+	
 	<definition name="procession/brotherhood/createCheckbox" extends="master.page">	
 		<put-attribute name="title" value="Create a Procession" />
 		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
