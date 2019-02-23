@@ -10,15 +10,20 @@
 <p><spring:message code="procession.create" /></p>
 
 
-<form:form action="procession/brotherhood/create.do" modelAttribute="formObjectProcessionFloat" >
+
+<form:form action="procession/brotherhood/editCheckbox.do" modelAttribute="formObjectProcessionFloatCheckbox" >
+
+
 
 <fieldset>
   <legend> <spring:message code="procession.data" /> </legend>
+  	
+  	<form:hidden path ="id"/>
 
 	<acme:textbox code="procession.title" path="titleProcession"/>	
 	<br />
 	
-	<acme:textbox code="procession.description" path="descriptionProcession"/>	
+	<acme:textarea code="procession.description" path="descriptionProcession"/>	
 	<br />
 		
 	<acme:datebox code="procession.moment" path="moment"/>	
@@ -38,18 +43,21 @@
 <fieldset>
   <legend> <spring:message code="float.data" /> </legend>
   
-	<acme:textbox code="float.title" path="title"/>	
-	<br />
+	<acme:checkbox  path="floats" map="${map}" />
 	
-	<acme:textbox code="float.description" path="description"/>	
-	<br />
+
+	
 </fieldset>
 	<br />
 	
 	<acme:submit code="float.createButton" name="save" />
 	<br />
+	<jstl:if test="${processionId != 0 }">
+ 		<acme:submit name="delete" code="float.delete" />
+ 	</jstl:if> 
+	<br />
+</form:form> 
 	
-</form:form> </form:form> </form:form> </form:form> 
-
-
-<acme:cancel url="/procession/brotherhood/list.do" code="float.cancel" /> 
+	<acme:cancel url="/procession/brotherhood/list.do" code="float.cancel" /> 
+	
+	

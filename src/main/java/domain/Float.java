@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(name = "`float`")
+@Table(name = "`Float`")
 public class Float extends DomainEntity {
 
 	private String			title;
@@ -46,7 +46,7 @@ public class Float extends DomainEntity {
 		return this.pictures;
 	}
 
-	public void setPictures(final List<String> pictures) {
+	public void setPictures(List<String> pictures) {
 		this.pictures = pictures;
 	}
 }

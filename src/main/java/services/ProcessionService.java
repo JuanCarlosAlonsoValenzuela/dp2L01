@@ -23,6 +23,7 @@ import domain.Float;
 import domain.Procession;
 import domain.Request;
 import forms.FormObjectProcessionFloat;
+import forms.FormObjectProcessionFloatCheckbox;
 
 @Service
 @Transactional
@@ -173,6 +174,7 @@ public class ProcessionService {
 		result.setIsDraftMode(formObjectProcessionCoach.getIsDraftMode());
 		result.setRowNumber(formObjectProcessionCoach.getRowNumber());
 		result.setColumnNumber(formObjectProcessionCoach.getColumnNumber());
+		result.setId(0);
 
 		result.setTicker(this.generateTicker());
 
@@ -181,9 +183,27 @@ public class ProcessionService {
 		return result;
 	}
 
-	public Procession saveAssign(Procession procession, domain.Float newFloat) {
+	public Procession reconstructCheckbox(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox, BindingResult binding) {
+		Procession result = new Procession();
 
-		//procession.getFloats().add(newFloat);
+		if (formObjectProcessionFloatCheckbox.getId() == 0)
+			result.setTicker(this.generateTicker());
+		else
+			result = this.processionRepository.findOne(formObjectProcessionFloatCheckbox.getId());
+
+		result.setTitle(formObjectProcessionFloatCheckbox.getTitleProcession());
+		result.setDescription(formObjectProcessionFloatCheckbox.getDescriptionProcession());
+		result.setMoment(formObjectProcessionFloatCheckbox.getMoment());
+		result.setIsDraftMode(formObjectProcessionFloatCheckbox.getIsDraftMode());
+		result.setRowNumber(formObjectProcessionFloatCheckbox.getRowNumber());
+		result.setColumnNumber(formObjectProcessionFloatCheckbox.getColumnNumber());
+
+		//		this.validator.validate(result, binding);		//YA VIENE VALIDADO
+
+		return result;
+	}
+
+	public Procession saveAssign(Procession procession, domain.Float newFloat) {
 		List<domain.Float> floats = new ArrayList<>();
 		floats.add(newFloat);
 		procession.setFloats(floats);
@@ -196,6 +216,72 @@ public class ProcessionService {
 		this.brotherhoodService.save(brotherhood);
 
 		return saved;
+	}
+
+	public Procession saveAssignList(Procession procession, List<domain.Float> floats) {	//TERMINADO
+
+		//procession.getFloats().add(newFloat);
+
+		procession.setFloats(floats);
+		Procession saved = new Procession();
+		saved = this.processionRepository.save(procession);
+
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		brotherhood.getProcessions().remove(procession);		//NUEVO
+		brotherhood.getProcessions().add(saved);
+		this.brotherhoodService.save(brotherhood);
+
+		return saved;
+	}
+
+	public FormObjectProcessionFloatCheckbox prepareFormObjectProcessionFloatCheckbox(int processionId) {
+
+		Procession procession = this.processionRepository.findOne(processionId);
+
+		Assert.notNull(procession);
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(loggedBrotherhood.getProcessions().contains(procession));
+		Assert.isTrue(procession.getIsDraftMode());
+
+		FormObjectProcessionFloatCheckbox result = new FormObjectProcessionFloatCheckbox();
+
+		List<Integer> floats = new ArrayList<>();
+		for (domain.Float f : procession.getFloats())
+			floats.add(f.getId());
+
+		result.setColumnNumber(procession.getColumnNumber());
+		result.setDescriptionProcession(procession.getDescription());
+		result.setFloats(floats);
+		result.setIsDraftMode(procession.getIsDraftMode());
+		result.setMoment(procession.getMoment());
+		result.setRowNumber(procession.getRowNumber());
+		result.setTitleProcession(procession.getTitle());
+		result.setId(processionId);
+
+		return result;
+	}
+
+	public void delete(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox) {
+
+		Procession procession = this.processionRepository.findOne(formObjectProcessionFloatCheckbox.getId());
+
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		Assert.notNull(procession);
+		Assert.isTrue(loggedBrotherhood.getProcessions().contains(procession));
+		Assert.isTrue(procession.getIsDraftMode());
+
+		procession.setFloats(new ArrayList<domain.Float>());
+
+		loggedBrotherhood.getProcessions().remove(procession);
+		this.brotherhoodService.save(loggedBrotherhood);
+
+		this.processionRepository.delete(procession);
+
 	}
 
 }

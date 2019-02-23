@@ -12,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -55,6 +56,7 @@ public class Procession extends DomainEntity {
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
 	@NotNull
+	@Future
 	public Date getMoment() {
 		return this.moment;
 	}
