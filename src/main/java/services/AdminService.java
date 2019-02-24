@@ -403,10 +403,5 @@ public class AdminService {
 	public Admin getSystem() {
 		return this.adminRepository.getSystem();
 	}
-	/*
-	 * public List<Admin> findAll2() {
-	 * return this.adminRepository.findAll2();
-	 * }
-	 */
 
 }

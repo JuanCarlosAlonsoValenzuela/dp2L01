@@ -50,7 +50,7 @@ public class MessageService {
 	// Actualizar caja que tiene el mensaje EN ESTE ORDEN
 	// ACTUALIZAR CAJA SIN EL MENSAJE
 	// BORRAR EL MENSAJE Y TODAS SUS COPIAS
-	public void delete(final Message m) {
+	public void delete(Message m) {
 		this.messageRepository.delete(m);
 	}
 
@@ -224,9 +224,9 @@ public class MessageService {
 
 	}
 
-	public Message sendMessageAnotherSender(final Message message) {
+	public Message sendMessageAnotherSender(Message message) {
 
-		final Actor actorRecieved = message.getReceiver();
+		Actor actorRecieved = message.getReceiver();
 		List<String> spam = new ArrayList<String>();
 
 		spam = this.configurationService.getSpamWords();
@@ -235,9 +235,9 @@ public class MessageService {
 		Box boxSpam = new Box();
 		Box boxSent = new Box();
 
-		final Message messageSaved = this.messageRepository.save(message);
-		final Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
-		final Message messageCopySaved = this.messageRepository.save(messageCopy);
+		Message messageSaved = this.messageRepository.save(message);
+		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
+		Message messageCopySaved = this.messageRepository.save(messageCopy);
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
 		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
 		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
@@ -264,7 +264,7 @@ public class MessageService {
 		}
 		return messageSaved;
 	}
-	public Message save(final Message message) {
+	public Message save(Message message) {
 		return this.messageRepository.save(message);
 
 	}
@@ -276,12 +276,12 @@ public class MessageService {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 
-		final Date thisMoment = new Date();
+		Date thisMoment = new Date();
 		thisMoment.setTime(thisMoment.getTime() - 1000);
 
-		final Message message = new Message();
-		final Actor sender = this.actorService.getActorByUsername(userAccount.getUsername());
-		final Actor receiver = new Actor();
+		Message message = new Message();
+		Actor sender = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor receiver = new Actor();
 		message.setMoment(thisMoment);
 		message.setSubject("");
 		message.setBody("");
@@ -293,19 +293,19 @@ public class MessageService {
 		return message;
 	}
 
-	public Message create(final String Subject, final String body, final String priority, final Actor recipient) {
+	public Message create(String Subject, String body, String priority, Actor recipient) {
 
 		this.actorService.loggedAsActor();
 
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 
-		final Date thisMoment = new Date();
+		Date thisMoment = new Date();
 		thisMoment.setTime(thisMoment.getTime() - 1);
 
-		final Message message = new Message();
+		Message message = new Message();
 
-		final Actor sender = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor sender = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		message.setMoment(thisMoment);
 		message.setSubject(Subject);
@@ -318,68 +318,68 @@ public class MessageService {
 		return message;
 	}
 
-	public Message createNotification(final String Subject, final String body, final String priority, final Actor recipient) {
+	public Message createNotification(String Subject, String body, String priority, String tags, Actor recipient) {
 		this.actorService.loggedAsActor();
 
-		final Date thisMoment = new Date();
+		Date thisMoment = new Date();
 		thisMoment.setTime(thisMoment.getTime() - 1);
 
-		final Message message = new Message();
+		Message message = new Message();
 
-		final Actor sender = this.actorService.getActorByUsername("admin");
+		Actor sender = this.actorService.getActorByUsername("system");
 
 		message.setMoment(thisMoment);
 		message.setSubject(Subject);
 		message.setBody(body);
 		message.setPriority(priority);
 		message.setReceiver(recipient);
-		message.setTags("");
+		message.setTags(tags);
 		message.setSender(sender);
 
 		return message;
 	}
 
-	public void updateMessage(final Message message, final Box box) { // Posible problema
+	public void updateMessage(Message message, Box box) { // Posible problema
 		// con copia
 
 		this.actorService.loggedAsActor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
-		for (final Box b : actor.getBoxes()) {
+		for (Box b : actor.getBoxes()) {
 			if (b.getMessages().contains(message))
 				b.getMessages().remove(message);
 			//list.remove(message);
 			//b.setMessages(list);
 			if (b.getName().equals(box.getName())) {
-				final List<Message> list = b.getMessages();
+				List<Message> list = b.getMessages();
 				list.add(message);
 				b.setMessages(list);
 			}
 		}
 	}
 
-	public void deleteMessageToTrashBox(final Message message) {
+	public void deleteMessageToTrashBox(Message message) {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		//Box currentBox = this.boxService.getCurrentBoxByMessage(message);
 
-		final List<Box> currentBoxes = new ArrayList<>();
+		List<Box> currentBoxes = new ArrayList<>();
 
-		for (final Box b : actor.getBoxes())
+		for (Box b : actor.getBoxes())
 			if (b.getMessages().contains(message))
 				currentBoxes.add(b);
 
-		final Box trash = this.boxService.getTrashBoxByActor(actor);
+		Box trash = this.boxService.getTrashBoxByActor(actor);
 
 		// When an actor removes a message from a box other than trash box, it
 		// is moved to the trash box;
-		for (final Box currentBox : currentBoxes)
+		for (Box currentBox : currentBoxes)
 			if (currentBox.equals(trash)) {
-				for (final Box b : actor.getBoxes())
+				for (Box b : actor.getBoxes())
 					if (b.getMessages().contains(message)) {
 						b.getMessages().remove(message);
 						this.messageRepository.delete(message);
@@ -390,16 +390,16 @@ public class MessageService {
 		// updateMessage no hace falta aqui
 	}
 
-	public void copyMessage(final Message message, final Box box) {
+	public void copyMessage(Message message, Box box) {
 
 		this.actorService.loggedAsActor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
-		for (final Box b : actor.getBoxes())
+		for (Box b : actor.getBoxes())
 			if (b.getName().equals(box.getName())) {
-				final List<Message> list = b.getMessages();
+				List<Message> list = b.getMessages();
 				list.add(message);
 				b.setMessages(list);
 			}
@@ -413,11 +413,11 @@ public class MessageService {
 		return this.messageRepository.findAll2();
 	}
 
-	public Message findOne(final int id) {
+	public Message findOne(int id) {
 		return this.messageRepository.findOne(id);
 	}
 
-	public List<Message> getMessagesByBox(final Box b) {
+	public List<Message> getMessagesByBox(Box b) {
 		return b.getMessages();
 	}
 }
