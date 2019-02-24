@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,26 +96,29 @@ public class MessageController extends AbstractController {
 
 	//Save
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid Message message, BindingResult binding) {
+	public ModelAndView save(@ModelAttribute("messageTest") domain.Message messageTest, BindingResult binding) {
+
 		this.actorService.loggedAsActor();
 		ModelAndView result;
-		Message savedMessage;
+		domain.Message savedMessage;
 		List<Box> boxes;
 		Box box;
 		UserAccount userAccount = LoginService.getPrincipal();
 
-		Assert.isTrue(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername()));
+		messageTest = this.messageService.reconstruct(messageTest, binding);
+
+		Assert.isTrue(userAccount.getUsername().equals(messageTest.getSender().getUserAccount().getUsername()));
 
 		if (binding.hasErrors())
-			result = this.createEditModelAndView(message);
+			result = this.createEditModelAndView(messageTest);
 		else
 			try {
-				savedMessage = this.messageService.sendMessage(message);
+				savedMessage = this.messageService.sendMessage(messageTest);
 				boxes = this.boxService.getCurrentBoxByMessage(savedMessage);
 				box = boxes.get(0);
 				result = new ModelAndView("redirect:list.do?boxId=" + box.getId());
 			} catch (Throwable oops) {
-				result = this.createEditModelAndView(message, "message.commit.error");
+				result = this.createEditModelAndView(messageTest, "message.commit.error");
 			}
 		return result;
 	}
@@ -144,6 +147,8 @@ public class MessageController extends AbstractController {
 		Box box;
 		boxes = this.boxService.getCurrentBoxByMessage(message);
 		box = boxes.get(0);
+
+		message = this.messageService.reconstructDelete(message);
 
 		if (!(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername())))
 			return new ModelAndView("redirect:list.do?boxId=" + box.getId());
@@ -184,8 +189,6 @@ public class MessageController extends AbstractController {
 
 		message = this.messageService.findOne(messageId);
 
-		if (!(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername())))
-			return new ModelAndView("redirect:list.do?boxId=" + boxId);
 		box = this.boxService.findOne(boxId);
 
 		try {
@@ -251,15 +254,15 @@ public class MessageController extends AbstractController {
 		return result;
 	}
 	//CreateEditModelAndView
-	protected ModelAndView createEditModelAndView(Message message) {
+	protected ModelAndView createEditModelAndView(Message messageTest) {
 		ModelAndView result;
 
-		result = this.createEditModelAndView(message, null);
+		result = this.createEditModelAndView(messageTest, null);
 
 		return result;
 	}
 
-	protected ModelAndView createEditModelAndView(Message message, String messageCode) {
+	protected ModelAndView createEditModelAndView(Message messageTest, String messageCode) {
 		ModelAndView result;
 
 		UserAccount userAccount = LoginService.getPrincipal();
@@ -274,7 +277,7 @@ public class MessageController extends AbstractController {
 		actorBoxes = this.actorService.getlistOfBoxes(actor);
 
 		result = new ModelAndView("message/actor/create");
-		result.addObject("messageTest", message);
+		result.addObject("messageTest", messageTest);
 		result.addObject("actors", actors);
 		result.addObject("actorBoxes", actorBoxes);
 		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());

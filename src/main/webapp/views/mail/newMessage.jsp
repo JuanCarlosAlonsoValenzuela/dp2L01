@@ -18,11 +18,8 @@
 
 	<form:hidden path="id"/>
 	<form:hidden path="version"/>
-	<form:hidden path="moment"/>
-	<form:hidden path="sender"/>
 
 
-	
 	<acme:input code="mail.message.subject" path="subject"/>
 
 	<acme:select items="${actors}" itemLabel="userAccount.username" code="mail.message.receiver" path="receiver"/>
