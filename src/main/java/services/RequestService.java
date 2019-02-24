@@ -14,8 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.RequestRepository;
+import security.LoginService;
+import security.UserAccount;
+import domain.Actor;
 import domain.Brotherhood;
 import domain.Member;
+import domain.Message;
 import domain.Procession;
 import domain.Request;
 import domain.Status;
@@ -36,6 +40,10 @@ public class RequestService {
 	private Validator			validator;
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
+	@Autowired
+	private ActorService		actorService;
+	@Autowired
+	private MessageService		messageService;
 
 
 	//Simple CRUD methods ---------------------------------------------------------------------
@@ -196,6 +204,9 @@ public class RequestService {
 		}
 
 		requestSaved = this.save(request);
+
+		this.sendMessagesToActorsInvolved(requestSaved);
+
 		return requestSaved;
 	}
 	public Request reconstructRequest(Request request, BindingResult binding) {
@@ -288,5 +299,34 @@ public class RequestService {
 		position.add(col);
 
 		return position;
+	}
+
+	public void sendMessagesToActorsInvolved(Request request) {
+		//Messages
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		String userName = userAccount.getUsername();
+		Actor brotherhood = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		String statusES = "";
+		String statusEN = "";
+		if (request.getStatus().equals(Status.APPROVED)) {
+			statusES = "APROBADA";
+			statusEN = "APPROVED";
+		} else {
+			statusES = "RECHAZADA";
+			statusEN = "REJECTED";
+		}
+
+		String subject = "Request updated: " + statusEN + " / Solicitud actualizada: " + statusES;
+
+		String body = "Request associated to the procession: " + request.getProcession().getTicker() + ", " + request.getProcession().getTitle() + " has been updated" + " / " + "Solicitud asociada a la procesión: " + request.getProcession().getTicker()
+			+ ", " + request.getProcession().getTitle() + " ha sido actualizada";
+
+		Message messageB = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", brotherhood);
+		Message messageM = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", request.getMember());
+
+		this.messageService.sendMessageAnotherSender(messageB);
+		this.messageService.sendMessageAnotherSender(messageM);
 	}
 }

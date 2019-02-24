@@ -150,4 +150,5 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
 	@Query("select a from Admin a join a.userAccount u where u.username = 'system'")
 	public Admin getSystem();
+
 }
