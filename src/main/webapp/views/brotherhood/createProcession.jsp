@@ -49,7 +49,7 @@
 	<acme:submit code="float.createButton" name="save" />
 	<br />
 	
-</form:form> </form:form> </form:form> </form:form> 
+</form:form> 
 
 
 <acme:cancel url="/procession/brotherhood/list.do" code="float.cancel" /> 
