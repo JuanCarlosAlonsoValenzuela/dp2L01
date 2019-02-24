@@ -12,8 +12,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.ConfigurationRepository;
+import security.Authority;
 import security.LoginService;
 import security.UserAccount;
 import domain.Actor;
@@ -33,6 +37,9 @@ public class ConfigurationService {
 
 	@Autowired
 	private AdminService			adminService;
+
+	@Autowired
+	private Validator				validator;
 
 
 	public Configuration getConfiguration() {
@@ -273,6 +280,7 @@ public class ConfigurationService {
 			res = cont / parcialresult.size();
 		DecimalFormat df2 = new DecimalFormat(".##");
 		a.setPolarity(Double.valueOf(df2.format(res)));
+		System.out.println("Polarity calculada:" + res);
 
 		this.actorService.save(a);
 
@@ -297,6 +305,42 @@ public class ConfigurationService {
 		}
 
 		return result;
+	}
+
+	public Configuration reconstruct(Configuration configuration, BindingResult binding) {
+		this.loggedAsAdmin();
+
+		Configuration result = new Configuration();
+
+		Configuration configurationBefore = this.configurationRepository.findOne(configuration.getId());
+
+		result.setId(configurationBefore.getId());
+		result.setVersion(configurationBefore.getVersion());
+		result.setBadWords(configurationBefore.getBadWords());
+		result.setGoodWords(configurationBefore.getGoodWords());
+
+		result.setFinderResult(configuration.getFinderResult());
+		result.setMinFinderResults(configuration.getMinFinderResults());
+		result.setmaxFinderResults(configuration.getmaxFinderResults());
+		result.setTimeFinder(configuration.getTimeFinder());
+		result.setSpainTelephoneCode(configuration.getSpainTelephoneCode());
+		result.setWelcomeMessageEnglish(configuration.getWelcomeMessageEnglish());
+		result.setWelcomeMessageSpanish(configuration.getWelcomeMessageSpanish());
+		result.setSystemName(configuration.getSystemName());
+		result.setImageURL(configuration.getImageURL());
+		result.setMaxTimeFinder(configuration.getMaxTimeFinder());
+		result.setMinTimeFinder(configuration.getMinTimeFinder());
+
+		this.validator.validate(result, binding);
+
+		return result;
+
+	}
+	public void loggedAsAdmin() {
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		Assert.isTrue(authorities.get(0).toString().equals("ADMIN"));
 	}
 
 }

@@ -62,4 +62,19 @@
 		<put-attribute name="body" value="/views/administrator/positions.jsp" />
 	</definition>
 	
+	<definition name="administrator/editPosition" extends="master.page">	
+		<put-attribute name="title" value="Editar posicion" /> 
+		<put-attribute name="body" value="/views/administrator/createPosition.jsp" />
+	</definition>
+	
+	<definition name="administrator/createPosition" extends="master.page">	
+		<put-attribute name="title" value="Crear posicion" /> 
+		<put-attribute name="body" value="/views/administrator/createPosition.jsp" />
+	</definition>
+	
+	<definition name="statistics/administrator/show" extends="master.page">	
+		<put-attribute name="title" value="Estadisticas" />
+		<put-attribute name="body" value="/views/administrator/statistics.jsp" />
+	</definition>
+	
 </tiles-definitions>

@@ -12,12 +12,12 @@
 <form name="word" id="word" action="words/administrator/save.do" method="post" >
 
 
-  Word <input type="text" name="word" value="${word}"><br>
+  <spring:message code="administrator.word" /> <input type="text" name="word" value="${word}" required><br>
 
 <jstl:choose> 
   <jstl:when test="${word == null}">
-  <input type="radio" name="wordType" value="goodword"> good word<br>
-  <input type="radio" name="wordType" value="badword"> bad word<br>
+  <input type="radio" name="wordType" value="goodword" checked> <spring:message code="administrator.goodWord" /> <br>
+  <input type="radio" name="wordType" value="badword"> <spring:message code="administrator.badWord" /> <br>
  </jstl:when>
  
  <jstl:otherwise>

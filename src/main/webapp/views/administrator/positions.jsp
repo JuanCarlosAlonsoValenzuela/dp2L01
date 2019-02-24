@@ -8,34 +8,28 @@
 
 <security:authorize access="hasRole('ADMIN')">
 
-<display:table pagesize="5" name="configuration" id="row" class="displaytag" 
-					requestURI="configuration/administrator/list.do">
-					
-	<display:column property="finderResult" titleKey="configuration.finderResult" /> 
-					
-	<display:column property="minFinderResults" titleKey="configuration.minFinderResults" />
+<display:table pagesize="5" name="positions" id="row" class="displaytag" 
+					requestURI="position/administrator/list.do">
 	
-	<display:column property="maxFinderResults" titleKey="configuration.maxFinderResults" />
-	
-	<display:column property="timeFinder" titleKey="configuration.timeFinder" /> 
-					
-	<display:column property="minTimeFinder" titleKey="configuration.minTimeFinder" />
-	
-	<display:column property="maxTimeFinder" titleKey="configuration.maxTimeFinder" />
-	
-	<display:column property="spainTelephoneCode" titleKey="configuration.spainTelephoneCode" />
-	<!--  -->
-	<display:column property="welcomeMessageEnglish" titleKey="configuration.welcomeMessageEnglish" />
-	
-	<display:column property="welcomeMessageSpanish" titleKey="configuration.welcomeMessageSpanish" />
-	
-	<display:column property="systemName" titleKey="configuration.systemName" />
-	
-	<display:column property="imageURL" titleKey="configuration.imageURL" />
-	
+	<jstl:if test="${locale=='EN'}">
+		<display:column property="titleEnglish" titleKey="position.title" />
+	</jstl:if>
+	<jstl:if test="${locale=='ES'}">
+		<display:column property="titleSpanish" titleKey="position.title" />
+	</jstl:if>
+		
+	<display:column>
+		<spring:url var="editPosition" value="/position/administrator/edit.do">
+			<spring:param name="positionId" value="${row.id}" />
+		</spring:url>
+		<a href="${editPosition}">
+			<spring:message code="position.edit" />				
+		</a>
+	</display:column>
 	
 </display:table>
 
-<input type="button" onclick="javascript:relativeRedir('configuration/administrator/edit.do');"  value="<spring:message code="configuration.edit.button"/>" />	
+<spring:url var="createPosition" value="/position/administrator/create.do"/>
+<p><a href="${createPosition}"><spring:message code="position.create" /></a></p>
 
 </security:authorize>

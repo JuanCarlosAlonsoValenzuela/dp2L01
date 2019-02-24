@@ -2,7 +2,9 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -14,12 +16,14 @@ import repositories.AdminRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
-import security.UserAccountService;
 import domain.Actor;
 import domain.Admin;
+import domain.Area;
 import domain.Box;
+import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
+import domain.Position;
 import domain.Procession;
 import domain.SocialProfile;
 
@@ -37,9 +41,6 @@ public class AdminService {
 	private ActorService		actorService;
 
 	@Autowired
-	private UserAccountService	userAccountService;
-
-	@Autowired
 	private BoxService			boxService;
 
 	@Autowired
@@ -50,6 +51,12 @@ public class AdminService {
 
 	@Autowired
 	private AreaService			areaService;
+
+	@Autowired
+	private BrotherhoodService	brotherhoodService;
+
+	@Autowired
+	private PositionService		positionService;
 
 
 	// 1. Create user accounts for new administrators.
@@ -315,15 +322,23 @@ public class AdminService {
 			statistics.add((float) 0);
 			statistics.add((float) 0);
 		} else {
-			statistics.add(this.adminRepository.ratioPendingRequests());
 			statistics.add(this.adminRepository.ratioApprovedRequests());
+			statistics.add(this.adminRepository.ratioPendingRequests());
 			statistics.add(this.adminRepository.ratioRejectedRequests());
 		}
 
-		statistics.add(this.minBrotherhoodsArea());
-		statistics.add(this.maxBrotherhoodsArea());
-		statistics.add(this.adminRepository.avgNumberBrotherhoodPerArea());
-		statistics.add(this.adminRepository.stddevNumberBrotherhoodPerArea());
+		if (this.areaService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.minBrotherhoodsArea());
+			statistics.add(this.maxBrotherhoodsArea());
+			statistics.add(this.adminRepository.avgNumberBrotherhoodPerArea());
+			statistics.add(this.adminRepository.stddevNumberBrotherhoodPerArea());
+		}
 
 		statistics.add(this.adminRepository.minResultFinders());
 		statistics.add(this.adminRepository.maxResultFinders());
@@ -335,6 +350,7 @@ public class AdminService {
 			statistics.add(this.adminRepository.ratioEmptyFinder());
 		return statistics;
 	}
+
 	public Float maxMembersBrotherhood() {
 		return this.adminRepository.maxNumberMembersPerBrotherhood();
 	}
@@ -351,8 +367,8 @@ public class AdminService {
 		return this.adminRepository.minNumberBrotherhoodPerArea();
 	}
 
-	public List<Float> countBrotherhoodsArea() {
-		return this.adminRepository.numberBrotherhoodsPerArea();
+	public Map<String, Float> countBrotherhoodsArea() {
+		return this.nameStatisticsArea(this.adminRepository.numberBrotherhoodsPerArea());
 	}
 
 	public List<String> largestBrotherhoods() {
@@ -363,23 +379,22 @@ public class AdminService {
 		return this.adminRepository.largestOrSmallestBrotherhoods(this.minMembersBrotherhood());
 
 	}
-	public List<Float> ratioBrotherhoodPerArea() {
+	public Map<String, Float> ratioBrotherhoodPerArea() {
 		if (this.areaService.findAll().isEmpty())
-			return new ArrayList<Float>();
+			return new HashMap<String, Float>();
 		else
-			return this.adminRepository.ratioBrotherhoodPerArea();
+			return this.nameStatisticsArea(this.adminRepository.ratioBrotherhoodPerArea());
+	}
+	public Map<String, Float> ratioRequestApprovedByProcession() {
+		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions()));
 	}
 
-	public List<Float> ratioRequestApprovedByProcession() {
-		return this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions());
+	public Map<String, Float> ratioRequestPendingByProcession() {
+		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions()));
 	}
 
-	public List<Float> ratioRequestPendingByProcession() {
-		return this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions());
-	}
-
-	public List<Float> ratioRequestRejectedByProcession() {
-		return this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions());
+	public Map<String, Float> ratioRequestRejectedByProcession() {
+		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions()));
 	}
 
 	public List<String> processionsOfNextMonth() {
@@ -398,6 +413,43 @@ public class AdminService {
 				result.set(pro.indexOf(p), (float) 0);
 		return result;
 
+	}
+
+	public Map<Position, Float> mapNumberPositions() {
+		return this.numberPositions(this.adminRepository.numberPositions());
+	}
+
+	public Map<String, Float> nameStatisticsArea(List<Float> statistics) {
+		Map<String, Float> result = new HashMap<String, Float>();
+		List<Area> area = this.areaService.findAll();
+		Assert.isTrue(statistics.size() == area.size());
+
+		for (Area a : area)
+			result.put(a.getName(), statistics.get(area.indexOf(a)));
+
+		return result;
+	}
+
+	public Map<Position, Float> numberPositions(List<Float> statistics) {
+		Map<Position, Float> result = new HashMap<Position, Float>();
+		List<Position> positions = this.positionService.findAll();
+		Assert.isTrue(statistics.size() == positions.size());
+
+		for (Position p : positions)
+			result.put(p, statistics.get(positions.indexOf(p)));
+
+		return result;
+	}
+
+	public Map<String, Float> nameStatisticsBrotherhood(List<Float> statistics) {
+		Map<String, Float> result = new HashMap<String, Float>();
+		List<Brotherhood> brotherhood = this.brotherhoodService.findAll();
+		Assert.isTrue(statistics.size() == brotherhood.size());
+
+		for (Brotherhood b : brotherhood)
+			result.put(b.getName() + "" + b.getMiddleName() + "" + b.getSurname(), statistics.get(brotherhood.indexOf(b)));
+
+		return result;
 	}
 
 	public Admin getSystem() {
