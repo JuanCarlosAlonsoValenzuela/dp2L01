@@ -2,7 +2,9 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -14,9 +16,9 @@ import org.springframework.validation.Validator;
 
 import repositories.FloatRepository;
 import domain.Brotherhood;
-import domain.Float;
 import domain.Procession;
 import forms.FormObjectProcessionFloat;
+import forms.FormObjectProcessionFloatCheckbox;
 
 @Service
 @Transactional
@@ -33,52 +35,51 @@ public class FloatService {
 	private Validator			validator;
 
 
-	public Float reconstruct(Float floatt, BindingResult binding) {
-		Float result = new Float();
+	public domain.Float reconstruct(domain.Float floatt, BindingResult binding) {
+		domain.Float result = new domain.Float();
 
-		if (floatt.getId() == 0) {
+		if (floatt.getId() == 0)
 			result = floatt;
-			this.validator.validate(result, binding);
-		} else {
+		else {
 			result = this.floatRepository.findOne(floatt.getId());
-			result.setTitle(floatt.getTitle());
-			result.setDescription(floatt.getDescription());
 
-			result.setPictures(floatt.getPictures());
+			result = floatt;
 
-			this.validator.validate(result, binding);
+			//result.setPictures(floatt.getPictures());
+
 		}
+		this.validator.validate(result, binding);
 		return result;
 	}
-	public List<Float> showAssignedFloats(Procession procession) {
-		List<Float> floatts = new ArrayList<Float>();
+	public List<domain.Float> showAssignedFloats(Procession procession) {
+		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = procession.getFloats();
 		return floatts;
 	}
 
-	public List<Float> showAllFloats() {
-		List<Float> floatts = new ArrayList<Float>();
+	public List<domain.Float> showAllFloats() {
+		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = this.floatRepository.findAll();
 		return floatts;
 	}
 
-	public List<Float> showBrotherhoodFloats() {
+	public List<domain.Float> showBrotherhoodFloats() {
 		Brotherhood bro = new Brotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
-		List<Float> floatts = new ArrayList<Float>();
+		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = bro.getFloats();
 		return floatts;
 	}
 
-	public List<Float> findAll() {
+	public List<domain.Float> findAll() {
 		return this.floatRepository.findAll();
 	}
 
-	public Float findOne(final int id) {
+	public domain.Float findOne(final int id) {
 		return this.floatRepository.findOne(id);
 	}
 
-	public void remove(Float floatt) {
+	public void remove(domain.Float floatt) {
 		//No se pueden eliminar pasos asignados a procesiones en final mode
 
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -95,7 +96,7 @@ public class FloatService {
 		this.floatRepository.delete(floatt);
 	}
 
-	public Float save(Float floatt) {
+	public domain.Float save(domain.Float floatt) {
 
 		//Obtener float list
 		//quitar float antiguo y añadir el nuevo
@@ -110,7 +111,7 @@ public class FloatService {
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = new Brotherhood();
-		Float floattSaved = new Float();
+		domain.Float floattSaved = new domain.Float();
 		loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
@@ -123,8 +124,8 @@ public class FloatService {
 
 		return floattSaved;
 	}
-	public Float create() {
-		final Float floatt = new Float();
+	public domain.Float create() {
+		final domain.Float floatt = new domain.Float();
 		final List<String> pictures = new ArrayList<String>();
 
 		floatt.setPictures(pictures);
@@ -142,21 +143,21 @@ public class FloatService {
 		return res;
 	}
 
-	public void AssingFloatToProcession(final Float floatt, final Procession procession) {
+	public void AssingFloatToProcession(final domain.Float floatt, final Procession procession) {
 		Assert.isTrue(procession.getIsDraftMode() == true);
 		if (!(procession.getFloats().contains(floatt)))
 			procession.getFloats().add(floatt);
 		this.processionService.save(procession);
 	}
 
-	public void UnAssingFloatToProcession(Float floatt, Procession procession) {
+	public void UnAssingFloatToProcession(domain.Float floatt, Procession procession) {
 		Assert.isTrue(procession.getIsDraftMode() == true);
 		if (procession.getFloats().contains(floatt))
 			procession.getFloats().remove(floatt);
 		this.processionService.save(procession);
 	}
 
-	public Float reconstructForm(FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
+	public domain.Float reconstructForm(FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
 		domain.Float result = new domain.Float();
 
 		result.setTitle(formObjectProcessionFloat.getTitle());
@@ -165,6 +166,54 @@ public class FloatService {
 		//		this.validator.validate(result, binding);
 
 		return result;
+	}
+
+	public Map<Integer, String> getMapAvailableFloats() {
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		List<domain.Float> floats = loggedBrotherhood.getFloats();
+
+		Map<Integer, String> map = new HashMap<>();
+
+		for (domain.Float floatt : floats)
+			map.put(floatt.getId(), floatt.getTitle());
+
+		return map;
+	}
+
+	public List<domain.Float> reconstructList(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox) {
+
+		List<Integer> ids = formObjectProcessionFloatCheckbox.getFloats();
+
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		List<domain.Float> floats = new ArrayList<>();
+
+		for (Integer id : ids) {
+
+			domain.Float floatt = this.floatRepository.findOne(id);
+			Assert.notNull(floatt);
+			Assert.isTrue(loggedBrotherhood.getFloats().contains(floatt));
+
+			floats.add(floatt);
+
+		}
+		return floats;
+
+	}
+	public List<domain.Float> floatsInProcessionInFinalMode() {
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood bro = new Brotherhood();
+		bro = this.brotherhoodService.loggedBrotherhood();
+		List<domain.Float> floatt = new ArrayList<domain.Float>();
+
+		floatt = this.floatRepository.getFloatsInProcessionInFinalMode(bro.getId());
+
+		return floatt;
 	}
 
 }

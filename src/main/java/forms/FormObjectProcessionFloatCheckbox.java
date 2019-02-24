@@ -2,16 +2,19 @@
 package forms;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class FormObjectProcessionFloat {
+public class FormObjectProcessionFloatCheckbox {
 
 	//No añadir el @Valid
 	//Atributos de la procesion
@@ -19,17 +22,37 @@ public class FormObjectProcessionFloat {
 	//Se puede validar en este objeto
 	//Reconstruct de los dos tipos de objetos
 	//No extiende a Domain Entity
-	private String	titleProcession;
-	private String	descriptionProcession;
-	private Date	moment;
-	private Boolean	isDraftMode;
-	private int		rowNumber;
-	private int		columnNumber;
+	private String			titleProcession;
+	private String			descriptionProcession;
+	private Date			moment;
+	//private String			ticker;
+	private Boolean			isDraftMode;
+	private int				rowNumber;
+	private int				columnNumber;
+	private int				id;
 
 	//Atributos del paso
-	private String	title;
-	private String	description;
+	private List<Integer>	floats;
 
+
+	@NotNull
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@ElementCollection(targetClass = Integer.class)
+	@NotEmpty
+	public List<Integer> getFloats() {
+		return this.floats;
+	}
+
+	public void setFloats(List<Integer> floats) {
+		this.floats = floats;
+	}
 
 	@NotBlank
 	public String getTitleProcession() {
@@ -89,24 +112,6 @@ public class FormObjectProcessionFloat {
 
 	public void setColumnNumber(int columnNumber) {
 		this.columnNumber = columnNumber;
-	}
-
-	@NotBlank
-	public String getTitle() {
-		return this.title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	@NotBlank
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 }
