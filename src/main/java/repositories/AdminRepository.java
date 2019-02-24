@@ -148,7 +148,9 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select count(c) from Finder c where c.processions.size > 0")
 	public Integer numberNonEmptyFinders();
 
+	@Query("select cast((select count(b) from Enrolment b where b.position = a and b.statusEnrolment = 'ACCEPTED') as float) from Position a")
+	public List<Float> numberPositions();
+
 	@Query("select a from Admin a join a.userAccount u where u.username = 'system'")
 	public Admin getSystem();
-
 }

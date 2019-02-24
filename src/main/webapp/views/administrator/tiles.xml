@@ -72,4 +72,9 @@
 		<put-attribute name="body" value="/views/administrator/createPosition.jsp" />
 	</definition>
 	
+	<definition name="statistics/administrator/show" extends="master.page">	
+		<put-attribute name="title" value="Statistics" />
+		<put-attribute name="body" value="/views/administrator/statistics.jsp" />
+	</definition>
+	
 </tiles-definitions>

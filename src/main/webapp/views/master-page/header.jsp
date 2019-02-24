@@ -29,6 +29,7 @@
 					<li><a href="suspicious/administrator/list.do"><spring:message code="master.page.administrator.banUnban" /></a></li>
 					<li><a href="configuration/administrator/list.do"><spring:message code="master.page.administrator.configuration" /></a></li>	
 					<li><a href="position/administrator/list.do"><spring:message code="master.page.administrator.positions" /></a></li>																							
+					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>																								
 				</ul>
 			</li>
 		</security:authorize>
