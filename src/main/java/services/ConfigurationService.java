@@ -57,12 +57,6 @@ public class ConfigurationService {
 	public Boolean isStringSpam(final String s, final List<String> spamWords) {
 		Boolean result = false;
 
-		this.actorService.loggedAsActor();
-		UserAccount userAccount;
-		userAccount = LoginService.getPrincipal();
-
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
-
 		List<String> trimmedString = new ArrayList<String>();
 		trimmedString = Arrays.asList(s.split("\\+|(?=[,.¿?;!¡])"));
 
@@ -73,10 +67,7 @@ public class ConfigurationService {
 					result = true;
 					break;
 				}
-		if (result == true) {
-			actor.setHasSpam(true);
-			this.actorService.save(actor);
-		}
+
 		return result;
 	}
 	public Boolean isActorSuspicious(final Actor a) {
@@ -254,9 +245,12 @@ public class ConfigurationService {
 
 		for (Box b : boxes)
 			if (!b.getMessages().isEmpty())
+
 				for (Message m : b.getMessages())
 					if (m.getSender().equals(a)) {
-						List<String> messageSplit = Arrays.asList(m.getBody().split("\\W"));
+
+						List<String> messageSplit = Arrays.asList(m.getBody().split("\\W+"));
+
 						for (String word : messageSplit) {
 							if (goodWordsList.contains(word))
 								countGood = countGood + 1.0;
@@ -278,15 +272,14 @@ public class ConfigurationService {
 			res = 0.;
 		else
 			res = cont / parcialresult.size();
+
 		DecimalFormat df2 = new DecimalFormat(".##");
 		a.setPolarity(Double.valueOf(df2.format(res)));
-		System.out.println("Polarity calculada:" + res);
 
 		this.actorService.save(a);
 
 		return res;
 	}
-
 	public Map<Actor, Double> computeAllScores(List<Actor> actors) {
 		Map<Actor, Double> result = new HashMap<Actor, Double>();
 

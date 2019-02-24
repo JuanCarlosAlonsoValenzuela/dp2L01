@@ -196,7 +196,6 @@ public class ActorService {
 		return actor;
 	}
 
-	// TODO: PREGUNTAR MARTES PUEDE QUE NO HAGA FALTA PORQUE TENEMOS EL SAVE
 	public Actor updateActor(final Actor actor, final String name, final String middleName, final String surname, final String photo, final String email, final String phoneNumber, final String address) {
 
 		// LA COMPROBACION DE QUE ESTAS LOGUEADO SE HACE EN EL ACTOR
@@ -223,7 +222,6 @@ public class ActorService {
 	 * this.actorRepository.save(actor); }
 	 */
 
-	// TODO: PREGUNTAR MARTES PUEDE QUE NO HAGA FALTA PORQUE TENEMOS EL SAVE
 	public SocialProfile updateSocialProfiles(final SocialProfile socialProfile, final String nick, final String name, final String profileLink) {
 		/*
 		 * UserAccount userAccount; userAccount = LoginService.getPrincipal();
@@ -254,10 +252,6 @@ public class ActorService {
 
 		return this.actorRepository.listOfBoxes(actor);
 	}
-
-	// TODO: METODO HASSPAM PARA LLAMANDO A LA FUNCION DE COMPROBAR SI TIENE
-	// SPAM,
-	// PORNERLE LA VARIABLE A TRUE
 
 	public void updateActorSpam(final Actor a) {
 
