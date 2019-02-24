@@ -76,7 +76,7 @@
 	
 	<display:column>
 		<jstl:if test="${row.isDraftMode}">
-			<a href="procession/brotherhood/edit.do?processionId=${row.id}">
+			<a href="procession/brotherhood/editCheckbox.do?processionId=${row.id}">
 				<spring:message code="procession.edit" />
 			</a>
 		</jstl:if>
@@ -91,7 +91,10 @@
 <br />
 
 	<jstl:if test="${hasArea}">
-		<a href="procession/brotherhood/create.do"><spring:message code="procession.create" /></a>
+		<a href="procession/brotherhood/create.do"><spring:message code="processionAndFloat.create" /></a>
+		
+		</br>
+		<a href="procession/brotherhood/createCheckbox.do"><spring:message code="procession.create" /></a>
 	</jstl:if>
 
 	

@@ -10,8 +10,6 @@
 
 package controllers;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -65,19 +63,20 @@ public class ConfigurationAdministratorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveFixUpTask(@Valid Configuration configuration, BindingResult binding) {
+	public ModelAndView save(Configuration configuration, BindingResult binding) {
 		ModelAndView result;
 
-		if (binding.hasErrors()) {
+		Configuration configurationR = this.configurationService.reconstruct(configuration, binding);
+
+		if (binding.hasErrors())
 			result = this.createEditModelAndView(configuration);
-		} else {
+		else
 			try {
-				this.configurationService.save(configuration);
+				this.configurationService.save(configurationR);
 				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(configuration, "configuration.commit.error");
 			}
-		}
 
 		return result;
 	}

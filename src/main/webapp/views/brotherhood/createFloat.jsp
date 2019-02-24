@@ -20,8 +20,15 @@
 
 
 	<acme:textbox code="float.title" path="title" />
+	<jstl:if test="${floatt.title==''}">
+ 		 <a style="color:red"><spring:message code="float.NotBlank"/></a>
+	</jstl:if>
 	
 	<acme:textarea code="float.description" path="description" /> 
+	<jstl:if test="${floatt.description==''}">
+ 		 <a style="color:red"><spring:message code="float.NotBlank"/></a>
+	</jstl:if>
+	<br/>
 	
  	<acme:submit name="save" code="float.save" />  
  	

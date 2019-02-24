@@ -79,5 +79,10 @@
 		<put-attribute name="title" value="Inscripciones pendientes" />
 		<put-attribute name="body" value="/views/brotherhood/pendingEnrolments.jsp" />
 	</definition>
+		
+	<definition name="processionCheckbox/brotherhood/createCheckbox" extends="master.page">	
+		<put-attribute name="title" value="Crear una Procesion" />
+		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
+	</definition>
 	
 </tiles-definitions>
