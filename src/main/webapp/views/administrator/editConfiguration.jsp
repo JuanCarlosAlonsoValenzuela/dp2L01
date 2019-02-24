@@ -5,6 +5,7 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>		
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
 <security:authorize access="hasRole('ADMIN')">
 
@@ -12,91 +13,33 @@
 		<!-- Hidden Attributes -->
 		<form:hidden path="id"/>
 		<form:hidden path="version" />
-		<form:hidden path="spamWords" />
-		<form:hidden path="goodWords"/>
-		<form:hidden path="badWords"/>
 		
-		<form:label path="finderResult">
-			<spring:message code="configuration.finderResult" />	
-		</form:label>
-		<form:input path="finderResult"/>
-		<form:errors cssClass="error" path="finderResult" />
-		<br/>
+		<acme:input code="configuration.finderResult" path="finderResult"/>
 		
-		<form:label path="minFinderResults">
-			<spring:message code="configuration.minFinderResults" />	
-		</form:label>
-		<form:input path="minFinderResults"/>
-		<form:errors cssClass="error" path="minFinderResults" />
-		<br/>
+		<acme:input code="configuration.minFinderResults" path="minFinderResults"/>
 		
-		<form:label path="maxFinderResults">
-			<spring:message code="configuration.maxFinderResults" />	
-		</form:label>
-		<form:input path="maxFinderResults"/>
-		<form:errors cssClass="error" path="maxFinderResults" />
-		<br/>
+		<acme:input code="configuration.maxFinderResults" path="maxFinderResults"/>
 		
-		<form:label path="timeFinder">
-			<spring:message code="configuration.timeFinder" />	
-		</form:label>
-		<form:input path="timeFinder"/>
-		<form:errors cssClass="error" path="timeFinder" />
-		<br/>
+		<acme:input code="configuration.timeFinder" path="timeFinder"/>
 		
-		<form:label path="minTimeFinder">
-			<spring:message code="configuration.minTimeFinder" />	
-		</form:label>
-		<form:input path="minTimeFinder"/>
-		<form:errors cssClass="error" path="minTimeFinder" />
-		<br/>
+		<acme:input code="configuration.minTimeFinder" path="minTimeFinder"/>
 		
-		<form:label path="maxTimeFinder">
-			<spring:message code="configuration.maxTimeFinder" />	
-		</form:label>
-		<form:input path="maxTimeFinder"/>
-		<form:errors cssClass="error" path="maxTimeFinder" />
-		<br/>
+		<acme:input code="configuration.maxTimeFinder" path="maxTimeFinder"/>
 		
+		<acme:input code="configuration.spainTelephoneCode" path="spainTelephoneCode"/>
 		
-		<form:label path="spainTelephoneCode">
-			<spring:message code="configuration.spainTelephoneCode" />	
-		</form:label>
-		<form:input path="spainTelephoneCode"/>
-		<form:errors cssClass="error" path="spainTelephoneCode" />
-		<br/>
+		<acme:input code="configuration.welcomeMessageEnglish" path="welcomeMessageEnglish"/>
 		
-		<form:label path="welcomeMessageEnglish">
-			<spring:message code="configuration.welcomeMessageEnglish" />	
-		</form:label>
-		<form:input path="welcomeMessageEnglish"/>
-		<form:errors cssClass="error" path="welcomeMessageEnglish" />
-		<br/>
+		<acme:input code="configuration.welcomeMessageSpanish" path="welcomeMessageSpanish"/>
 		
-		<form:label path="welcomeMessageSpanish">
-			<spring:message code="configuration.welcomeMessageSpanish" />	
-		</form:label>
-		<form:input path="welcomeMessageSpanish"/>
-		<form:errors cssClass="error" path="welcomeMessageSpanish" />
-		<br/>
-	
-		<form:label path="systemName">
-			<spring:message code="configuration.systemName" />	
-		</form:label>
-		<form:input path="systemName"/>
-		<form:errors cssClass="error" path="systemName" />
-		<br/>
+		<acme:input code="configuration.systemName" path="systemName"/>
 		
-		<form:label path="imageURL">
-			<spring:message code="configuration.imageURL" />	
-		</form:label>
-		<form:input path="imageURL"/>
-		<form:errors cssClass="error" path="imageURL" />
-		<br/><br/>
+		<acme:input code="configuration.imageURL" path="imageURL"/>
 		
-		<input type="submit" name="save" value="<spring:message code="configuration.save.button"/>" />
+		<acme:submit name="save" code="configuration.save.button"/>
 		
-		<input type="button" name="cancel" onclick="javascript:relativeRedir('configuration/administrator/list.do');"  value="<spring:message code="configuration.cancel.button"/>" />	
+		<acme:cancel url="/configuration/administrator/list.do" code="configuration.cancel.button"/>
+		
 </form:form>
 
 </security:authorize>
