@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.MessageRepository;
 import security.LoginService;
@@ -45,6 +47,9 @@ public class MessageService {
 
 	@Autowired
 	private BrotherhoodService		brotherhoodService;
+
+	@Autowired
+	private Validator				validator;
 
 
 	// Actualizar caja que tiene el mensaje EN ESTE ORDEN
@@ -116,6 +121,7 @@ public class MessageService {
 		Message messageSaved = this.messageRepository.save(message);
 		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
+
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
 		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
 		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
@@ -420,4 +426,54 @@ public class MessageService {
 	public List<Message> getMessagesByBox(Box b) {
 		return b.getMessages();
 	}
+
+	public domain.Message reconstruct(domain.Message messageTest, BindingResult binding) {
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		domain.Message result;
+		result = this.create();
+		if (messageTest.getId() == 0) {
+			result = messageTest;
+			result.setSender(actor);
+
+		} else {
+			result = this.messageRepository.findOne(messageTest.getId());
+
+			result.setBody(messageTest.getBody());
+			result.setPriority(messageTest.getPriority());
+			result.setTags(messageTest.getTags());
+			result.setSubject(messageTest.getSubject());
+			result.setReceiver(messageTest.getReceiver());
+		}
+
+		this.validator.validate(result, binding);
+		return result;
+
+	}
+
+	public Message reconstructDelete(Message messageTest) {
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		Message result;
+		result = this.create();
+
+		result = this.messageRepository.findOne(messageTest.getId());
+
+		result.setBody(messageTest.getBody());
+		result.setPriority(messageTest.getPriority());
+		result.setTags(messageTest.getTags());
+		result.setSubject(messageTest.getSubject());
+		result.setReceiver(messageTest.getReceiver());
+		result.setSender(actor);
+
+		return result;
+
+	}
+
 }
