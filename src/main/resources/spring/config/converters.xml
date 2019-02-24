@@ -64,6 +64,8 @@
 		<bean class="converters.ConfigurationToStringConverter" />
 		<bean class="converters.StringToConfigurationConverter" />
 		
+		<bean class="converters.PositionToStringConverter" />
+		<bean class="converters.StringToPositionConverter" />
 		
 	</util:list>
 	

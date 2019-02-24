@@ -43,7 +43,8 @@
 		<!-- admin -->
 		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/suspicious/administrator/**" access="hasRole('ADMIN')"  />
-		<security:intercept-url pattern="/configuration/administrator/**" access="hasRole('ADMIN')"/> 
+		<security:intercept-url pattern="/configuration/administrator/**" access="hasRole('ADMIN')"/>
+		<security:intercept-url pattern="/position/administrator/**" access="hasRole('ADMIN')"/> 
 		
 		<!-- brotherhood -->
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
