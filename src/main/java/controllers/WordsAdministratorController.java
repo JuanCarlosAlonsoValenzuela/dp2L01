@@ -13,6 +13,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -65,19 +67,28 @@ public class WordsAdministratorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveGoodorBadWord(String word, String wordType) {
+	public ModelAndView saveGoodorBadWord(@Valid String word, @Valid String wordType) {
 		ModelAndView result;
 
-		if (wordType.equals("goodword"))
-			this.configurationService.addGoodWords(word);
-		else
-			this.configurationService.addBadWords(word);
+		try {
+			if (word.trim().isEmpty() || word.trim().isEmpty()) {
+				result = new ModelAndView("words/administrator/create");
+				result.addObject("wordType", wordType);
+			} else {
+				if (wordType.equals("goodword"))
+					this.configurationService.addGoodWords(word);
+				else
+					this.configurationService.addBadWords(word);
 
-		result = new ModelAndView("redirect:list.do");
+				result = new ModelAndView("redirect:list.do");
+			}
+		} catch (Throwable oops) {
+			result = new ModelAndView("words/administrator/create");
+			result.addObject("wordType", wordType);
+		}
 
 		return result;
 	}
-
 	//Create
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam String word) {
@@ -92,19 +103,26 @@ public class WordsAdministratorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "editWord")
-	public ModelAndView editWord(String word, String originalWord) {
+	public ModelAndView editWord(@Valid String word, @Valid String originalWord) {
 		ModelAndView result;
 		try {
+			if (word.trim().isEmpty()) {
+				result = new ModelAndView("redirect:create.do");
+				result.addObject("word", word);
+				result.addObject("originalWord", originalWord);
+			} else {
 
-			this.configurationService.editWord(word, originalWord);
-			result = new ModelAndView("redirect:list.do");
+				this.configurationService.editWord(word, originalWord);
+				result = new ModelAndView("redirect:list.do");
+			}
 		} catch (Throwable oops) {
 			result = new ModelAndView("redirect:create.do");
+			result.addObject("word", word);
+			result.addObject("originalWord", originalWord);
 		}
 
 		return result;
 	}
-
 	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "delete")
 	public ModelAndView deleteWord(String word, String originalWord) {
 		ModelAndView result;
