@@ -30,6 +30,7 @@ public class BrotherhoodController extends AbstractController {
 
 	@Autowired
 	private FloatService		floatService;
+
 	@Autowired
 	private ProcessionService	processionService;
 
@@ -82,10 +83,44 @@ public class BrotherhoodController extends AbstractController {
 		result.addObject("pictures", pictures);
 		result.addObject("requestURI", "float/brotherhood/picture/list.do");
 		result.addObject("procession", procession);
+		result.addObject("floatId", floatId);
 
 		return result;
 	}
 
+	@RequestMapping(value = "/picture/create", method = RequestMethod.GET)
+	public ModelAndView createPictures(@RequestParam int floatId, @RequestParam boolean procession) {
+		ModelAndView result;
+
+		result = new ModelAndView("picture/brotherhood/createPicture");
+		result.addObject("floatId", floatId);
+		result.addObject("procession", procession);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/picture/save", method = RequestMethod.POST, params = "save")
+	public ModelAndView savePicture(String picture, int floatId, @RequestParam boolean procession) {
+		ModelAndView result;
+		domain.Float floatt = new domain.Float();
+		floatt = this.floatService.findOne(floatId);
+
+		try {
+			if (picture.trim().isEmpty() || picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
+				result = new ModelAndView("picture/brotherhood/createPicture");
+				result.addObject("floatId", floatId);
+				result.addObject("procession", procession);
+			} else {
+				this.floatService.addPicture(picture, floatt);
+				result = new ModelAndView("redirect:list.do?floatId=" + floatId + "&procession=" + procession);
+			}
+		} catch (Throwable oops) {
+			result = new ModelAndView("picture/brotherhood/createPicture");
+
+		}
+
+		return result;
+	}
 	//CREATE
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public ModelAndView create() {
