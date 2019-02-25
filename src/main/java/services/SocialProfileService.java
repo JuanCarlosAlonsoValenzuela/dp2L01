@@ -7,8 +7,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.SocialProfileRepository;
+import security.LoginService;
+import domain.Actor;
 import domain.SocialProfile;
 
 @Service
@@ -17,6 +21,12 @@ public class SocialProfileService {
 
 	@Autowired
 	private SocialProfileRepository	socialProfileRepository;
+
+	@Autowired
+	private ActorService			actorService;
+
+	@Autowired
+	private Validator				validator;
 
 
 	public SocialProfile save(SocialProfile socialProfile) {
@@ -55,4 +65,33 @@ public class SocialProfileService {
 		this.socialProfileRepository.delete(socialProfile);
 	}
 
+	public void deleteSocialProfile(SocialProfile socialProfile) {
+		Actor logguedActor = this.actorService.getActorByUsername(LoginService.getPrincipal().getUsername());
+		List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
+
+		socialProfiles.remove(socialProfile);
+		logguedActor.setSocialProfiles(socialProfiles);
+		this.actorService.save(logguedActor);
+		this.socialProfileRepository.delete(socialProfile);
+	}
+
+	public SocialProfile reconstruct(SocialProfile socialProfile, BindingResult binding) {
+
+		SocialProfile result;
+		//result = this.create();
+		if (socialProfile.getId() == 0)
+			result = socialProfile;
+		else {
+			result = this.socialProfileRepository.findOne(socialProfile.getId());
+
+			result.setName(socialProfile.getName());
+			result.setNick(socialProfile.getNick());
+			result.setProfileLink(socialProfile.getProfileLink());
+
+		}
+
+		this.validator.validate(result, binding);
+		return result;
+
+	}
 }
