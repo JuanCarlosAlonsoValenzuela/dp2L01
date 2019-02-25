@@ -108,7 +108,7 @@ public class MessageService {
 		this.actorService.loggedAsActor();
 
 		Actor actorRecieved = message.getReceiver();
-		Actor senderActor = message.getReceiver();
+		Actor senderActor = message.getSender();
 
 		Box boxRecieved = new Box();
 		Box boxSpam = new Box();
