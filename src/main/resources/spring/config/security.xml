@@ -45,6 +45,8 @@
 		<security:intercept-url pattern="/suspicious/administrator/**" access="hasRole('ADMIN')"  />
 		<security:intercept-url pattern="/configuration/administrator/**" access="hasRole('ADMIN')"/>
 		<security:intercept-url pattern="/position/administrator/**" access="hasRole('ADMIN')"/> 
+		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/statistics/administrator/**" access="hasRole('ADMIN')" />
 		
 		<!-- brotherhood -->
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
@@ -55,7 +57,6 @@
 		<security:intercept-url pattern="/enrolment/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		
 		<!-- Member -->
-		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/request/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/finder/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
