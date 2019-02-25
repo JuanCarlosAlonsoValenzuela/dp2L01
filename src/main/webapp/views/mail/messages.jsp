@@ -42,7 +42,17 @@
 		<jstl:out value="${row.receiver.userAccount.username}" />
 	</display:column>
 	
-	<display:column property="priority" titleKey="mail.message.priority" />	
+	<display:column titleKey="mail.message.priority" >
+	<jstl:choose>
+		<jstl:when test="${locale=='en'}">
+			<jstl:out value="${row.priority}" />
+		</jstl:when>
+		<jstl:when test="${locale=='es'}">
+			<jstl:out value="${priorityName.get(priority.lastIndexOf(row.priority))}" />
+		</jstl:when>
+			
+	</jstl:choose>
+	</display:column>
 	
 	<display:column titleKey="mail.message.move">
 	

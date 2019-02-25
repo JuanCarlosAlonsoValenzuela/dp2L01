@@ -48,6 +48,13 @@
 				<value>LOW</value>
 			</list>
 		</property>
+		<property name="priorityLvlSpa">
+			<list>
+				<value>ALTA</value>
+				<value>NEUTRAL</value>
+				<value>BAJA</value>
+			</list>
+		</property>
 		<property name="goodWords" value="good, fantastic, excellent, great, amazing, terrific, beautiful, bueno, fantastico, excelente, increible, estupendo, hermoso" />
 		<property name="badWords" value="not, bad, horrible, average, disaster, no, malo, horrible, mediocre, desastre " />
 		

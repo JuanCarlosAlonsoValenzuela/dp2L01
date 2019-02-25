@@ -18,18 +18,15 @@
 
 	<form:hidden path="id"/>
 	<form:hidden path="version"/>
-	<form:hidden path="moment"/>
-	<form:hidden path="sender"/>
 
 
-	
 	<acme:input code="mail.message.subject" path="subject"/>
 
 	<acme:select items="${actors}" itemLabel="userAccount.username" code="mail.message.receiver" path="receiver"/>
 
 	<acme:input code="mail.message.tags" path="tags"/>
 	
-	<acme:radio items="${priority}" code="mail.message.priority" path="priority"/>
+	<acme:radio items="${priority}" itemsName="${priorityName}" code="mail.message.priority" path="priority"/>
 
 	<acme:textarea code="mail.message" path="body"/>
 	
