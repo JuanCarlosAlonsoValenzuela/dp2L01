@@ -77,4 +77,14 @@
 		<put-attribute name="body" value="/views/administrator/statistics.jsp" />
 	</definition>
 	
+		<definition name="priority/administrator" extends="master.page">	
+		<put-attribute name="title" value="Priorities" />
+		<put-attribute name="body" value="/views/administrator/priorityList.jsp" />
+	</definition>
+	
+	<definition name="priority/administrator/create" extends="master.page">	
+		<put-attribute name="title" value="Add Priority" />
+		<put-attribute name="body" value="/views/administrator/createPriority.jsp" />
+	</definition>
+	
 </tiles-definitions>
