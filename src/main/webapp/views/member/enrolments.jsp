@@ -29,7 +29,12 @@
 
 		<display:column property="statusEnrolment" titleKey="enrolment.status" />
 
-		<display:column property="position" titleKey="enrolment.position" />
+		<jstl:if test="${locale == 'EN'}">
+			<display:column property="position.titleEnglish" titleKey="enrolment.position" />
+		</jstl:if>
+		<jstl:if test="${locale == 'ES'}">
+			<display:column property="position.titleSpanish" titleKey="enrolment.position" />
+		</jstl:if>
 
 		<display:column property="creationMoment" titleKey="enrolment.moment"
 			sortable="true" format="{0,date,dd/MM/yyyy HH:mm}" />
