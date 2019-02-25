@@ -4,8 +4,6 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -59,19 +57,25 @@ public class BoxController extends AbstractController {
 
 	//Save
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid Box box, BindingResult binding) {
+	public ModelAndView save(Box box, BindingResult binding) {
 		ModelAndView result;
 
-		if (binding.hasErrors()) {
+		box = this.boxService.reconstruct(box, binding);
+
+		System.out.println(box.getName());
+		System.out.println(box.getFatherBox());
+		System.out.println(box.getIsSystem());
+		System.out.println(box.getMessages());
+
+		if (binding.hasErrors())
 			result = this.createEditModelAndView(box);
-		} else {
+		else
 			try {
 				this.boxService.updateBox(box);
 				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(box, "message.commit.error");
 			}
-		}
 		return result;
 	}
 
@@ -93,6 +97,8 @@ public class BoxController extends AbstractController {
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
 	public ModelAndView delete(Box box, BindingResult binding) {
 		ModelAndView result;
+
+		box = this.boxService.reconstruct(box, binding);
 
 		try {
 			this.boxService.deleteBox(box);
