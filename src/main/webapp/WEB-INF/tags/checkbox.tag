@@ -23,9 +23,7 @@
 <%-- Attributes --%> 
 
 <%@ attribute name="path" required="true" %>
-<%@ attribute name="code" required="true" %>
-<%@ attribute name="items" required="true" type="java.util.Collection" %>
-<%@ attribute name="itemsName" required="true" type="java.util.Collection" %>
+<%@ attribute name="map" required="true" type="java.util.HashMap" %>
 <%@ attribute name="readonly" required="false" %>
 
 <jstl:if test="${readonly == null}">
@@ -35,15 +33,9 @@
 <%-- Definition --%>
 
 <div class="form-group">
-	<form:label path="${path}">
-		<spring:message code="${code}" /> :
-	<br/>
-	</form:label>
-	<jstl:forEach items="${items}" var="item">
-	<form:radiobutton path="${path}" readonly="${readonly}" value="${item}" /> <jstl:out value="${itemsName.get(items.lastIndexOf(item))}"/>
-	<br/>
-	
+	<jstl:forEach var="x" items="${map}" >
+			<form:checkbox path="${path}" value="${x.key}"/> <jstl:out value="${x.value}" /> 
+			<br />
 	</jstl:forEach>
 	<form:errors path="${path}" cssClass="error" />
 </div>
-

@@ -26,7 +26,7 @@
 
 	<acme:input code="mail.message.tags" path="tags"/>
 	
-	<acme:radio items="${priority}" code="mail.message.priority" path="priority"/>
+	<acme:radio items="${priority}" itemsName="${priorityName}" code="mail.message.priority" path="priority"/>
 
 	<acme:textarea code="mail.message" path="body"/>
 	
