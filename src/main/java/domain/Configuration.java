@@ -26,6 +26,7 @@ public class Configuration extends DomainEntity {
 	private Integer			maxTimeFinder;
 	private Integer			timeFinder;
 	private List<String>	priorityLvl;
+	private List<String>	priorityLvlSpa;
 
 	private String			goodWords;
 	private String			badWords;
@@ -36,6 +37,16 @@ public class Configuration extends DomainEntity {
 	private String			systemName;
 	private String			imageURL;
 
+
+	@Valid
+	@ElementCollection(targetClass = String.class)
+	public List<String> getPriorityLvlSpa() {
+		return this.priorityLvlSpa;
+	}
+
+	public void setPriorityLvlSpa(List<String> priorityLvlSpa) {
+		this.priorityLvlSpa = priorityLvlSpa;
+	}
 
 	@Valid
 	@ElementCollection(targetClass = String.class)

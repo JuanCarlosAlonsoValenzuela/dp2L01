@@ -4,8 +4,8 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
@@ -46,6 +46,7 @@ public class MessageController extends AbstractController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list(@RequestParam int boxId) {
 
+		String locale = LocaleContextHolder.getLocale().getLanguage();
 		this.actorService.loggedAsActor();
 		Box box = new Box();
 		box = this.boxService.findOne(boxId);
@@ -55,6 +56,14 @@ public class MessageController extends AbstractController {
 			Box boxReturn = this.actorService.getlistOfBoxes(a).get(0);
 			return new ModelAndView("redirect:list.do?boxId=" + boxReturn.getId());
 		}
+
+		List<String> priorityName = new ArrayList<>();
+		List<String> priority = this.configurationService.getConfiguration().getPriorityLvl();
+
+		if (locale == "en")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvl();
+		else if (locale == "es")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvlSpa();
 
 		ModelAndView result;
 
@@ -75,6 +84,9 @@ public class MessageController extends AbstractController {
 		result.addObject("messages", messages);
 		result.addObject("boxId", boxId);
 		result.addObject("boxes", boxes);
+		result.addObject("locale", locale);
+		result.addObject("priorityName", priorityName);
+		result.addObject("priority", priority);
 
 		result.addObject("requestURI", "message/actor/list.do");
 
@@ -234,6 +246,7 @@ public class MessageController extends AbstractController {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();
 		Actor actor = new Actor();
+		String locale = LocaleContextHolder.getLocale().getLanguage();
 
 		actor = this.actorService.getActorByUsername(username);
 		List<Actor> actors = new ArrayList<Actor>();
@@ -241,13 +254,21 @@ public class MessageController extends AbstractController {
 
 		List<Box> actorBoxes = new ArrayList<Box>();
 		actorBoxes = this.actorService.getlistOfBoxes(actor);
-		List<String> priotity = this.configurationService.getConfiguration().getPriorityLvl();
+
+		List<String> priorityName = new ArrayList<>();
+		List<String> priority = this.configurationService.getConfiguration().getPriorityLvl();
+
+		if (locale == "en")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvl();
+		else if (locale == "es")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvlSpa();
 
 		result = new ModelAndView("message/actor/move");
 		result.addObject("messageTest", message);
 		result.addObject("actors", actors);
 		result.addObject("actorBoxes", actorBoxes);
-		result.addObject("priority", priotity);
+		result.addObject("priority", priority);
+		result.addObject("priority", priorityName);
 
 		result.addObject("message", messageCode);
 
@@ -268,6 +289,7 @@ public class MessageController extends AbstractController {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();
 		Actor actor = new Actor();
+		String locale = LocaleContextHolder.getLocale().getLanguage();
 
 		actor = this.actorService.getActorByUsername(username);
 		List<Actor> actors = new ArrayList<Actor>();
@@ -275,13 +297,17 @@ public class MessageController extends AbstractController {
 
 		List<Box> actorBoxes = new ArrayList<Box>();
 		actorBoxes = this.actorService.getlistOfBoxes(actor);
-
 		result = new ModelAndView("message/actor/create");
 		result.addObject("messageTest", messageTest);
 		result.addObject("actors", actors);
 		result.addObject("actorBoxes", actorBoxes);
-		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());
+
+		if (locale == "en")
+			result.addObject("priorityName", this.configurationService.getConfiguration().getPriorityLvl());
+		else if (locale == "es")
+			result.addObject("priorityName", this.configurationService.getConfiguration().getPriorityLvlSpa());
 		result.addObject("message", messageCode);
+		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());
 
 		return result;
 	}
