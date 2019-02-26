@@ -1,7 +1,11 @@
 
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,11 +45,20 @@ public class AdministratorBroadcastMessage extends AbstractController {
 	public ModelAndView create() {
 		ModelAndView result;
 		Message message;
+		String locale = LocaleContextHolder.getLocale().getLanguage();
+		List<String> priorityName = new ArrayList<>();
+		List<String> priority = this.configurationService.getConfiguration().getPriorityLvl();
+
+		if (locale == "en")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvl();
+		else if (locale == "es")
+			priorityName = this.configurationService.getConfiguration().getPriorityLvlSpa();
 
 		message = this.messageService.create();
 		result = new ModelAndView("broadcast/administrator/send");
 		result.addObject("messageSend", message);
-		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());
+		result.addObject("priority", priority);
+		result.addObject("priorityName", priorityName);
 
 		return result;
 	}
