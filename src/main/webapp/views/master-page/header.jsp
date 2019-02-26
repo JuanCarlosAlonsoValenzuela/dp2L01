@@ -29,7 +29,8 @@
 					<li><a href="suspicious/administrator/list.do"><spring:message code="master.page.administrator.banUnban" /></a></li>
 					<li><a href="configuration/administrator/list.do"><spring:message code="master.page.administrator.configuration" /></a></li>	
 					<li><a href="position/administrator/list.do"><spring:message code="master.page.administrator.positions" /></a></li>																							
-					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>																								
+					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>		
+					<li><a href="broadcast/administrator/send.do"><spring:message code="master.page.administrator.broadcast" /></a></li>																							
 				</ul>
 			</li>
 		</security:authorize>
@@ -71,7 +72,8 @@
 			        (<security:authentication property="principal.username" />)
 				</a>
 				<ul>
-					<li class="arrow"></li>					
+					<li class="arrow"></li>		
+					<li><a href="authenticated/showProfile.do"><spring:message code="master.page.myProfile" /> </a></li>			
 					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>

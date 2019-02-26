@@ -63,52 +63,38 @@ public class MessageService {
 
 		this.actorService.loggedAsActor();
 
-		Box boxRecieved = new Box();
-		Box boxSpam = new Box();
+		Box boxNotification = new Box();
+
 		Box boxSent = new Box();
-
-		List<String> spam = new ArrayList<String>();
-
-		spam = this.configurationService.getSpamWords();
 
 		Message messageSaved = this.messageRepository.saveAndFlush(message);
 		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		messageCopy.setTags(messageSaved.getTags());
+
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
 
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
-		boxRecieved = this.boxService.getRecievedBoxByActor(messageSaved.getReceiver());
-		boxSpam = this.boxService.getSpamBoxByActor(messageSaved.getReceiver());
+		boxNotification = this.boxService.getNotificationBoxByActor(messageSaved.getReceiver());
 
 		// Guardar la box con ese mensaje;
 
-		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam) || this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
-			boxSent.getMessages().add(messageSaved);
-			boxSpam.getMessages().add(messageCopySaved);
+		boxNotification.getMessages().add(messageCopySaved);
+		boxSent.getMessages().add(messageSaved);
+		//boxRecieved.setMessages(list);
+		this.boxService.saveSystem(boxSent);
+		this.boxService.saveSystem(boxNotification);
+		this.actorService.save(messageSaved.getSender());
+		this.actorService.flushSave(messageSaved.getReceiver());
 
-			this.boxService.saveSystem(boxSent);
-			this.boxService.saveSystem(boxSpam);
-			this.actorService.save(messageSaved.getSender());
-			this.actorService.flushSave(messageSaved.getReceiver());
-
-		} else {
-			boxRecieved.getMessages().add(messageCopySaved);
-			boxSent.getMessages().add(messageSaved);
-			//boxRecieved.setMessages(list);
-			this.boxService.saveSystem(boxSent);
-			this.boxService.saveSystem(boxRecieved);
-			this.actorService.save(messageSaved.getSender());
-			this.actorService.flushSave(messageSaved.getReceiver());
-		}
 		return messageSaved;
 	}
-
 	// Metodo para enviar un mensaje a un ACTOR (O varios, que tambien puede ser)
 	public Message sendMessage(Message message) {
 
 		this.actorService.loggedAsActor();
 
 		Actor actorRecieved = message.getReceiver();
-		Actor senderActor = message.getSender();
+		Actor senderActor = message.getReceiver();
 
 		Box boxRecieved = new Box();
 		Box boxSpam = new Box();
