@@ -39,6 +39,16 @@
    </script>
 <form:form modelAttribute="formObjectMember" action="anonymous/createMember.do">
 
+	<!-- ELECCIÓN DEL FORMATO DE LA FECHA -->
+	<jstl:if test="${locale =='EN'}">
+		<jstl:set var="url" value ="anonymous/termsAndConditionsEN.do"/>		
+	</jstl:if>
+	
+	<jstl:if test="${locale =='ES'}">
+		<jstl:set var="url" value ="anonymous/termsAndConditionsES.do"/>
+	</jstl:if>
+	
+
 	<!-- User Account Attributes -->
 	<fieldset>
     	<legend> <spring:message code="anonymous.userAccountData" /> </legend>
@@ -88,10 +98,9 @@
     
     <form:checkbox path="termsAndConditions" /> 
 			<spring:message code="anonymous.acceptTemsConditions" />
-					<a href="https://www.w3schools.com/html/" target="_blank"> 
+					<a href="${url}" target="_blank"> 
 							<spring:message code="anonymous.termsAndConditions" /> </a>
 								<form:errors path="termsAndConditions" cssClass="error" />
-	 
 	<br />
 	</fieldset>
 	<br />

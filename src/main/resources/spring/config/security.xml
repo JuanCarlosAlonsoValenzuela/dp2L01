@@ -39,7 +39,8 @@
 		<security:intercept-url pattern="/security/login.do" access="permitAll" /> 
 		<security:intercept-url pattern="/security/loginFailure.do" access="permitAll" /> 
 		<security:intercept-url pattern="/welcome/index.do" access="permitAll" /> 
-		
+		<security:intercept-url pattern="/anonymous/termsAndConditionsEN.do" access="permitAll" />
+		<security:intercept-url pattern="/anonymous/termsAndConditionsES.do" access="permitAll" />
 	
 		<!-- admin -->
 		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />

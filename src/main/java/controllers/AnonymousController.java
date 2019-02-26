@@ -36,8 +36,30 @@ public class AnonymousController extends AbstractController {
 		super();
 	}
 
-	//------------------------ MEMBER -----------------------------------------------------	
+	//TERMS AND CONDITIONS 
+	//LIST
+	//Lista de todos los floatt de esa brotherhood
+	@RequestMapping(value = "/termsAndConditionsEN", method = RequestMethod.GET)
+	public ModelAndView listEN() {
+		ModelAndView result;
 
+		result = new ModelAndView("termsAndConditionsEN");
+
+		return result;
+	}
+
+	//Lista de todos los floatt de esa brotherhood
+	@RequestMapping(value = "/termsAndConditionsES", method = RequestMethod.GET)
+	public ModelAndView listES() {
+
+		ModelAndView result;
+
+		result = new ModelAndView("termsAndConditionsES");
+
+		return result;
+	}
+
+	//------------------------ MEMBER -----------------------------------------------------	
 	//Create
 	@RequestMapping(value = "/createMember", method = RequestMethod.GET)
 	public ModelAndView createCustomer() {
@@ -46,7 +68,10 @@ public class AnonymousController extends AbstractController {
 		FormObjectMember formObjectMember = new FormObjectMember();
 		formObjectMember.setTermsAndConditions(false);
 
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
 		result = this.createEditModelAndView(formObjectMember);
+		result.addObject("locale", locale);
 
 		return result;
 	}
@@ -63,31 +88,33 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
+		//Confirmacion terminos y condiciones
+		if (!formObjectMember.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				return this.createEditModelAndView(member);
+			} else {
+				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+				return this.createEditModelAndView(member);
+			}
+
+		//Confirmacion contraseña
+		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword()))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				return this.createEditModelAndView(member);
+			} else {
+				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Passwords don't match"));
+				return this.createEditModelAndView(member);
+			}
+
+		//Reconstruccion
 		member = this.memberService.reconstruct(formObjectMember, binding);
 
 		if (binding.hasErrors())
 			result = this.createEditModelAndView(member);
 		else
 			try {
-				//Confirmacion terminos y condiciones
-				if (!formObjectMember.getTermsAndConditions())
-					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-						binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
-						return this.createEditModelAndView(member);
-					} else {
-						binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
-						return this.createEditModelAndView(member);
-					}
-
-				//Confirmacion contraseña
-				if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword()))
-					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-						binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
-						return this.createEditModelAndView(member);
-					} else {
-						binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Passwords don't match"));
-						return this.createEditModelAndView(member);
-					}
 
 				if (member.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
 					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
@@ -118,7 +145,10 @@ public class AnonymousController extends AbstractController {
 	protected ModelAndView createEditModelAndView(FormObjectMember formObjectMember) {
 		ModelAndView result;
 
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
 		result = this.createEditModelAndView(formObjectMember, null);
+		result.addObject("locale", locale);
 
 		return result;
 	}
@@ -126,10 +156,12 @@ public class AnonymousController extends AbstractController {
 	protected ModelAndView createEditModelAndView(FormObjectMember formObjectMember, String messageCode) {
 		ModelAndView result;
 
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
 		result = new ModelAndView("anonymous/createMember");
 		result.addObject("formObjectMember", formObjectMember);
-
 		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
 
 		return result;
 	}
@@ -138,7 +170,10 @@ public class AnonymousController extends AbstractController {
 	protected ModelAndView createEditModelAndView(Member member) {
 		ModelAndView result;
 
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
 		result = this.createEditModelAndView(member, null);
+		result.addObject("locale", locale);
 
 		return result;
 	}
@@ -146,9 +181,12 @@ public class AnonymousController extends AbstractController {
 	protected ModelAndView createEditModelAndView(Member member, String messageCode) {
 		ModelAndView result;
 
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
 		result = new ModelAndView("anonymous/createMember");
 		result.addObject("member", member);
 		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
 
 		return result;
 	}
