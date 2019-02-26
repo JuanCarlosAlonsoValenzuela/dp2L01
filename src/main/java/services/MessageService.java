@@ -154,41 +154,47 @@ public class MessageService {
 	}
 
 	public void sendNotificationDropOut(Brotherhood bro) {
-		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 		Member loggedMember = this.memberService.loggedMember();
 		Admin admin = this.adminService.getSystem();
 		Box sentAdmin = this.boxService.getSentBoxByActor(admin);
 		Box notMem = this.boxService.getNotificationBoxByActor(loggedMember);
 		Box notBro = this.boxService.getNotificationBoxByActor(bro);
-		Message messageBro = null;
-		Message messageMem = null;
-		Message copyBro = null;
-		Message copyMem = null;
-		if (locale == "EN") {
-			messageBro = this.create("Drop out notification", "The user " + loggedMember.getUserAccount().getUsername() + " has dropped out the brotherhood.", "HIGH", bro);
-			messageMem = this.create("Drop out notification", "you have dropped out the brotherhood " + bro.getTitle(), "HIGH", loggedMember);
-			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
-			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
-		} else if (locale == "ES") {
-			messageBro = this.create("Notificación de salida", "El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH", bro);
-			messageMem = this.create("Notificación de salida", "Has dejado la hermandad " + bro.getTitle(), "HIGH", loggedMember);
-			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
-			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
+		Message messageBro = new Message();
+		Message messageMem = new Message();
+		if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("EN")) {
+			messageBro = this.createNotification("Drop out notification", "The user " + loggedMember.getUserAccount().getUsername() + " has dropped out the brotherhood.", "HIGH", "DROP OUT", bro);
+			messageMem = this.createNotification("Drop out notification", "you have dropped out the brotherhood " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
+		} else if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+			messageBro = this.createNotification("Notificaciï¿½n de salida", "El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH", "DROP OUT", bro);
+			messageMem = this.createNotification("Notificaciï¿½n de salida", "Has dejado la hermandad " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
 		}
 		this.messageRepository.save(messageBro);
 		this.messageRepository.save(messageMem);
-		this.messageRepository.save(copyBro);
-		this.messageRepository.save(copyMem);
-		sentAdmin.getMessages().add(messageBro);
-		sentAdmin.getMessages().add(messageMem);
-		notMem.getMessages().add(copyMem);
-		notBro.getMessages().add(copyBro);
-		this.boxService.save(sentAdmin);
-		this.boxService.save(notMem);
-		this.boxService.save(notBro);
-		this.adminService.save(admin);
-		this.memberService.save(loggedMember);
-		this.brotherhoodService.save(bro);
+		Message copyBro = new Message();
+		Message copyMem = new Message();
+		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getTags(), messageBro.getSender());
+		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getTags(), messageMem.getSender());
+		Message saveBro = this.messageRepository.save(copyBro);
+		Message saveMem = this.messageRepository.save(copyMem);
+
+		List<Message> messAdmin = sentAdmin.getMessages();
+		List<Message> messMem = notMem.getMessages();
+		List<Message> messBro = notBro.getMessages();
+		messAdmin.add(saveBro);
+		messAdmin.add(saveMem);
+		messMem.add(copyMem);
+		messBro.add(copyBro);
+		sentAdmin.setMessages(messAdmin);
+		notMem.setMessages(messMem);
+		notBro.setMessages(messBro);
+		this.boxService.flushSave(sentAdmin);
+		this.boxService.flushSave(notMem);
+		this.boxService.flushSave(notBro);
+
+		this.actorService.save(messageBro.getSender());
+		this.actorService.save(messageMem.getSender());
+		this.actorService.save(messageBro.getReceiver());
+		this.actorService.save(messageMem.getReceiver());
 	}
 
 	public void sendNotificationBroEnrolMem(Member mem) {
@@ -208,8 +214,8 @@ public class MessageService {
 			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
 			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
 		} else if (locale == "ES") {
-			messageBro = this.create("Notificación de inscripción", "Has aceptado al usuario " + mem.getUserAccount().getUsername() + " a la hermandad.", "HIGH", loggedBrotherhood);
-			messageMem = this.create("Notificación de inscripción", "Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle(), "HIGH", mem);
+			messageBro = this.create("Notificaciï¿½n de inscripciï¿½n", "Has aceptado al usuario " + mem.getUserAccount().getUsername() + " a la hermandad.", "HIGH", loggedBrotherhood);
+			messageMem = this.create("Notificaciï¿½n de inscripciï¿½n", "Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle(), "HIGH", mem);
 			copyBro = this.create(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getSender());
 			copyMem = this.create(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getSender());
 		}
