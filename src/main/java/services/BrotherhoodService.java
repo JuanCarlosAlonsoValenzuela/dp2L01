@@ -240,4 +240,14 @@ public class BrotherhoodService {
 				res.add(e);
 		return res;
 	}
+
+	public List<Member> getMembersOfBrotherhood(Brotherhood bro) {
+
+		List<Member> members = new ArrayList<Member>();
+		List<Enrolment> enrolmentsBro = bro.getEnrolments();
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED)
+				members.add(e.getMember());
+		return members;
+	}
 }
