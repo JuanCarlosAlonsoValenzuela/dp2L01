@@ -41,7 +41,7 @@
 					<spring:message code="administrator.yes" />
  	  	</jstl:when>
  	  	<jstl:otherwise>
- 	  				<jstl:out value="No" />
+ 	  				<jstl:out value="N/A" />
  	  	</jstl:otherwise>
  	  	</jstl:choose>
      
