@@ -353,6 +353,13 @@ public class AdminService {
 			statistics.add((float) -1);
 		else
 			statistics.add(this.adminRepository.ratioEmptyFinder());
+
+		statistics.add(this.adminRepository.getRatioSpammers());
+		statistics.add(this.adminRepository.getRatioNonSpammers());
+		statistics.add(this.adminRepository.avgAdminPolarity() + 1);
+		statistics.add(this.adminRepository.avgMemberPolarity() + 1);
+		statistics.add(this.adminRepository.avgBrotherhoodPolarity() + 1);
+
 		return statistics;
 	}
 
@@ -408,6 +415,26 @@ public class AdminService {
 
 	public List<Member> membersAtLeastTenPercentRequestsApproved() {
 		return this.adminRepository.listMembersAtLeastTenPercentRequestApproved();
+	}
+
+	public Float getRatioSpammers() {
+		return this.adminRepository.getRatioSpammers();
+	}
+
+	public Float getRatioNonSpammers() {
+		return this.adminRepository.getRatioNonSpammers();
+	}
+
+	public Float avgAdminPolarity() {
+		return this.adminRepository.avgAdminPolarity();
+	}
+
+	public Float avgMemberPolarity() {
+		return this.adminRepository.avgMemberPolarity();
+	}
+
+	public Float avgBrotherhoodPolarity() {
+		return this.adminRepository.avgBrotherhoodPolarity();
 	}
 
 	public List<Float> noZeroDivision(List<Float> result) {

@@ -28,6 +28,109 @@ tr:nth-child(even) {
 
 <security:authorize access="hasRole('ADMIN')">
 
+<strong><spring:message code="statistics.spammers"/>:</strong>
+<div class="ct-chart-spammersAndNotSpammers ct-perfect-fourth" style="width: 30%"></div>
+<script>
+new Chartist.Pie('.ct-chart-spammersAndNotSpammers', {
+	series: ["${statistics.get(16)}", "${statistics.get(17)}"]
+	}, {
+	  donut: false,
+	  donutWidth: 60,
+	  donutSolid: true,
+	  startAngle: 270,
+	  showLabel: true
+	});
+</script>
+<ul>
+	<li><spring:message code="actor.spammers"/>: <jstl:out value="${statistics.get(16)}"/>%</li>
+	<li><spring:message code="actor.nonSpammers"/>: <jstl:out value="${statistics.get(17)}"/>%</li>
+</ul>
+
+<strong><spring:message code="statistics.avgPolarity"/>:</strong>
+<div class="ct-chart-polarityAvgPerActor ct-perfect-fourth" style="width: 30%"></div>
+<script>
+new Chartist.Pie('.ct-chart-polarityAvgPerActor', {
+	series: ["${statistics.get(18)}", "${statistics.get(19)}", "${statistics.get(20)}"]
+	}, {
+	  donut: false,
+	  donutWidth: 60,
+	  donutSolid: true,
+	  startAngle: 270,
+	  showLabel: true
+	});
+</script>
+<ul>
+	<li><spring:message code="actor.admin"/>: <jstl:out value="${statistics.get(18)}"/></li>
+	<li><spring:message code="actor.member"/>: <jstl:out value="${statistics.get(19)}"/></li>
+	<li><spring:message code="actor.brotherhood"/>: <jstl:out value="${statistics.get(20)}"/></li>
+</ul>
+
+<strong><spring:message code="statistics.ratioBrotherhoodsPerArea"/>:</strong>
+<div class="ct-chart-ratioBrotherhoodsPerArea ct-perfect-fourth" style="width: 30%"></div>
+<script>
+var data = {
+		  labels: [],
+		  series: []
+		};
+		
+<jstl:forEach items="${areaNames}" var="aName">
+	data.labels.push("${aName}");   
+	data.series.push("${ratioBrotherhoodsPerArea.get(aName)}");
+</jstl:forEach>
+
+new Chartist.Bar('.ct-chart-ratioBrotherhoodsPerArea', data, {
+	  distributeSeries: true
+	});
+</script>
+
+<strong><spring:message code="statistics.countBrotherhoodsPerArea"/>:</strong>
+<div class="ct-chart-countBrotherhoodsPerArea ct-perfect-fourth" style="width: 30%"></div>
+<script>
+var data = {
+		  labels: [],
+		  series: []
+		};
+		
+<jstl:forEach items="${areaNames}" var="aName">
+	data.labels.push("${aName}");   
+	data.series.push("${countBrotherhoodsPerArea.get(aName)}");
+</jstl:forEach>
+
+new Chartist.Bar('.ct-chart-countBrotherhoodsPerArea', data, {
+	  distributeSeries: true
+	});
+</script>
+
+<strong><spring:message code="statistics.brotherhoodsPerArea"/>:</strong>
+<div class="ct-chart-minMaxAvgStdvBrotherhoodsPerArea ct-perfect-fourth" style="width: 30%"></div>
+<script>
+var data = {
+		  labels: ['<spring:message code="statistics.minimum"/>', '<spring:message code="statistics.maximum"/>', '<spring:message code="statistics.average"/>', '<spring:message code="statistics.standardDeviation"/>'],
+		  series: ["${statistics.get(7)}", "${statistics.get(8)}", "${statistics.get(9)}", "${statistics.get(10)}"]
+		};
+
+new Chartist.Bar('.ct-chart-minMaxAvgStdvBrotherhoodsPerArea', data, {
+	  distributeSeries: true
+	});
+</script>
+
+<strong><spring:message code="statistics.membersPerBrotherhood"/>:</strong>
+<div class="ct-chart-minMaxAvgStdvMembersPerBrotherhood ct-perfect-fourth" style="width: 30%"></div>
+<script>
+var data = {
+		 labels: ['<spring:message code="statistics.minimum"/>', '<spring:message code="statistics.maximum"/>', '<spring:message code="statistics.average"/>', '<spring:message code="statistics.standardDeviation"/>'],
+		  series: ["${statistics.get(1)}", "${statistics.get(2)}", "${statistics.get(0)}", "${statistics.get(3)}"]
+		};
+
+new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
+	  distributeSeries: true
+	});
+</script>
+
+<br/>
+<hr/>
+<br/>
+
 <strong><spring:message code="statistics.membersPerBrotherhood" />:</strong>
 <br />
 
@@ -190,6 +293,7 @@ tr:nth-child(even) {
 </table>
 <br />
 
+<!-- GRAFICO 3 -->
 <strong><spring:message code="statistics.ratioBrotherhoodsPerArea" />:</strong>
 <br />
 <table style="width:100%">
