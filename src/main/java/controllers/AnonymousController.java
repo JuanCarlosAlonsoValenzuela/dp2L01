@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import security.UserAccountService;
+import services.BrotherhoodService;
 import services.ConfigurationService;
 import services.MemberService;
+import domain.Brotherhood;
 import domain.Configuration;
 import domain.Member;
+import forms.FormObjectBrotherhood;
 import forms.FormObjectMember;
 
 @Controller
@@ -25,20 +27,16 @@ public class AnonymousController extends AbstractController {
 
 	@Autowired
 	private MemberService			memberService;
-
+	@Autowired
+	private BrotherhoodService		brotherhoodService;
 	@Autowired
 	private ConfigurationService	configurationService;
-	@Autowired
-	private UserAccountService		userAccountService;
 
 
 	public AnonymousController() {
 		super();
 	}
 
-	//TERMS AND CONDITIONS 
-	//LIST
-	//Lista de todos los floatt de esa brotherhood
 	@RequestMapping(value = "/termsAndConditionsEN", method = RequestMethod.GET)
 	public ModelAndView listEN() {
 		ModelAndView result;
@@ -48,7 +46,6 @@ public class AnonymousController extends AbstractController {
 		return result;
 	}
 
-	//Lista de todos los floatt de esa brotherhood
 	@RequestMapping(value = "/termsAndConditionsES", method = RequestMethod.GET)
 	public ModelAndView listES() {
 
@@ -62,7 +59,7 @@ public class AnonymousController extends AbstractController {
 	//------------------------ MEMBER -----------------------------------------------------	
 	//Create
 	@RequestMapping(value = "/createMember", method = RequestMethod.GET)
-	public ModelAndView createCustomer() {
+	public ModelAndView createMember() {
 		ModelAndView result;
 
 		FormObjectMember formObjectMember = new FormObjectMember();
@@ -88,16 +85,6 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion terminos y condiciones
-		if (!formObjectMember.getTermsAndConditions())
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
-				return this.createEditModelAndView(member);
-			} else {
-				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
-				return this.createEditModelAndView(member);
-			}
-
 		//Confirmacion contraseña
 		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword()))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
@@ -105,6 +92,16 @@ public class AnonymousController extends AbstractController {
 				return this.createEditModelAndView(member);
 			} else {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Passwords don't match"));
+				return this.createEditModelAndView(member);
+			}
+
+		//Confirmacion terminos y condiciones
+		if (!formObjectMember.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				return this.createEditModelAndView(member);
+			} else {
+				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
 				return this.createEditModelAndView(member);
 			}
 
@@ -141,7 +138,8 @@ public class AnonymousController extends AbstractController {
 			}
 		return result;
 	}
-	//MODEL AND VIEW FORM OBJECT
+
+	//MODEL AND VIEW FORM OBJECT MEMBER
 	protected ModelAndView createEditModelAndView(FormObjectMember formObjectMember) {
 		ModelAndView result;
 
@@ -185,6 +183,139 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createMember");
 		result.addObject("member", member);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//------------------------ BROTHERHOOD -----------------------------------------------------	
+	//Create
+	@RequestMapping(value = "/createBrotherhood", method = RequestMethod.GET)
+	public ModelAndView createBrotherhood() {
+		ModelAndView result;
+
+		FormObjectBrotherhood formObjectBrotherhood = new FormObjectBrotherhood();
+		formObjectBrotherhood.setTermsAndConditions(false);
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectBrotherhood);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//SAVE
+	@RequestMapping(value = "/createBrotherhood", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid FormObjectBrotherhood formObjectBrotherhood, BindingResult binding) {
+
+		ModelAndView result;
+
+		Brotherhood brotherhood = new Brotherhood();
+		brotherhood = this.brotherhoodService.createBrotherhood();
+
+		Configuration configuration = this.configurationService.getConfiguration();
+		String prefix = configuration.getSpainTelephoneCode();
+
+		//Confirmacion contraseña
+		if (!formObjectBrotherhood.getPassword().equals(formObjectBrotherhood.getConfirmPassword()))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				return this.createEditModelAndView(brotherhood);
+			} else {
+				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Passwords don't match"));
+				return this.createEditModelAndView(brotherhood);
+			}
+
+		//Confirmacion terminos y condiciones
+		if (!formObjectBrotherhood.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectBrotherhood", "termsAndConditions", formObjectBrotherhood.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				return this.createEditModelAndView(formObjectBrotherhood);
+			} else {
+				binding.addError(new FieldError("formObjectBrotherhood", "termsAndConditions", formObjectBrotherhood.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+				return this.createEditModelAndView(formObjectBrotherhood);
+			}
+
+		//Reconstruccion 
+		brotherhood = this.brotherhoodService.reconstruct(formObjectBrotherhood, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(brotherhood);
+		else
+			try {
+
+				if (brotherhood.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+						binding.addError(new FieldError("brotherhood", "email", brotherhood.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+						return this.createEditModelAndView(brotherhood);
+					} else {
+						binding.addError(new FieldError("brotherhood", "email", brotherhood.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+						return this.createEditModelAndView(brotherhood);
+					}
+
+				} else if (brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+					this.brotherhoodService.saveCreate(brotherhood);
+				else if (brotherhood.getPhoneNumber().matches("([0-9]{4,})$")) {
+					brotherhood.setPhoneNumber(prefix + brotherhood.getPhoneNumber());
+					this.brotherhoodService.saveCreate(brotherhood);
+				} else
+					this.brotherhoodService.saveCreate(brotherhood);
+
+				result = new ModelAndView("redirect:/security/login.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(brotherhood, "brotherhood.commit.error");
+
+			}
+		return result;
+	}
+
+	//MODEL AND VIEW FORM OBJECT BROTHERHOOD
+	protected ModelAndView createEditModelAndView(FormObjectBrotherhood formObjectBrotherhood) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectBrotherhood, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(FormObjectBrotherhood formObjectBrotherhood, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createBrotherhood");
+		result.addObject("formObjectBrotherhood", formObjectBrotherhood);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//MODEL AND VIEW BROTHERHOOD
+	protected ModelAndView createEditModelAndView(Brotherhood brotherhood) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(brotherhood, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Brotherhood brotherhood, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createBrotherhood");
+		result.addObject("brotherhood", brotherhood);
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 
