@@ -46,16 +46,14 @@ public class FinderService {
 
 		List<Procession> processions = new ArrayList<>();
 
-		Date maxDate = new Date();
-		Date minDate = new Date();
 		Date lastEdit = new Date();
 
 		lastEdit.setTime(lastEdit.getTime() - 1);
 
 		finder.setKeyWord("");
 		finder.setArea("");
-		finder.setMaxDate(maxDate);
-		finder.setMinDate(minDate);
+		finder.setMaxDate(null);
+		finder.setMinDate(null);
 		finder.setLastEdit(lastEdit);
 		finder.setProcessions(processions);
 
@@ -105,7 +103,7 @@ public class FinderService {
 		if (finder.getMinDate() != null && finder.getMaxDate() != null) {
 			Assert.isTrue(finder.getMinDate().before(finder.getMaxDate()));
 			filter = this.finderRepository.getProcessionsByDate(finder.getId());
-			result.removeAll(filter);
+			result.retainAll(filter);
 		}
 		finder.setProcessions(result);
 		Finder finderRes = this.finderRepository.save(finder);
