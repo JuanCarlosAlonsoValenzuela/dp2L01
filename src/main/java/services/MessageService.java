@@ -162,6 +162,8 @@ public class MessageService {
 		Message copyMem = new Message();
 		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getTags(), messageBro.getSender());
 		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getTags(), messageMem.getSender());
+		copyBro.setReceiver(bro);
+		copyMem.setReceiver(loggedMember);
 		Message saveBro = this.messageRepository.save(copyBro);
 		Message saveMem = this.messageRepository.save(copyMem);
 
@@ -207,6 +209,8 @@ public class MessageService {
 		Message copyMem = new Message();
 		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getTags(), messageBro.getSender());
 		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getTags(), messageMem.getSender());
+		copyBro.setReceiver(loggedBrotherhood);
+		copyMem.setReceiver(mem);
 		Message saveBro = this.messageRepository.save(copyBro);
 		Message saveMem = this.messageRepository.save(copyMem);
 
