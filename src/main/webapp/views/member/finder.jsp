@@ -22,9 +22,12 @@
 		<acme:textbox code="finder.area" path="area"/>
 		
 		<acme:datebox code="finder.minimumDate" path="minDate"/>
+		
+		<br/>
 
 		<acme:datebox code="finder.maximumDate" path="maxDate"/>
 
+		<br/>
 		
 		<acme:submit name="save" code="member.save"/>
 	

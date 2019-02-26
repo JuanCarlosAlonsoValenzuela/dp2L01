@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
@@ -114,11 +115,16 @@ public class FinderMemberController extends AbstractController {
 
 		UserAccount userAccount = LoginService.getPrincipal();
 		Member logguedMember = this.memberService.getMemberByUsername(userAccount.getUsername());
+		String locale = LocaleContextHolder.getLocale().getLanguage();
+
+		Boolean errorDate = finderForm.getMinDate().after(finderForm.getMaxDate()) || finderForm.getMinDate().equals(finderForm.getMaxDate());
 
 		Finder finder = this.finderService.reconstruct(finderForm, binding);
-		if (binding.hasErrors())
+		if (binding.hasErrors() || errorDate) {
 			result = this.createEditModelAndView(finderForm);
-		else
+			result.addObject("message", "error.date");
+
+		} else
 			try {
 				this.finderService.save(finder);
 				this.finderService.filterProcessionsByFinder();
