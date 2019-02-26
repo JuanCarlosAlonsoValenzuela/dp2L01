@@ -35,6 +35,9 @@ public class BoxService {
 	@Autowired
 	private Validator		validator;
 
+	public Box flushSave(Box box) {
+		return this.boxRepository.saveAndFlush(box);
+	}
 
 	public Box create() {
 
