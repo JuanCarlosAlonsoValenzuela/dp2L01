@@ -29,6 +29,8 @@
 		
 		<value>/views/member/tiles.xml</value>
 		<value>/views/mail/tiles.xml</value>
+		<value>/views/actor/tiles.xml</value>
+		<value>/views/anonymous/tiles.xml</value>
 	</util:list>
 
 </beans>

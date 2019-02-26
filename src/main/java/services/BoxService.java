@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.BoxRepository;
 import security.LoginService;
@@ -30,6 +32,12 @@ public class BoxService {
 	@Autowired
 	private ActorService	actorService;
 
+	@Autowired
+	private Validator		validator;
+
+	public Box flushSave(Box box) {
+		return this.boxRepository.saveAndFlush(box);
+	}
 
 	public Box create() {
 
@@ -86,7 +94,7 @@ public class BoxService {
 		return this.boxRepository.save(box);
 	}
 
-	public Box save(final Box box) {
+	public Box save(Box box) {
 		Assert.isTrue(!box.getIsSystem());
 		this.actorService.loggedAsActor();
 
@@ -102,10 +110,25 @@ public class BoxService {
 		return savedBox;
 	}
 
-	public Box updateBox(final Box box) {
+	public Box updateBox(Box box) {
 		this.actorService.loggedAsActor();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
 		Assert.isTrue(!box.getIsSystem());
-		return this.save(box);
+
+		Box savedBox = new Box();
+
+		savedBox = this.boxRepository.save(box);
+		if (actor.getBoxes().contains(savedBox)) {
+			actor.getBoxes().remove(savedBox);
+			actor.getBoxes().add(savedBox);
+		} else
+			actor.getBoxes().add(savedBox);
+
+		this.actorService.save(actor);
+		return savedBox;
 	}
 
 	public void deleteBox(final Box box) {
@@ -187,4 +210,25 @@ public class BoxService {
 		return actor.getBoxes();
 	}
 
+	public Box reconstruct(Box box, BindingResult binding) {
+
+		Box result;
+		List<Message> messages = new ArrayList<Message>();
+
+		if (box.getId() == 0) {
+			result = box;
+			result.setIsSystem(false);
+			result.setMessages(messages);
+		} else {
+			result = this.boxRepository.findOne(box.getId());
+
+			result.setFatherBox(box.getFatherBox());
+			result.setName(box.getName());
+
+		}
+
+		this.validator.validate(result, binding);
+		return result;
+
+	}
 }

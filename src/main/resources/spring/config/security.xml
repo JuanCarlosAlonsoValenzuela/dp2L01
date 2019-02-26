@@ -39,6 +39,8 @@
 		<security:intercept-url pattern="/security/login.do" access="permitAll" /> 
 		<security:intercept-url pattern="/security/loginFailure.do" access="permitAll" /> 
 		<security:intercept-url pattern="/welcome/index.do" access="permitAll" /> 
+		<security:intercept-url pattern="/anonymous/termsAndConditionsEN.do" access="permitAll" />
+		<security:intercept-url pattern="/anonymous/termsAndConditionsES.do" access="permitAll" />
 	
 		<!-- admin -->
 		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />
@@ -47,6 +49,8 @@
 		<security:intercept-url pattern="/position/administrator/**" access="hasRole('ADMIN')"/> 
 		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/statistics/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/priority/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/broadcast/administrator/**" access="hasRole('ADMIN')"  />
 		
 		<!-- brotherhood -->
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
@@ -62,12 +66,19 @@
 		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/picture/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/float/member/**" access="hasRole('MEMBER')" /> 
 		
 		<!-- Authenticated -->
+		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
-		<!-- None -->
+		 
+		 
+		<!-- Anonymous -->
+		<security:intercept-url pattern="/anonymous/**" access="isAnonymous()" />
 		
+		
+		<!-- None -->
 		<security:intercept-url pattern="/**" access="hasRole('NONE')" />
 
 		<security:form-login 

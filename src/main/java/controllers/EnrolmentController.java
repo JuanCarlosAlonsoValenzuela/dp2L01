@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,10 +49,12 @@ public class EnrolmentController extends AbstractController {
 		ModelAndView result;
 		List<Enrolment> enrolments = new ArrayList<Enrolment>();
 		enrolments = this.enrolmentService.getEnrolmentsPerMember(this.memberService.loggedMember());
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		result = new ModelAndView("enrolment/member/list");
 
 		result.addObject("enrolments", enrolments);
+		result.addObject("locale", locale);
 		result.addObject("requestURI", "enrolment/member/list.do");
 		return result;
 	}

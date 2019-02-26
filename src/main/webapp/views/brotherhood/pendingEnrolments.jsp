@@ -7,6 +7,7 @@
 <%@taglib prefix="security"
 	uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
 <p>
 	<spring:message code="brotherhood.pending.enrolments" />
@@ -26,6 +27,26 @@
 
 		<display:column property="creationMoment" titleKey="enrolment.moment"
 			sortable="true" format="{0,date,dd/MM/yyyy HH:mm}" />
+
+		<display:column>
+			<spring:url var="rejectUrl"
+				value="/enrolment/brotherhood/reject.do?enrolmentId={enrolmentId}">
+				<spring:param name="enrolmentId" value="${row.id}" />
+			</spring:url>
+			<form:form action="${rejectUrl}">
+				<acme:submit code="enrolment.reject" name="save" />
+			</form:form>
+		</display:column>
+
+		<display:column>
+			<spring:url var="assignPositionUrl"
+				value="/enrolment/brotherhood/assignPosition.do?enrolmentId={enrolmentId}">
+				<spring:param name="enrolmentId" value="${row.id}" />
+			</spring:url>
+			<a href="${assignPositionUrl}"> <spring:message
+					code="enrolment.assign.position" />
+			</a>
+		</display:column>
 
 	</display:table>
 

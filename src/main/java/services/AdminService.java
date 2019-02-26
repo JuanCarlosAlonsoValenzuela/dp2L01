@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.AdminRepository;
 import security.Authority;
@@ -57,6 +59,9 @@ public class AdminService {
 
 	@Autowired
 	private PositionService		positionService;
+
+	@Autowired
+	private Validator			validator;
 
 
 	// 1. Create user accounts for new administrators.
@@ -262,22 +267,22 @@ public class AdminService {
 	 * }
 	 */
 
-	public void broadcastMessage(final Message message) {
+	public void broadcastMessage(Message message) {
 		this.loggedAsAdmin();
 
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor admin = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor admin = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		List<Actor> actors = new ArrayList<Actor>();
 		actors = this.actorService.findAll();
 
-		for (final Actor a : actors)
+		for (Actor a : actors)
 			if (!(a.equals(admin))) {
 				message.setReceiver(a);
 				this.messageService.sendMessageBroadcasted(message);
 			}
-		System.out.println("Something");
+
 	}
 
 	public void banSuspiciousActor(final Actor a) {
@@ -460,5 +465,33 @@ public class AdminService {
 	 * return this.adminRepository.findAll2();
 	 * }
 	 */
+
+	public Message reconstruct(Message message, BindingResult binding) {
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		domain.Message result;
+		result = this.messageService.create();
+		if (message.getId() == 0) {
+			result = message;
+			result.setSender(actor);
+
+		} else {
+			result = this.messageService.findOne(message.getId());
+
+			result.setBody(message.getBody());
+			result.setPriority(message.getPriority());
+			result.setTags(message.getTags());
+			result.setSubject(message.getSubject());
+			result.setReceiver(actor);
+		}
+
+		//this.validator.validate(result, binding);
+
+		return result;
+
+	}
 
 }

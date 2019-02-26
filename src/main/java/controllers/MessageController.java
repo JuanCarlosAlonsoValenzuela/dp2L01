@@ -302,12 +302,16 @@ public class MessageController extends AbstractController {
 		result.addObject("actors", actors);
 		result.addObject("actorBoxes", actorBoxes);
 
+		List<String> priority = this.configurationService.getConfiguration().getPriorityLvl();
+		List<String> priorityName = new ArrayList<>();
+
 		if (locale == "en")
-			result.addObject("priorityName", this.configurationService.getConfiguration().getPriorityLvl());
+			priorityName = this.configurationService.getConfiguration().getPriorityLvl();
 		else if (locale == "es")
-			result.addObject("priorityName", this.configurationService.getConfiguration().getPriorityLvlSpa());
+			priorityName = this.configurationService.getConfiguration().getPriorityLvlSpa();
 		result.addObject("message", messageCode);
-		result.addObject("priority", this.configurationService.getConfiguration().getPriorityLvl());
+		result.addObject("priority", priority);
+		result.addObject("priorityName", priorityName);
 
 		return result;
 	}
