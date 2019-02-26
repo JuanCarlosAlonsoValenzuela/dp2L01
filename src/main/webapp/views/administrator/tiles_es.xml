@@ -86,6 +86,9 @@
 	<definition name="priority/administrator/create" extends="master.page">	
 		<put-attribute name="title" value="Añadir prioridad" />
 		<put-attribute name="body" value="/views/administrator/createPriority.jsp" />
+	<definition name="broadcast/administrator/send" extends="master.page">	
+		<put-attribute name="title" value="Emitir notificacion" /> 
+		<put-attribute name="body" value="/views/administrator/broadcast.jsp" />
 	</definition>
 	
 </tiles-definitions>

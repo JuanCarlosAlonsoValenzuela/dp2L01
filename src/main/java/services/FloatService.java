@@ -1,6 +1,7 @@
 
 package services;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -216,4 +217,18 @@ public class FloatService {
 		return floatt;
 	}
 
+	public domain.Float addPicture(String picture, domain.Float floatt) {
+		this.brotherhoodService.loggedAsBrotherhood();
+		floatt.getPictures().add(picture);
+		return this.save(floatt);
+	}
+
+	public Boolean isUrl(String url) {
+		try {
+			new URL(url).toURI();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }
