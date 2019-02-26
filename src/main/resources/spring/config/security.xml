@@ -40,7 +40,6 @@
 		<security:intercept-url pattern="/security/loginFailure.do" access="permitAll" /> 
 		<security:intercept-url pattern="/welcome/index.do" access="permitAll" /> 
 		
-		
 	
 		<!-- admin -->
 		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />
@@ -71,10 +70,13 @@
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
-
-	
-		<!-- None -->
+		 
+		 
+		<!-- Anonymous -->
+		<security:intercept-url pattern="/anonymous/**" access="isAnonymous()" />
 		
+		
+		<!-- None -->
 		<security:intercept-url pattern="/**" access="hasRole('NONE')" />
 
 		<security:form-login 
