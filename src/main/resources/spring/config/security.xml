@@ -65,6 +65,7 @@
 		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/picture/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/float/member/**" access="hasRole('MEMBER')" /> 
 		
 		<!-- Authenticated -->
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
