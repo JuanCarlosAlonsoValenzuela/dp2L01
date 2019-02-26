@@ -25,7 +25,7 @@
 
 	<acme:input code="broadcast.tags" path="tags"/>
 	
-	<acme:radio items="${priority}" code="broadcast.priority" path="priority"/>
+	<acme:radio items="${priority}" itemsName="${priority}" code="broadcast.priority" path="priority"/>
 
 	<acme:textarea code="broadcast.message" path="body"/>
 	
