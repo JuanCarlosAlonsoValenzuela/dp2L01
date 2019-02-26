@@ -85,4 +85,9 @@
 		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
 	</definition>
 	
+	<definition name="enrolment/brotherhood/assignPosition" extends="master.page">	
+		<put-attribute name="title" value="Asignar posicion" />
+		<put-attribute name="body" value="/views/brotherhood/assignPosition.jsp" />
+	</definition>
+	
 </tiles-definitions>
