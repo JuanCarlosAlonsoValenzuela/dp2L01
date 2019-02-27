@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
 import repositories.ProcessionRepository;
 import utilities.RandomString;
@@ -35,8 +34,6 @@ public class ProcessionService {
 	private ProcessionRepository	processionRepository;
 	@Autowired
 	private BrotherhoodService		brotherhoodService;
-	@Autowired
-	private Validator				validator;
 
 
 	// Simple CRUD methods ------------------------------------------

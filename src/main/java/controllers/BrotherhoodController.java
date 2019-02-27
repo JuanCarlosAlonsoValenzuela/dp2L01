@@ -4,7 +4,6 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -17,9 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
 import services.FloatService;
-import services.ProcessionService;
 import domain.Brotherhood;
-import domain.Float;
 
 @Controller
 @RequestMapping("/float/brotherhood")
@@ -30,9 +27,6 @@ public class BrotherhoodController extends AbstractController {
 
 	@Autowired
 	private FloatService		floatService;
-
-	@Autowired
-	private ProcessionService	processionService;
 
 
 	//LIST

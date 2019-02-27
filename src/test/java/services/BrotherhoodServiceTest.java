@@ -30,7 +30,7 @@ public class BrotherhoodServiceTest extends AbstractTest {
 	public void testCreate() {
 		Brotherhood bro = new Brotherhood();
 
-		bro = this.brotherhoodService.create();
+		bro = this.brotherhoodService.createBrotherhood();
 
 		bro.setTitle("ddd");
 		bro.setName("aaa");
