@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.ActorService;
 import services.AdminService;
 import services.ConfigurationService;
 import services.MessageService;
@@ -25,9 +24,6 @@ public class AdministratorBroadcastMessage extends AbstractController {
 
 	@Autowired
 	private AdminService			adminService;
-
-	@Autowired
-	private ActorService			actorService;
 
 	@Autowired
 	private MessageService			messageService;

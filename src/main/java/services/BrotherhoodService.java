@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import domain.Member;
 import domain.Procession;
 import domain.SocialProfile;
 import domain.StatusEnrolment;
+import forms.FormObjectBrotherhood;
 
 @Service
 @Transactional
@@ -44,52 +46,53 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.findAll();
 	}
 
-	public Brotherhood save(final Brotherhood h) {
+	public Brotherhood save(Brotherhood h) {
 		return this.brotherhoodRepository.save(h);
 	}
 
-	public void delete(final Brotherhood h) {
+	public void delete(Brotherhood h) {
 		this.brotherhoodRepository.delete(h);
 	}
 
-	public Brotherhood findOne(final int id) {
+	public Brotherhood findOne(int id) {
 		return this.brotherhoodRepository.findOne(id);
 	}
 
-	public List<Float> getFloatsByBrotherhood(final Brotherhood b) {
+	public List<Float> getFloatsByBrotherhood(Brotherhood b) {
 		return this.brotherhoodRepository.getFloatsByBrotherhood(b.getId());
 	}
 
-	public List<Procession> getProcessionsByBrotherhood(final Brotherhood b) {
+	public List<Procession> getProcessionsByBrotherhood(Brotherhood b) {
 		return this.brotherhoodRepository.getProcessionsByBrotherhood(b.getId());
 	}
 
-	public List<Procession> getProcessionsByBrotherhoodFinal(final Brotherhood b) {
+	public List<Procession> getProcessionsByBrotherhoodFinal(Brotherhood b) {
 		return this.brotherhoodRepository.getProcessionsByBrotherhoodFinal(b.getId());
 	}
 
-	public Brotherhood create() {
-		final Brotherhood bro = new Brotherhood();
+	public Brotherhood createBrotherhood() {
+		Brotherhood bro = new Brotherhood();
 
-		final List<String> pictures = new ArrayList<String>();
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Enrolment> enrolments = new ArrayList<Enrolment>();
-		final List<Box> boxes = new ArrayList<Box>();
-		final List<Procession> processions = new ArrayList<Procession>();
-		final List<Float> floats = new ArrayList<Float>();
+		//Se crean las listas vacias
+		List<String> pictures = new ArrayList<String>();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		List<Enrolment> enrolments = new ArrayList<Enrolment>();
+		List<Box> boxes = new ArrayList<Box>();
+		List<Procession> processions = new ArrayList<Procession>();
+		List<Float> floats = new ArrayList<Float>();
 
-		final UserAccount userAccount = new UserAccount();
-		final List<Authority> authorities = new ArrayList<Authority>();
+		UserAccount userAccount = new UserAccount();
+		List<Authority> authorities = new ArrayList<Authority>();
 		userAccount.setUsername("");
 		userAccount.setPassword("");
 
-		final Authority authority = new Authority();
+		Authority authority = new Authority();
 		authority.setAuthority(Authority.BROTHERHOOD);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 		userAccount.setIsNotLocked(true);
 
-		final Date establishmentDate = new Date();
+		Date establishmentDate = new Date();
 		establishmentDate.setTime(establishmentDate.getTime() - 1000);
 
 		bro.setName("");
@@ -115,37 +118,110 @@ public class BrotherhoodService {
 		return bro;
 	}
 
-	public Brotherhood saveCreate(final Brotherhood bro) {
+	public Brotherhood saveCreate(Brotherhood bro) {
 
-		final List<Box> boxes = new ArrayList<>();
-		final Box box1 = this.boxService.createSystem();
+		//SOCIAL PROFILES
+		List<SocialProfile> socialProfiles = new ArrayList<>();
+		bro.setSocialProfiles(socialProfiles);
+
+		//BOXES
+		List<Box> boxes = new ArrayList<>();
+		Box box1 = this.boxService.createSystem();
 		box1.setName("Spam");
-		final Box saved1 = this.boxService.saveSystem(box1);
+		Box saved1 = this.boxService.saveSystem(box1);
 		boxes.add(saved1);
 
-		final Box box2 = this.boxService.createSystem();
+		Box box2 = this.boxService.createSystem();
 		box2.setName("Trash");
-		final Box saved2 = this.boxService.saveSystem(box2);
+		Box saved2 = this.boxService.saveSystem(box2);
 		boxes.add(saved2);
 
-		final Box box3 = this.boxService.createSystem();
+		Box box3 = this.boxService.createSystem();
 		box3.setName("Sent messages");
-		final Box saved3 = this.boxService.saveSystem(box3);
+		Box saved3 = this.boxService.saveSystem(box3);
 		boxes.add(saved3);
 
-		final Box box4 = this.boxService.createSystem();
+		Box box4 = this.boxService.createSystem();
 		box4.setName("Notifications");
-		final Box saved4 = this.boxService.saveSystem(box4);
+		Box saved4 = this.boxService.saveSystem(box4);
 		boxes.add(saved4);
 
-		final Box box5 = this.boxService.createSystem();
+		Box box5 = this.boxService.createSystem();
 		box5.setName("Received messages");
-		final Box saved5 = this.boxService.saveSystem(box5);
+		Box saved5 = this.boxService.saveSystem(box5);
 		boxes.add(saved5);
 
 		bro.setBoxes(boxes);
 
+		//ENROLMENTS
+		List<Enrolment> enrolments = new ArrayList<>();
+		bro.setEnrolments(enrolments);
+
+		//Establishment Date
+		Date date = new Date();
+		date.setTime(date.getTime() - 1);
+		bro.setEstablishmentDate(date);
+
+		//Pictures
+		List<String> pictures = new ArrayList<>();
+		bro.setPictures(pictures);
+
+		//Floats
+		List<domain.Float> floats = new ArrayList<>();
+		bro.setFloats(floats);
+
+		//Processions
+		List<Procession> processions = new ArrayList<>();
+		bro.setProcessions(processions);
+
 		return this.brotherhoodRepository.save(bro);
+	}
+
+	public Brotherhood reconstruct(FormObjectBrotherhood formObjectBrotherhood, BindingResult binding) {
+
+		Brotherhood result = new Brotherhood();
+
+		result.setAddress(formObjectBrotherhood.getAddress());
+		//result.setBoxes(boxes);
+		result.setEmail(formObjectBrotherhood.getEmail());
+		//result.setEnrolments(enrolments)
+		//result.setFinder(finder)
+		result.setHasSpam(false);
+		result.setMiddleName(formObjectBrotherhood.getMiddleName());
+		result.setName(formObjectBrotherhood.getName());
+		result.setPhoneNumber(formObjectBrotherhood.getPhoneNumber());
+		result.setPhoto(formObjectBrotherhood.getPhoto());
+		//		result.setRequests(requests);
+		//		result.setPolarity(polarity);
+		//		result.setSocialProfiles(socialProfiles);
+		result.setSurname(formObjectBrotherhood.getSurname());
+
+		result.setTitle(formObjectBrotherhood.getTitle());
+
+		//USER ACCOUNT
+		UserAccount userAccount = new UserAccount();
+
+		//Authorities
+		List<Authority> authorities = new ArrayList<Authority>();
+		Authority authority = new Authority();
+		authority.setAuthority(Authority.BROTHERHOOD);
+		authorities.add(authority);
+		userAccount.setAuthorities(authorities);
+
+		//locked
+		userAccount.setIsNotLocked(true);
+
+		//Username
+		userAccount.setUsername(formObjectBrotherhood.getUsername());
+
+		//Password
+		Md5PasswordEncoder encoder;
+		encoder = new Md5PasswordEncoder();
+		userAccount.setPassword(encoder.encodePassword(formObjectBrotherhood.getPassword(), null));
+
+		result.setUserAccount(userAccount);
+
+		return result;
 	}
 
 	public void loggedAsBrotherhood() {
@@ -240,4 +316,15 @@ public class BrotherhoodService {
 				res.add(e);
 		return res;
 	}
+
+	public List<Member> getMembersOfBrotherhood(Brotherhood bro) {
+
+		List<Member> members = new ArrayList<Member>();
+		List<Enrolment> enrolmentsBro = bro.getEnrolments();
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED)
+				members.add(e.getMember());
+		return members;
+	}
+
 }

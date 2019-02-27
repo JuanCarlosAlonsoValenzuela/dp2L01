@@ -8,7 +8,7 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
 <br/>
-<security:authorize access="isAuthenticated()">
+<security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
 
 <table>
 	<tr>
@@ -65,5 +65,74 @@
 
 <a href="authenticated/socialProfile/create.do"><spring:message code="socialProfile.create" /></a>
 
+
+</security:authorize>
+
+
+
+<security:authorize access="hasRole('BROTHERHOOD')">
+
+
+
+<table>
+	<tr>
+		<td><spring:message code="actor.fullName" /></td> 
+		<td><jstl:out value="${broherhood.name} ${actor.middleName} ${actor.surname}" /> </td>
+	</tr>
+	
+	<tr>
+		<td><spring:message code="actor.photo"/></td> 
+		<td><jstl:out value="${broherhood.photo}"/> </td>
+	</tr>
+	
+	<tr>
+		<td><spring:message code="actor.email"/></td> 
+		<td><jstl:out value="${broherhood.email}" /> </td>
+	</tr>
+	 
+	<tr>
+		<td><spring:message code="actor.phoneNumber"/></td> 
+		<td><jstl:out value="${broherhood.phoneNumber}" /> </td>
+	</tr>
+	
+	<tr>
+		<td><spring:message code="actor.title"/></td> 
+		<td><jstl:out value="${broherhood.title}" /> </td>
+	</tr>
+	
+	<tr>
+		<td><spring:message code="actor.establishmentDate"/></td> 
+		<td><jstl:out value="${broherhood.establishmentDate}" /> </td>
+	</tr>
+	
+
+	
+
+</table>
+
+<h2> <spring:message code="socialProfile.mySocialProfiles"  /></h2>
+
+<display:table
+	pagesize="5" name="socialProfiles" id="socialProfile"
+	requestURI="${requestURI}">
+	
+	<display:column property="nick" titleKey="socialProfile.nick" />
+	
+	<display:column property="name" titleKey="socialProfile.name" />
+	
+	<display:column property="profileLink" titleKey="socialProfile.profileLink" />
+	
+	<display:column>
+				
+				<a href="authenticated/socialProfile/edit.do?socialProfileId=${socialProfile.id}">
+					<spring:message code="socialProfile.edit" />
+				</a>
+			
+		</display:column>
+	
+	
+</display:table>
+
+<a href="authenticated/socialProfile/create.do"><spring:message code="socialProfile.create" /></a>
 
 </security:authorize>

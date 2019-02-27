@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.EnrolmentRepository;
 import domain.Brotherhood;
@@ -30,6 +32,9 @@ public class EnrolmentService {
 
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
+
+	@Autowired
+	private Validator			validator;
 
 
 	public List<Enrolment> findAll() {
@@ -108,4 +113,33 @@ public class EnrolmentService {
 		return enrolment;
 	}
 
+	public Enrolment reconstructEnrolment(Enrolment enrolment, BindingResult binding) {
+		this.brotherhoodService.securityAndBrotherhood();
+
+		Enrolment result = this.enrolmentRepository.findOne(enrolment.getId());
+
+		//result.setId(enrolment.getId());
+		//result.setVersion(enrolment.getVersion());
+		result.setPosition(enrolment.getPosition());
+		result.setStatusEnrolment(StatusEnrolment.ACCEPTED);
+
+		this.validator.validate(result, binding);
+
+		return result;
+	}
+
+	public Enrolment saveEnrolmentWithCheck(Enrolment enrolment) {
+		Enrolment enrolmentSaved;
+
+		Assert.isTrue(enrolment.getStatusEnrolment().equals(StatusEnrolment.ACCEPTED));
+		Assert.notNull(enrolment.getPosition());
+		System.out.println(enrolment.getPosition());
+		Assert.notNull(enrolment.getBrotherhood());
+		Assert.notNull(enrolment.getMember());
+		Assert.notNull(enrolment.getCreationMoment());
+
+		enrolmentSaved = this.save(enrolment);
+
+		return enrolmentSaved;
+	}
 }

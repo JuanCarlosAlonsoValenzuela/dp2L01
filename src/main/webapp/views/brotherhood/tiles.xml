@@ -71,6 +71,12 @@
 		<put-attribute name="body" value="/views/brotherhood/picturesFloat.jsp" />
 	</definition>
 	
+	
+		<definition name="picture/brotherhood/createPicture" extends="master.page">	
+		<put-attribute name="title" value="Add pictures" />
+		<put-attribute name="body" value="/views/brotherhood/createPictureFloat.jsp" />
+	</definition>
+	
 	<definition name="member/brotherhood/list" extends="master.page">	
 		<put-attribute name="title" value="Members" />
 		<put-attribute name="body" value="/views/brotherhood/members.jsp" />
@@ -84,6 +90,11 @@
 	<definition name="procession/brotherhood/createCheckbox" extends="master.page">	
 		<put-attribute name="title" value="Create a Procession" />
 		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
+	</definition>
+	
+	<definition name="enrolment/brotherhood/assignPosition" extends="master.page">	
+		<put-attribute name="title" value="Assign position" />
+		<put-attribute name="body" value="/views/brotherhood/assignPosition.jsp" />
 	</definition>
 	
 </tiles-definitions>

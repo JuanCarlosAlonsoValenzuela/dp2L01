@@ -61,7 +61,6 @@ public class AdministratorStatisticsController extends AbstractController {
 		Map<String, Float> ratioRequestPendingByProcession = this.adminService.ratioRequestPendingByProcession();
 		Map<String, Float> ratioRequestRejectedByProcession = this.adminService.ratioRequestRejectedByProcession();
 		Set<String> processionNames = ratioRequestRejectedByProcession.keySet();
-
 		Map<Position, Float> countPositions = this.adminService.mapNumberPositions();
 		Set<Position> positions = countPositions.keySet();
 
@@ -85,5 +84,4 @@ public class AdministratorStatisticsController extends AbstractController {
 
 		return result;
 	}
-
 }

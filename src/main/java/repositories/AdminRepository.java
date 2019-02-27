@@ -153,4 +153,20 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
 	@Query("select a from Admin a join a.userAccount u where u.username = 'system'")
 	public Admin getSystem();
+
+	//NEW QUERIES FOR A+
+	@Query("select distinct (cast((select count(a1.hasSpam) from Actor a1 where hasSpam=true) as float)/ (select count(a2.hasSpam) from Actor a2) * 100) from Configuration a")
+	public Float getRatioSpammers();
+
+	@Query("select distinct (cast((select count(a1.hasSpam) from Actor a1 where hasSpam=false) as float)/ (select count(a2.hasSpam) from Actor a2) * 100) from Configuration a")
+	public Float getRatioNonSpammers();
+
+	@Query("select avg(a.polarity) from Admin a")
+	public Float avgAdminPolarity();
+
+	@Query("select avg(a.polarity) from Member a")
+	public Float avgMemberPolarity();
+
+	@Query("select avg(a.polarity) from Brotherhood a")
+	public Float avgBrotherhoodPolarity();
 }

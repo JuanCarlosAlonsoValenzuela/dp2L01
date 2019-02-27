@@ -9,10 +9,10 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
 import repositories.AdminRepository;
 import security.Authority;
@@ -28,6 +28,7 @@ import domain.Message;
 import domain.Position;
 import domain.Procession;
 import domain.SocialProfile;
+import forms.FormObjectMember;
 
 @Service
 @Transactional
@@ -60,9 +61,6 @@ public class AdminService {
 	@Autowired
 	private PositionService		positionService;
 
-	@Autowired
-	private Validator			validator;
-
 
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
@@ -73,40 +71,43 @@ public class AdminService {
 	}
 
 	public Admin createAdmin() {
-		//SE DECLARA EL ADMIN
-		final Admin admin = new Admin();
 
-		//SE CREAN LAS LISTAS VACÍAS
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Box> boxes = new ArrayList<Box>();
+		this.loggedAsAdmin();
 
-		//SE AÑADE EL USERNAME Y EL PASSWORD
-		final UserAccount userAccountAdmin = new UserAccount();
-		userAccountAdmin.setUsername("");
-		userAccountAdmin.setPassword("");
+		Admin admin = new Admin();
 
-		//SE AÑADEN LOS ATRIBUTOS
-		admin.setName("");
-		admin.setMiddleName("");
-		admin.setSurname("");
-		admin.setPhoto("");
-		admin.setEmail("");
-		admin.setPhoneNumber("");
+		//Se crean las listas vac�as
+		//ACTOR
+		List<SocialProfile> socialProfiles = new ArrayList<>();
+		List<Box> boxes = new ArrayList<>();
+
+		UserAccount userAccount = new UserAccount();
+		userAccount.setUsername("");
+		userAccount.setPassword("");
+
+		//Actor
 		admin.setAddress("");
-		admin.setSocialProfiles(socialProfiles);
 		admin.setBoxes(boxes);
-		//SPAM A FALSE
+		admin.setEmail("");
 		admin.setHasSpam(false);
-		admin.setPolarity(0);
+		admin.setMiddleName("");
+		admin.setName("");
+		admin.setPhoneNumber("");
+		admin.setPhoto("");
+		admin.setPolarity(0.0);
+		admin.setSocialProfiles(socialProfiles);
+		admin.setSurname("");
 
-		final List<Authority> authorities = new ArrayList<Authority>();
+		List<Authority> authorities = new ArrayList<Authority>();
 
-		final Authority authority = new Authority();
-		authority.setAuthority(Authority.ADMIN);
+		Authority authority = new Authority();
+		authority.setAuthority(Authority.MEMBER);
 		authorities.add(authority);
-		userAccountAdmin.setAuthorities(authorities);
-		userAccountAdmin.setIsNotLocked(true);
-		admin.setUserAccount(userAccountAdmin);
+
+		userAccount.setAuthorities(authorities);
+		userAccount.setIsNotLocked(true);
+
+		admin.setUserAccount(userAccount);
 
 		return admin;
 	}
@@ -175,37 +176,95 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin saveCreate(final Admin admin) {	//Tenemos un listBox vacía
-		this.loggedAsAdmin();
-		final List<Box> boxes = new ArrayList<>();
+	public Admin saveCreate(Admin admin) {
+
+		List<Box> boxes = new ArrayList<>();
+
+		//Se crean las listas vac�as
+		//ACTOR
+		List<SocialProfile> socialProfiles = new ArrayList<>();
+		admin.setSocialProfiles(socialProfiles);
 
 		//Boxes
-		final Box box1 = this.boxService.createSystem();
-		box1.setName("Spam");
-		final Box saved1 = this.boxService.saveSystem(box1);
+		Box box1 = this.boxService.createSystem();
+		box1.setName("INBOX");
+		Box saved1 = this.boxService.saveSystem(box1);
 		boxes.add(saved1);
 
-		final Box box2 = this.boxService.createSystem();
-		box2.setName("Trash");
-		final Box saved2 = this.boxService.saveSystem(box2);
+		Box box2 = this.boxService.createSystem();
+		box2.setName("OUTBOX");
+		Box saved2 = this.boxService.saveSystem(box2);
 		boxes.add(saved2);
 
-		final Box box3 = this.boxService.createSystem();
-		box3.setName("Sent messages");
-		final Box saved3 = this.boxService.saveSystem(box3);
+		Box box3 = this.boxService.createSystem();
+		box3.setName("TRASHBOX");
+		Box saved3 = this.boxService.saveSystem(box3);
 		boxes.add(saved3);
 
-		final Box box4 = this.boxService.createSystem();
-		box4.setName("Received messages");
-		final Box saved4 = this.boxService.saveSystem(box4);
+		Box box4 = this.boxService.createSystem();
+		box4.setName("SPAMBOX");
+		Box saved4 = this.boxService.saveSystem(box4);
 		boxes.add(saved4);
+
+		Box box5 = this.boxService.createSystem();
+		box5.setName("NOTIFICATIONBOX");
+		Box saved5 = this.boxService.saveSystem(box5);
+		boxes.add(saved5);
 
 		admin.setBoxes(boxes);
 
-		return this.adminRepository.save(admin);
+		Admin saved = new Admin();
+		saved = this.adminRepository.save(admin);
+
+		return saved;
 	}
 
-	public Admin save(final Admin admin) {
+	public Admin reconstruct(FormObjectMember formObjectMember, BindingResult binding) {
+
+		Admin result = new Admin();
+
+		result.setAddress(formObjectMember.getAddress());
+		//result.setBoxes(boxes);
+		result.setEmail(formObjectMember.getEmail());
+		//result.setEnrolments(enrolments)
+		//result.setFinder(finder)
+		result.setHasSpam(false);
+		result.setMiddleName(formObjectMember.getMiddleName());
+		result.setName(formObjectMember.getName());
+		result.setPhoneNumber(formObjectMember.getPhoneNumber());
+		result.setPhoto(formObjectMember.getPhoto());
+		//		result.setRequests(requests);
+		//		result.setPolarity(polarity);
+		//		result.setSocialProfiles(socialProfiles);
+		result.setSurname(formObjectMember.getSurname());
+
+		//USER ACCOUNT
+		UserAccount userAccount = new UserAccount();
+
+		//Authorities
+		List<Authority> authorities = new ArrayList<Authority>();
+		Authority authority = new Authority();
+		authority.setAuthority(Authority.ADMIN);
+		authorities.add(authority);
+		userAccount.setAuthorities(authorities);
+
+		//locked
+		userAccount.setIsNotLocked(true);
+
+		//Username
+		userAccount.setUsername(formObjectMember.getUsername());
+
+		//Password
+		Md5PasswordEncoder encoder;
+		encoder = new Md5PasswordEncoder();
+		userAccount.setPassword(encoder.encodePassword(formObjectMember.getPassword(), null));
+
+		result.setUserAccount(userAccount);
+
+		return result;
+	}
+
+	public Admin save(Admin admin) {
 		return this.adminRepository.save(admin);
 	}
 
@@ -353,6 +412,13 @@ public class AdminService {
 			statistics.add((float) -1);
 		else
 			statistics.add(this.adminRepository.ratioEmptyFinder());
+
+		statistics.add(this.adminRepository.getRatioSpammers());
+		statistics.add(this.adminRepository.getRatioNonSpammers());
+		statistics.add(this.adminRepository.avgAdminPolarity() + 1);
+		statistics.add(this.adminRepository.avgMemberPolarity() + 1);
+		statistics.add(this.adminRepository.avgBrotherhoodPolarity() + 1);
+
 		return statistics;
 	}
 
@@ -408,6 +474,26 @@ public class AdminService {
 
 	public List<Member> membersAtLeastTenPercentRequestsApproved() {
 		return this.adminRepository.listMembersAtLeastTenPercentRequestApproved();
+	}
+
+	public Float getRatioSpammers() {
+		return this.adminRepository.getRatioSpammers();
+	}
+
+	public Float getRatioNonSpammers() {
+		return this.adminRepository.getRatioNonSpammers();
+	}
+
+	public Float avgAdminPolarity() {
+		return this.adminRepository.avgAdminPolarity();
+	}
+
+	public Float avgMemberPolarity() {
+		return this.adminRepository.avgMemberPolarity();
+	}
+
+	public Float avgBrotherhoodPolarity() {
+		return this.adminRepository.avgBrotherhoodPolarity();
 	}
 
 	public List<Float> noZeroDivision(List<Float> result) {

@@ -7,9 +7,9 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
-<p><spring:message code="anonymous.createMember" /></p>
+<p><spring:message code="admin.createAdmin" /></p>
 
-<security:authorize access="isAnonymous()">
+<security:authorize access="hasRole('ADMIN')">
 
 <script type="text/javascript">
 
@@ -28,16 +28,16 @@
 	    res = true;
   }
   if(phoneNumber == ""){
-	  alert("<spring:message code="anonymous.alertSave" />");
+	  alert("<spring:message code="admin.alertSave" />");
   }
   if(res == false && phoneNumber != "") {
 	  
-    confirm("<spring:message code="anonymous.confirmationPhone" />");
+    confirm("<spring:message code="admin.confirmationPhone" />");
   }
  
 }
    </script>
-<form:form modelAttribute="formObjectMember" action="anonymous/createMember.do">
+<form:form modelAttribute="formObjectMember" action="administrator/createAdmin.do">
 
 	<!-- ELECCIÓN DEL FORMATO DE LA FECHA -->
 	<jstl:if test="${locale =='EN'}">
@@ -51,15 +51,15 @@
 
 	<!-- User Account Attributes -->
 	<fieldset>
-    	<legend> <spring:message code="anonymous.userAccountData" /> </legend>
+    	<legend> <spring:message code="admin.userAccountData" /> </legend>
 	
-	<acme:textbox path="username" code="anonymous.username" />
+	<acme:textbox path="username" code="admin.username" />
 	<br />
 	
-	<acme:password path="password" code="anonymous.password" />
+	<acme:password path="password" code="admin.password" />
 	<br />
 	
-	<acme:password path="confirmPassword" code="anonymous.confirmPassword" />
+	<acme:password path="confirmPassword" code="admin.confirmPassword" />
 	<br />
 	
 		</fieldset>
@@ -67,26 +67,26 @@
 	
 	<!-- Actor Attributes -->
 	<fieldset>
-    	<legend> <spring:message code="anonymous.personalData" /> </legend>
-	<acme:textbox path="name" code="anonymous.name" />
+    	<legend> <spring:message code="admin.personalData" /> </legend>
+	<acme:textbox path="name" code="admin.name" />
 	<br />
 	
-	<acme:textbox path="middleName" code="anonymous.middleName" />
+	<acme:textbox path="middleName" code="admin.middleName" />
 	<br />
 	
-	<acme:textbox path="surname" code="anonymous.surname" />
+	<acme:textbox path="surname" code="admin.surname" />
 	<br />
 	
-	<acme:textbox path="photo" code="anonymous.photo" />
+	<acme:textbox path="photo" code="admin.photo" />
 	<br />
 	
-	<acme:textbox path="email" code="anonymous.email" />
+	<acme:textbox path="email" code="admin.email" />
 	<br />
 	
-	<acme:textbox path="phoneNumber" code="anonymous.phoneNumber" />
+	<acme:textbox path="phoneNumber" code="admin.phoneNumber" />
 	<br />
 	
-	<acme:textbox path="address" code="anonymous.address" />
+	<acme:textbox path="address" code="admin.address" />
 	<br />	
 	</fieldset>
 	<br />
@@ -94,22 +94,22 @@
 	
 	<!-- TERMS AND CONDITIONS -->
 	<fieldset>
-    	<legend> <spring:message code="anonymous.termsAndConditions" /> </legend>
+    	<legend> <spring:message code="admin.termsAndConditions" /> </legend>
     
     <form:checkbox path="termsAndConditions" /> 
-			<spring:message code="anonymous.acceptTemsConditions" />
+			<spring:message code="admin.acceptTemsConditions" />
 					<a href="${url}" target="_blank"> 
-							<spring:message code="anonymous.termsAndConditions" /> </a>
+							<spring:message code="admin.termsAndConditions" /> </a>
 								<form:errors path="termsAndConditions" cssClass="error" />
 	<br />
 	</fieldset>
 	<br />
 
 	<!-- BOTONES -->	
-	<input type="submit" name="save" value="<spring:message code="anonymous.save" />" 
+	<input type="submit" name="save" value="<spring:message code="admin.save" />" 
 	onclick="phonenumberval();validateEmail();"/> 
 	
-	<acme:cancel url="/" code="anonymous.cancel" /> 
+	<acme:cancel url="/" code="admin.cancel" /> 
 	
 	</form:form>
 	
