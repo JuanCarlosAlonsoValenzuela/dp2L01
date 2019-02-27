@@ -32,7 +32,8 @@
 					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>		
 					<li><a href="priority/administrator/list.do"><spring:message code="master.page.administrator.priority" /></a></li>																								
 					<li><a href="broadcast/administrator/send.do"><spring:message code="master.page.administrator.broadcast" /></a></li>																							
-					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>																								
+					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>	
+					<li><a href="administrator/createAdmin.do"><spring:message code="master.page.administrator.createAdmin" /></a></li>																								
 				</ul>
 			</li>
 		</security:authorize>
@@ -70,6 +71,7 @@
 				<ul>
 					<li class="arrow"></li>	
 					<li><a href="anonymous/createMember.do"><spring:message code="master.page.createMember" /> </a></li>
+					<li><a href="anonymous/createBrotherhood.do"><spring:message code="master.page.createBrotherhood" /> </a></li>
 				</ul>
 			</li>
 		</security:authorize>
@@ -83,7 +85,7 @@
 				<ul>
 					<li class="arrow"></li>		
 					<li><a href="authenticated/showProfile.do"><spring:message code="master.page.myProfile" /> </a></li>			
-					<li class="arrow"></li>					
+									
 					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>

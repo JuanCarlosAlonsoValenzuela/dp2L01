@@ -32,8 +32,7 @@
 	</jstl:otherwise>
 	 </jstl:choose>
 	 
-	<input type="button" name="cancel" value="<spring:message code="area.cancel" />"
-		onClick="javascript:relativeRedir('area/administrator/showAreas.do');" />
+	 <acme:cancel url="area/administrator/showAreas.do" code="area.cancel"/>
 </form:form>
 
 

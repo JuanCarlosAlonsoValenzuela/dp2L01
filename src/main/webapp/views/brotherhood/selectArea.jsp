@@ -22,9 +22,8 @@
 	<form:hidden path="version" />
 		
 	<acme:select code="brotherhood.area" path="area" items="${areas}" itemLabel="name" id="areas"/>
-	
-	<input type="submit" name="edit" value="<spring:message code="area.select"/>"/>
+
+	<acme:submit name="edit" code="area.select"/>
  
-	<input type="button" name="cancel" value="<spring:message code="area.cancel" />"
-		onClick="javascript:relativeRedir('area/brotherhood/showArea.do');" />
+ 	<acme:cancel url="area/brotherhood/showArea.do" code="area.cancel"/>
 </form:form>
