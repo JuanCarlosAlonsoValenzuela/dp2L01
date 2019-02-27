@@ -1,6 +1,7 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import security.Authority;
 import security.LoginService;
+import security.UserAccount;
 import services.ActorService;
+import services.BrotherhoodService;
 import services.SocialProfileService;
 import domain.Actor;
+import domain.Brotherhood;
 import domain.SocialProfile;
 
 @Controller
@@ -28,26 +33,39 @@ public class SocialProfileController extends AbstractController {
 	@Autowired
 	private SocialProfileService	socialProfileService;
 
+	@Autowired
+	private BrotherhoodService		brotherhoodService;
+
 
 	//-------------------------------------------------------------------
 	//---------------------------LIST BROTHERHOOD------------------------------------
 	@RequestMapping(value = "/showProfile", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
+		Brotherhood broherhood = new Brotherhood();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor logguedActor = new Actor();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 
-		String username = LoginService.getPrincipal().getUsername();
-		Actor logguedActor = this.actorService.getActorByUsername(username);
+		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 
-		List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
+		if (authorities.get(0).toString().equals("BROTHERHOOD")) {
+			broherhood = this.brotherhoodService.loggedBrotherhood();
+			socialProfiles = broherhood.getSocialProfiles();
+		} else {
+			logguedActor = this.actorService.getActorByUsername(userAccount.getUsername());
+			socialProfiles = logguedActor.getSocialProfiles();
+		}
 
 		result = new ModelAndView("authenticated/showProfile");
 		result.addObject("socialProfiles", socialProfiles);
 		result.addObject("actor", logguedActor);
+		result.addObject("broherhood", broherhood);
 		result.addObject("requestURI", "authenticated/showProfile.do");
 
 		return result;
 	}
-
 	//---------------------------------------------------------------------
 	//---------------------------CREATE BROTHERHOOD------------------------------------
 	@RequestMapping(value = "/socialProfile/create", method = RequestMethod.GET)
