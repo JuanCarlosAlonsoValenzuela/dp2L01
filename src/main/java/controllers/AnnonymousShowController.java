@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
 import services.FloatService;
-import services.ProcessionService;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Procession;
@@ -28,9 +27,6 @@ public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
 	private FloatService		floatService;
-
-	@Autowired
-	private ProcessionService	processionService;
 
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)

@@ -26,7 +26,7 @@ public class Member extends Actor {
 		return this.requests;
 	}
 
-	public void setRequests(final List<Request> requests) {
+	public void setRequests(List<Request> requests) {
 		this.requests = requests;
 	}
 
@@ -36,7 +36,7 @@ public class Member extends Actor {
 		return this.enrolments;
 	}
 
-	public void setEnrolments(final List<Enrolment> enrolments) {
+	public void setEnrolments(List<Enrolment> enrolments) {
 		this.enrolments = enrolments;
 	}
 
@@ -46,7 +46,7 @@ public class Member extends Actor {
 		return this.finder;
 	}
 
-	public void setFinder(final Finder finder) {
+	public void setFinder(Finder finder) {
 		this.finder = finder;
 	}
 

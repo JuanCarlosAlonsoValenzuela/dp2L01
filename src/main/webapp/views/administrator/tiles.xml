@@ -92,4 +92,9 @@
 		<put-attribute name="body" value="/views/administrator/broadcast.jsp" />
 	</definition>
 	
+	<definition name="administrator/createAdmin" extends="master.page">	
+		<put-attribute name="title" value="Create a new Administrator" />
+		<put-attribute name="body" value="/views/administrator/createAdmin.jsp" />
+	</definition>
+	
 </tiles-definitions>
