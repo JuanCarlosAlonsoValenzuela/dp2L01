@@ -33,10 +33,11 @@
 						<spring:param name="areaId" value="${row.id}"/>
 					</spring:url>
 				</security:authorize>
+				<security:authorize access="hasRole('ADMIN')">
 					<spring:url var="picturesUrl" value="area/administrator/showPictures.do">
 						<spring:param name="areaId" value="${row.id}"/>
 					</spring:url>
-				<security:authorize access="hasRole('ADMIN')">
+				
 				</security:authorize>
 				<a href="${picturesUrl}">
 					<spring:message var ="viewPic" code="area.pictures" />
