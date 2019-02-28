@@ -61,36 +61,24 @@
 		<display:column property="reasonDescription" titleKey="request.reasonDescription" style="color:${color}"/>
 		
 		<display:column titleKey="action">
-			<jstl:if test="${row.status.toString()=='PENDING'}">
-				<spring:url var="decideRequest" value="/request/brotherhood/edit.do">
-					<spring:param name="requestId" value="${row.id}" />
-				</spring:url>
-				<a href="${decideRequest}">
-					<spring:message code="request.decide" />				
-				</a>
-			</jstl:if>
-			<jstl:if test="${row.status.toString()=='APPROVED'}">
+			<jstl:if test="${row.status.toString()!='REJECTED'}">
 				<spring:url var="editRequest" value="/request/brotherhood/edit.do">
 					<spring:param name="requestId" value="${row.id}" />
 				</spring:url>
 				<a href="${editRequest}">
-					<spring:message code="request.edit" />				
+					<jstl:if test="${row.status.toString()=='APPROVED'}">
+						<spring:message code="request.edit" />
+					</jstl:if>
+					<jstl:if test="${row.status.toString()=='PENDING'}">
+						<spring:message code="request.decide" />	
+					</jstl:if>			
 				</a>
 			</jstl:if>
 			<jstl:if test="${row.status.toString()=='REJECTED'}">
 				<spring:message code="no.action"/>
 			</jstl:if>
 		</display:column>
-				
+	
 	</display:table>
-	
-	<!--
-	<jstl:if test="${flag==false}"> 
-		<p style="color:red"><spring:message code="request.delete.error"/></p>
-	</jstl:if>
-	<jstl:if test="${flag==true}">
-		<p style="color:red"><spring:message code="request.delete.ok"/></p>
-	</jstl:if>
-	 -->
-	
+					
 </security:authorize>
