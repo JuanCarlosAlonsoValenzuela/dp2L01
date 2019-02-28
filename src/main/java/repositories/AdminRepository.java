@@ -169,4 +169,7 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
 	@Query("select avg(a.polarity) from Brotherhood a")
 	public Float avgBrotherhoodPolarity();
+
+	@Query("select m from Admin m join m.userAccount u where u.username = ?1")
+	public Admin getAdminByUsername(String username);
 }

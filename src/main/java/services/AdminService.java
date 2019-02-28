@@ -13,6 +13,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.AdminRepository;
 import security.Authority;
@@ -60,6 +61,8 @@ public class AdminService {
 
 	@Autowired
 	private PositionService		positionService;
+	@Autowired
+	private Validator			validator;
 
 
 	// 1. Create user accounts for new administrators.
@@ -578,6 +581,33 @@ public class AdminService {
 
 		return result;
 
+	}
+
+	public Admin loggedAdmin() {
+		Admin admin = new Admin();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		admin = this.adminRepository.getAdminByUsername(userAccount.getUsername());
+		return admin;
+	}
+
+	public Admin reconstruct(Admin admin, BindingResult binding) {
+
+		Admin result;
+
+		result = this.loggedAdmin();
+
+		result.setName(admin.getName());
+		result.setMiddleName(admin.getMiddleName());
+		result.setSurname(admin.getSurname());
+		result.setPhoto(admin.getPhoto());
+		result.setEmail(admin.getEmail());
+		result.setPhoneNumber(admin.getPhoneNumber());
+		result.setAddress(admin.getAddress());
+
+		this.validator.validate(result, binding);
+
+		return result;
 	}
 
 }
