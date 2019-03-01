@@ -1,7 +1,6 @@
 
 package repositories;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -100,8 +99,11 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select (cast((select count(a1.status) from Request a1 where status='REJECTED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
 	public List<Float> ratioRejectedRequestsByProcessions();
 
-	@Query("select a.title from Brotherhood a where cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) = ?1")
-	public List<String> largestOrSmallestBrotherhoods(Float maxOrMinMembers);
+	@Query("select a.title from Brotherhood a where cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) = (select max(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a)")
+	public List<String> largestBrotherhoods();
+
+	@Query("select a.title from Brotherhood a where cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) = (select min(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a)")
+	public List<String> smallestBrotherhoods();
 
 	@Query("select  a from Member a where cast((select count(b) from Request b where b.status = 'APPROVED' and b.member = a) as float) >= (cast((select count(b) from Request b where b.member = a) as float) * 0.1) and (select count(b) from Request b where b.member = a) > 0")
 	public List<Member> listMembersAtLeastTenPercentRequestApproved();
@@ -124,11 +126,8 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
 	public Float stddevNumberBrotherhoodPerArea();
 
-	@Query("select a.title from Procession a where a.moment between (NOW()) and ?1")
-	public List<String> listProcessionBeforeDate(Date d);
-
-	@Query("select (NOW() + 030000000) from Configuration c")
-	public Date dateFuture();
+	@Query("select a.title from Procession a where a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c);")
+	public List<String> listProcessionNext30Days();
 
 	@Query("select min(a.processions.size) from Finder a")
 	public Float minResultFinders();

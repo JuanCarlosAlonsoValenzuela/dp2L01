@@ -446,11 +446,11 @@ public class AdminService {
 	}
 
 	public List<String> largestBrotherhoods() {
-		return this.adminRepository.largestOrSmallestBrotherhoods(this.maxMembersBrotherhood());
+		return this.adminRepository.largestBrotherhoods();
 
 	}
 	public List<String> smallestBrotherhoods() {
-		return this.adminRepository.largestOrSmallestBrotherhoods(this.minMembersBrotherhood());
+		return this.adminRepository.smallestBrotherhoods();
 
 	}
 	public Map<String, Float> ratioBrotherhoodPerArea() {
@@ -472,7 +472,7 @@ public class AdminService {
 	}
 
 	public List<String> processionsOfNextMonth() {
-		return this.adminRepository.listProcessionBeforeDate(this.adminRepository.dateFuture());
+		return this.adminRepository.listProcessionNext30Days();
 	}
 
 	public List<Member> membersAtLeastTenPercentRequestsApproved() {
