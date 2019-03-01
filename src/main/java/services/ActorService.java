@@ -261,4 +261,12 @@ public class ActorService {
 		}
 	}
 
+	public Actor loggedActor() {
+		Actor actor = new Actor();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		actor = this.actorRepository.getActorByUserName(userAccount.getUsername());
+		return actor;
+	}
+
 }

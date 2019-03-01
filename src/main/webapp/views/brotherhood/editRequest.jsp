@@ -67,6 +67,7 @@
 	<br/>
 	
 	<acme:submit name="edit" code="request.save"/>
+	<acme:cancel url="request/brotherhood/list.do" code="procession.cancel"/>
 
 </form:form>
 
