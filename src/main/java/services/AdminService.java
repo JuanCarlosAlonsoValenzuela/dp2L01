@@ -61,8 +61,12 @@ public class AdminService {
 
 	@Autowired
 	private PositionService		positionService;
+
 	@Autowired
 	private Validator			validator;
+
+	@Autowired
+	private FinderService		finderService;
 
 
 	// 1. Create user accounts for new administrators.
@@ -378,6 +382,9 @@ public class AdminService {
 	}
 
 	public List<Float> showStatistics() {
+
+		this.finderService.updateAllFinders();
+
 		List<Float> statistics = new ArrayList<Float>();
 		statistics.add(this.adminRepository.avgMembersPerBrotherhood());
 		statistics.add(this.minMembersBrotherhood());

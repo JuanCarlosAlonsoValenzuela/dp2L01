@@ -1,6 +1,7 @@
 
 package repositories;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,9 @@ public interface FinderRepository extends JpaRepository<Finder, Integer> {
 	@Query("select p from Brotherhood b join b.area a join b.processions p where a.name like ?1")
 	public List<Procession> getProcessionsByArea(String area);
 
-	@Query("select p from Procession p where (p.moment) between (select a.minDate from Finder a where a.id = ?1) and (select b.maxDate from Finder b where b.id = ?1) order by p.moment")
-	public List<Procession> getProcessionsByDate(int id);
+	@Query("select p from Procession p where p.moment > ?1")
+	public List<Procession> getProcessionsByMinDate(Date date);
+
+	@Query("select p from Procession p where p.moment < ?1")
+	public List<Procession> getProcessionsByMaxDate(Date date);
 }
