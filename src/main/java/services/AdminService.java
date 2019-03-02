@@ -601,20 +601,39 @@ public class AdminService {
 	public Admin reconstruct(Admin admin, BindingResult binding) {
 
 		Admin result;
+		Admin pururu;
 
-		result = this.loggedAdmin();
+		result = admin;
+		pururu = this.adminRepository.findOne(admin.getId());
 
-		result.setName(admin.getName());
-		result.setMiddleName(admin.getMiddleName());
-		result.setSurname(admin.getSurname());
-		result.setPhoto(admin.getPhoto());
-		result.setEmail(admin.getEmail());
-		result.setPhoneNumber(admin.getPhoneNumber());
-		result.setAddress(admin.getAddress());
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		/*
+		 * result.setName(admin.getName());
+		 * result.setMiddleName(admin.getMiddleName());
+		 * result.setSurname(admin.getSurname());
+		 * result.setPhoto(admin.getPhoto());
+		 * result.setEmail(admin.getEmail());
+		 * result.setPhoneNumber(admin.getPhoneNumber());
+		 * result.setAddress(admin.getAddress());
+		 */
 
 		this.validator.validate(result, binding);
+		/*
+		 * try {
+		 * 
+		 * } catch (Throwable oops) {
+		 * System.out.println("LOL EKISDE");
+		 * }
+		 * 
+		 * System.out.println(binding);
+		 * System.out.println("LOL");
+		 */
 
 		return result;
 	}
-
 }

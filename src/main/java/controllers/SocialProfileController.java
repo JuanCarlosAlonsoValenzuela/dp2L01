@@ -62,7 +62,9 @@ public class SocialProfileController extends AbstractController {
 			broherhood = this.brotherhoodService.loggedBrotherhood();
 			socialProfiles = broherhood.getSocialProfiles();
 		} else {
+
 			logguedActor = this.actorService.getActorByUsername(userAccount.getUsername());
+
 			socialProfiles = logguedActor.getSocialProfiles();
 		}
 
@@ -127,10 +129,10 @@ public class SocialProfileController extends AbstractController {
 				List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
 
 				if (socialProfiles.contains(socialProfile)) {
-					socialProfiles.remove(socialProfile);
-					socialProfiles.add(socialProfile);
+					socialProfiles.remove(saved);
+					socialProfiles.add(saved);
 				} else
-					socialProfiles.add(socialProfile);
+					socialProfiles.add(saved);
 
 				logguedActor.setSocialProfiles(socialProfiles);
 

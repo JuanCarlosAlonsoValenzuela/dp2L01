@@ -242,16 +242,20 @@ public class MemberService {
 	public Member reconstruct(Member member, BindingResult binding) {
 
 		Member result;
+		Member pururu;
 
-		result = this.loggedMember();
+		result = member;
+		pururu = this.memberRepository.findOne(member.getId());
 
-		result.setName(member.getName());
-		result.setMiddleName(member.getMiddleName());
-		result.setSurname(member.getSurname());
-		result.setPhoto(member.getPhoto());
-		result.setEmail(member.getEmail());
-		result.setPhoneNumber(member.getPhoneNumber());
-		result.setAddress(member.getAddress());
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		result.setEnrolments(pururu.getEnrolments());
+		result.setFinder(pururu.getFinder());
+		result.setRequests(pururu.getRequests());
 
 		this.validator.validate(result, binding);
 
