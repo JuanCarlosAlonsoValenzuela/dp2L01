@@ -84,7 +84,9 @@
 				</a>
 				<ul>
 					<li class="arrow"></li>		
-					<li><a href="authenticated/showProfile.do"><spring:message code="master.page.myProfile" /> </a></li>			
+					<li><a href="authenticated/showProfile.do"><spring:message code="master.page.myProfile" /> </a></li>
+					
+					<li><a href="authenticated/edit.do"><spring:message code="master.page.editPersonalData" /> </a></li>			
 									
 					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					
