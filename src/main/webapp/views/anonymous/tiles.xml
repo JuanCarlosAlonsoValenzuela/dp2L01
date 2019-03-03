@@ -56,7 +56,7 @@
 	
 	<definition name="showAll/annonymous/picturesFloat" extends="master.page">	
 		<put-attribute name="title" value="Pictures of the float" />
-		<put-attribute name="body" value="/views/anonymous/showFloats.jsp" />
+		<put-attribute name="body" value="/views/anonymous/picturesFloat.jsp" />
 	</definition>
 	
 	<definition name="showAll/annonymous/picturesBrotherhood" extends="master.page">	

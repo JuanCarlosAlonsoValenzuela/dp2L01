@@ -78,17 +78,13 @@ public class SocialProfileService {
 	public SocialProfile reconstruct(SocialProfile socialProfile, BindingResult binding) {
 
 		SocialProfile result;
+		SocialProfile copy;
 		//result = this.create();
 		if (socialProfile.getId() == 0)
 			result = socialProfile;
-		else {
-			result = this.socialProfileRepository.findOne(socialProfile.getId());
-
-			result.setName(socialProfile.getName());
-			result.setNick(socialProfile.getNick());
-			result.setProfileLink(socialProfile.getProfileLink());
-
-		}
+		else
+			//copy = this.socialProfileRepository.findOne(socialProfile.getId());
+			result = socialProfile;
 
 		this.validator.validate(result, binding);
 		return result;
