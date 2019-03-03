@@ -13,6 +13,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.AdminRepository;
 import security.Authority;
@@ -60,6 +61,12 @@ public class AdminService {
 
 	@Autowired
 	private PositionService		positionService;
+
+	@Autowired
+	private Validator			validator;
+
+	@Autowired
+	private FinderService		finderService;
 
 
 	// 1. Create user accounts for new administrators.
@@ -375,6 +382,9 @@ public class AdminService {
 	}
 
 	public List<Float> showStatistics() {
+
+		this.finderService.updateAllFinders();
+
 		List<Float> statistics = new ArrayList<Float>();
 		statistics.add(this.adminRepository.avgMembersPerBrotherhood());
 		statistics.add(this.minMembersBrotherhood());
@@ -443,11 +453,11 @@ public class AdminService {
 	}
 
 	public List<String> largestBrotherhoods() {
-		return this.adminRepository.largestOrSmallestBrotherhoods(this.maxMembersBrotherhood());
+		return this.adminRepository.largestBrotherhoods();
 
 	}
 	public List<String> smallestBrotherhoods() {
-		return this.adminRepository.largestOrSmallestBrotherhoods(this.minMembersBrotherhood());
+		return this.adminRepository.smallestBrotherhoods();
 
 	}
 	public Map<String, Float> ratioBrotherhoodPerArea() {
@@ -469,7 +479,7 @@ public class AdminService {
 	}
 
 	public List<String> processionsOfNextMonth() {
-		return this.adminRepository.listProcessionBeforeDate(this.adminRepository.dateFuture());
+		return this.adminRepository.listProcessionNext30Days();
 	}
 
 	public List<Member> membersAtLeastTenPercentRequestsApproved() {
@@ -580,4 +590,50 @@ public class AdminService {
 
 	}
 
+	public Admin loggedAdmin() {
+		Admin admin = new Admin();
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		admin = this.adminRepository.getAdminByUsername(userAccount.getUsername());
+		return admin;
+	}
+
+	public Admin reconstruct(Admin admin, BindingResult binding) {
+
+		Admin result;
+		Admin pururu;
+
+		result = admin;
+		pururu = this.adminRepository.findOne(admin.getId());
+
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		/*
+		 * result.setName(admin.getName());
+		 * result.setMiddleName(admin.getMiddleName());
+		 * result.setSurname(admin.getSurname());
+		 * result.setPhoto(admin.getPhoto());
+		 * result.setEmail(admin.getEmail());
+		 * result.setPhoneNumber(admin.getPhoneNumber());
+		 * result.setAddress(admin.getAddress());
+		 */
+
+		this.validator.validate(result, binding);
+		/*
+		 * try {
+		 * 
+		 * } catch (Throwable oops) {
+		 * System.out.println("LOL EKISDE");
+		 * }
+		 * 
+		 * System.out.println(binding);
+		 * System.out.println("LOL");
+		 */
+
+		return result;
+	}
 }

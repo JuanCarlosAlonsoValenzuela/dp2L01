@@ -62,19 +62,6 @@
 	
 	<display:column property="moment" titleKey="procession.moment" /> 
 	
-	<display:column titleKey="procession.float" > 
-	
-	
-	<jstl:set var="floatsize" value="${row.floats.size()}" />
-			<spring:url var="floatsUrl" value="/float/member/list.do">
-						<spring:param name="procession" value="${row.id}" />
-			</spring:url>
-			
-			<a href="${floatsUrl}">
-							<spring:message var="seeFloats" code="procession.seeFloats"/> 	
-							<jstl:out value="${seeFloats}(${floatsize})" />
-						</a>
-	</display:column>
 	</display:table>
 	
 	<jstl:if test="${flag==false}"> 

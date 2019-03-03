@@ -2,6 +2,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,14 +29,16 @@ public class FinderService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private FinderRepository	finderRepository;
+	private FinderRepository		finderRepository;
 
 	// Supporting Services -----------------------------------------
 
 	@Autowired
-	private MemberService		memberRepository;
+	private MemberService			memberRepository;
 	@Autowired
-	private Validator			validator;
+	private Validator				validator;
+	@Autowired
+	private ConfigurationService	configurationService;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -76,7 +79,7 @@ public class FinderService {
 		this.finderRepository.delete(finder);
 	}
 
-	public void filterProcessionsByFinder() {
+	public void filterProcessionsByFinder(Finder finder) {
 		UserAccount userAccount = LoginService.getPrincipal();
 
 		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
@@ -84,7 +87,7 @@ public class FinderService {
 
 		Member loggedMember = this.memberRepository.getMemberByUsername(userAccount.getUsername());
 
-		Finder finder = loggedMember.getFinder();
+		Assert.isTrue(loggedMember.getFinder().getId() == finder.getId());
 
 		List<Procession> filter = new ArrayList<>();
 		List<Procession> result = this.getAllPublishedProcessions();
@@ -99,41 +102,88 @@ public class FinderService {
 			filter = this.finderRepository.getProcessionsByArea("%" + finder.getArea() + "%");
 			result.retainAll(filter);
 		}
-		//Dates
-		if (finder.getMinDate() != null && finder.getMaxDate() != null) {
-			Assert.isTrue(finder.getMinDate().before(finder.getMaxDate()));
-			filter = this.finderRepository.getProcessionsByDate(finder.getId());
+		// Dates
+
+		if (finder.getMinDate() != null) {
+			filter = this.finderRepository.getProcessionsByMinDate(finder.getMinDate());
+			result.retainAll(filter);
+
+		}
+		if (finder.getMaxDate() != null) {
+			filter = this.finderRepository.getProcessionsByMaxDate(finder.getMaxDate());
 			result.retainAll(filter);
 		}
+
 		finder.setProcessions(result);
 		Finder finderRes = this.finderRepository.save(finder);
 		loggedMember.setFinder(finderRes);
 		this.memberRepository.save(loggedMember);
 
 	}
-
 	public List<Procession> getAllPublishedProcessions() {
 		return this.finderRepository.getPublushedProcessions();
 	}
 
-	public Finder reconstruct(Finder finder, BindingResult binding) {
-		Finder result = this.getCurrentFinder();
+	public Finder reconstruct(Finder finderForm, BindingResult binding) {
+		Finder result = new Finder();
 
+		Finder finder = this.findOne(finderForm.getId());
+
+		result.setId(finder.getId());
+		result.setVersion(finder.getVersion());
+		result.setProcessions(finder.getProcessions());
 		Date date = new Date();
 		result.setLastEdit(date);
-		result.setArea(finder.getArea());
-		result.setKeyWord(finder.getKeyWord());
-		result.setMaxDate(finder.getMaxDate());
-		result.setMinDate(finder.getMinDate());
+		result.setArea(finderForm.getArea());
+		result.setKeyWord(finderForm.getKeyWord());
+		result.setMaxDate(finderForm.getMaxDate());
+		result.setMinDate(finderForm.getMinDate());
 
 		this.validator.validate(result, binding);
 
 		return result;
 	}
 
-	private Finder getCurrentFinder() {
+	public Finder getCurrentFinder() {
 		UserAccount userAccount = LoginService.getPrincipal();
 		Member loggedMember = this.memberRepository.getMemberByUsername(userAccount.getUsername());
 		return loggedMember.getFinder();
+	}
+
+	public void updateAllFinders() {
+
+		//LastEdit Finder
+
+		List<Finder> finders = this.findAll();
+		//Current Date
+		Date currentDate = new Date();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(currentDate);
+		Integer currentDay = calendar.get(Calendar.DATE);
+		Integer currentMonth = calendar.get(Calendar.MONTH);
+		Integer currentYear = calendar.get(Calendar.YEAR);
+		Integer currentHour = calendar.get(Calendar.HOUR);
+
+		//Max Time Finder
+		Integer time = this.configurationService.getConfiguration().getTimeFinder();
+
+		//Empty List processions
+		List<Procession> processions = new ArrayList<>();
+
+		for (Finder f : finders) {
+
+			//Last Edit Date
+			Date lasEdit = f.getLastEdit();
+			calendar.setTime(lasEdit);
+			Integer lastEditDay = calendar.get(Calendar.DATE);
+			Integer lastEditMonth = calendar.get(Calendar.MONTH);
+			Integer lastEditYear = calendar.get(Calendar.YEAR);
+			Integer lastEditHour = calendar.get(Calendar.HOUR);
+			if (!(currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time))) {
+				f.setProcessions(processions);
+				this.save(f);
+			}
+		}
 	}
 }

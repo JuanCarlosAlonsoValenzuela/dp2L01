@@ -17,10 +17,14 @@ import security.Authority;
 import security.LoginService;
 import security.UserAccount;
 import services.ActorService;
+import services.AdminService;
 import services.BrotherhoodService;
+import services.MemberService;
 import services.SocialProfileService;
 import domain.Actor;
+import domain.Admin;
 import domain.Brotherhood;
+import domain.Member;
 import domain.SocialProfile;
 
 @Controller
@@ -35,6 +39,10 @@ public class SocialProfileController extends AbstractController {
 
 	@Autowired
 	private BrotherhoodService		brotherhoodService;
+	@Autowired
+	private AdminService			adminService;
+	@Autowired
+	private MemberService			memberService;
 
 
 	//-------------------------------------------------------------------
@@ -54,7 +62,9 @@ public class SocialProfileController extends AbstractController {
 			broherhood = this.brotherhoodService.loggedBrotherhood();
 			socialProfiles = broherhood.getSocialProfiles();
 		} else {
+
 			logguedActor = this.actorService.getActorByUsername(userAccount.getUsername());
+
 			socialProfiles = logguedActor.getSocialProfiles();
 		}
 
@@ -66,6 +76,7 @@ public class SocialProfileController extends AbstractController {
 
 		return result;
 	}
+
 	//---------------------------------------------------------------------
 	//---------------------------CREATE BROTHERHOOD------------------------------------
 	@RequestMapping(value = "/socialProfile/create", method = RequestMethod.GET)
@@ -118,10 +129,10 @@ public class SocialProfileController extends AbstractController {
 				List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
 
 				if (socialProfiles.contains(socialProfile)) {
-					socialProfiles.remove(socialProfile);
-					socialProfiles.add(socialProfile);
+					socialProfiles.remove(saved);
+					socialProfiles.add(saved);
 				} else
-					socialProfiles.add(socialProfile);
+					socialProfiles.add(saved);
 
 				logguedActor.setSocialProfiles(socialProfiles);
 
@@ -154,6 +165,96 @@ public class SocialProfileController extends AbstractController {
 	}
 
 	//---------------------------------------------------------------------
+	//---------------------------EDIT PERSONAL DATA------------------------
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public ModelAndView editPersonalData() {
+
+		ModelAndView result;
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+
+		if (authorities.get(0).toString().equals("ADMIN")) {
+			Admin admin = this.adminService.loggedAdmin();
+			Assert.notNull(admin);
+			result = this.createEditModelAndView(admin);
+
+		} else if (authorities.get(0).toString().equals("BROTHERHOOD")) {
+			Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+			Assert.notNull(brotherhood);
+			result = this.createEditModelAndView(brotherhood);
+		} else {
+			Member member = this.memberService.loggedMember();
+			Assert.notNull(member);
+			result = this.createEditModelAndView(member);
+		}
+
+		if (result == null)
+			result = this.list();
+		return result;
+	}
+
+	//---------------------------------------------------------------------
+	//---------------------------SAVE PERSONAL DATA------------------------
+	//Admin
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
+	public ModelAndView saveAdmin(Admin admin, BindingResult binding) {
+		ModelAndView result;
+
+		admin = this.adminService.reconstruct(admin, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(admin);
+		else
+			try {
+				this.adminService.save(admin);
+				result = new ModelAndView("redirect:/authenticated/showProfile.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(admin, "socialProfile.commit.error");
+			}
+		return result;
+	}
+
+	//Member
+	@RequestMapping(value = "/editMember", method = RequestMethod.POST, params = "save")
+	public ModelAndView saveMember(Member member, BindingResult binding) {
+		ModelAndView result;
+
+		member = this.memberService.reconstruct(member, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(member);
+		else
+			try {
+				this.memberService.save(member);
+				result = new ModelAndView("redirect:/authenticated/showProfile.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(member, "socialProfile.commit.error");
+			}
+		return result;
+	}
+
+	//Brotherhood
+	@RequestMapping(value = "/editBrotherhood", method = RequestMethod.POST, params = "save")
+	public ModelAndView saveMember(Brotherhood brotherhood, BindingResult binding) {
+		ModelAndView result;
+
+		brotherhood = this.brotherhoodService.reconstructBrotherhood(brotherhood, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(brotherhood);
+		else
+			try {
+				this.brotherhoodService.save(brotherhood);
+				result = new ModelAndView("redirect:/authenticated/showProfile.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(brotherhood, "socialProfile.commit.error");
+			}
+		return result;
+	}
+	//---------------------------------------------------------------------
 	//---------------------------CREATEEDITMODELANDVIEW--------------------
 
 	protected ModelAndView createEditModelAndView(SocialProfile socialProfile) {
@@ -176,4 +277,69 @@ public class SocialProfileController extends AbstractController {
 		return result;
 	}
 
+	//---------------------------------------------------------------------
+	//-------------------CREATEEDITMODELANDVIEW ACTOR----------------------
+
+	//Admin
+	protected ModelAndView createEditModelAndView(Admin admin) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(admin, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Admin admin, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/edit");
+		result.addObject("admin", admin);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
+	//Brotherhood
+	protected ModelAndView createEditModelAndView(Brotherhood brotherhood) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(brotherhood, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Brotherhood brotherhood, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/edit");
+		result.addObject("brotherhood", brotherhood);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
+	//Member
+	protected ModelAndView createEditModelAndView(Member member) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(member, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Member member, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/edit");
+		result.addObject("member", member);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
 }

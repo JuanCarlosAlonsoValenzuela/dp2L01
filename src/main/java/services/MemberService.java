@@ -11,6 +11,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.MemberRepository;
 import security.Authority;
@@ -36,6 +37,8 @@ public class MemberService {
 	private FinderService		finderService;
 	@Autowired
 	private BoxService			boxService;
+	@Autowired
+	private Validator			validator;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -234,6 +237,29 @@ public class MemberService {
 		userAccount = LoginService.getPrincipal();
 		m = this.memberRepository.getMemberByUsername(userAccount.getUsername());
 		return m;
+	}
+
+	public Member reconstruct(Member member, BindingResult binding) {
+
+		Member result;
+		Member pururu;
+
+		result = member;
+		pururu = this.memberRepository.findOne(member.getId());
+
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		result.setEnrolments(pururu.getEnrolments());
+		result.setFinder(pururu.getFinder());
+		result.setRequests(pururu.getRequests());
+
+		this.validator.validate(result, binding);
+
+		return result;
 	}
 
 }

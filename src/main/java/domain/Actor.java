@@ -139,7 +139,7 @@ public class Actor extends DomainEntity {
 		this.address = address;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
 	@Valid
 	public UserAccount getUserAccount() {
 		return this.userAccount;

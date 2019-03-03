@@ -327,4 +327,29 @@ public class BrotherhoodService {
 		return members;
 	}
 
+	public Brotherhood reconstructBrotherhood(Brotherhood brotherhood, BindingResult binding) {
+
+		Brotherhood result;
+		Brotherhood pururu;
+
+		result = brotherhood;
+		pururu = this.brotherhoodRepository.findOne(brotherhood.getId());
+
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		result.setEnrolments(pururu.getEnrolments());
+		result.setFloats(pururu.getFloats());
+		result.setArea(pururu.getArea());
+		result.setProcessions(pururu.getProcessions());
+		result.setPictures(pururu.getPictures());
+
+		this.validator.validate(result, binding);
+
+		return result;
+	}
+
 }
