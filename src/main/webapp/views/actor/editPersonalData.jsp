@@ -39,6 +39,10 @@
 	<security:authorize access = "hasRole('ADMIN')">
 		<form:form modelAttribute="admin" action="authenticated/edit.do">
 
+
+		<form:hidden path="id"/>
+		<form:hidden path="version"/>
+		
 		<!-- Actor Attributes -->
 		<fieldset>
     	<legend> <spring:message code="anonymous.personalData" /> </legend>
@@ -62,6 +66,7 @@
 	
 		<acme:textbox path="address" code="anonymous.address" />
 		<br />	
+		</fieldset>
 			
 		<!-- BOTONES -->	
 		<input type="submit" name="save" value="<spring:message code="anonymous.save" />" 
@@ -77,6 +82,9 @@
 	
 		<form:form modelAttribute="brotherhood" action="authenticated/editBrotherhood.do">
 		
+		
+		<form:hidden path="id"/>
+		<form:hidden path="version"/>
 
 		<!-- Actor Attributes -->
 		<fieldset>
@@ -123,6 +131,8 @@
 				
 		<form:form modelAttribute="member" action="authenticated/editMember.do">
 		
+		<form:hidden path="id"/>
+		<form:hidden path="version"/>
 
 		<!-- Actor Attributes -->
 		<fieldset>
@@ -147,6 +157,7 @@
 	
 		<acme:textbox path="address" code="anonymous.address" />
 		<br />	
+		</fieldset>
 			
 		<!-- BOTONES -->	
 		<input type="submit" name="save" value="<spring:message code="anonymous.save" />" 

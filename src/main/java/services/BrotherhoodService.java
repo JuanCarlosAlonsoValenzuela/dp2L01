@@ -330,17 +330,22 @@ public class BrotherhoodService {
 	public Brotherhood reconstructBrotherhood(Brotherhood brotherhood, BindingResult binding) {
 
 		Brotherhood result;
+		Brotherhood pururu;
 
-		result = this.loggedBrotherhood();
+		result = brotherhood;
+		pururu = this.brotherhoodRepository.findOne(brotherhood.getId());
 
-		result.setName(brotherhood.getName());
-		result.setMiddleName(brotherhood.getMiddleName());
-		result.setSurname(brotherhood.getSurname());
-		result.setPhoto(brotherhood.getPhoto());
-		result.setEmail(brotherhood.getEmail());
-		result.setPhoneNumber(brotherhood.getPhoneNumber());
-		result.setAddress(brotherhood.getAddress());
-		result.setTitle(brotherhood.getTitle());
+		result.setUserAccount(pururu.getUserAccount());
+		result.setBoxes(pururu.getBoxes());
+		result.setHasSpam(pururu.getHasSpam());
+		result.setSocialProfiles(pururu.getSocialProfiles());
+		result.setPolarity(pururu.getPolarity());
+
+		result.setEnrolments(pururu.getEnrolments());
+		result.setFloats(pururu.getFloats());
+		result.setArea(pururu.getArea());
+		result.setProcessions(pururu.getProcessions());
+		result.setPictures(pururu.getPictures());
 
 		this.validator.validate(result, binding);
 
