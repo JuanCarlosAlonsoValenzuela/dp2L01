@@ -126,9 +126,9 @@ public class AnnonymousShowController extends AbstractController {
 
 		pictures = brotherhoood.getPictures();
 
-		result = new ModelAndView("showAll/annonymous/picturesFloat");
+		result = new ModelAndView("showAll/annonymous/picturesBrotherhood");
 
-		result.addObject("pictures", pictures);
+		result.addObject("picturesBrotherhood", pictures);
 		result.addObject("requestURI", "showAll/annonymous/pictureBrother/list.do");
 		result.addObject("brotherhoodId", brotherhoodId);
 

@@ -105,6 +105,19 @@
 		<td><jstl:out value="${broherhood.establishmentDate}" /> </td>
 	</tr>
 	
+	
+	<tr>
+		<td>
+	<jstl:set var="picturesSize" value="${brotherhood.pictures.size()}" />
+			<spring:url var="picturesUrl"
+				value="/authenticated/picture/list.do?brotherhoodId={broId}">
+				<spring:param name="broId" value="${broherhood.id}" />
+			</spring:url>
+			<a href="${picturesUrl}"> <spring:message var="viewPictures1"
+					code="brotherhood.view.pictures" /> <jstl:out
+					value="${viewPictures1}(${picturesSize})" />
+			</a></td> 
+	</tr>
 
 	
 
