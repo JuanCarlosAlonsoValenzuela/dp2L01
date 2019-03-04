@@ -51,6 +51,10 @@
 		<display:column titleKey="request.procession">
 			<jstl:out value="${row.procession.title}"/>
 		</display:column>
+		
+		<display:column titleKey="request.member" style="color:${color}">
+			<jstl:out value="${row.member.name} ${row.member.middleName}"/>
+		</display:column>
 					
 		<display:column property="status" titleKey="request.status" style="color:${color}"/>
 		
