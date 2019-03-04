@@ -32,7 +32,6 @@
 					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>		
 					<li><a href="priority/administrator/list.do"><spring:message code="master.page.administrator.priority" /></a></li>																								
 					<li><a href="broadcast/administrator/send.do"><spring:message code="master.page.administrator.broadcast" /></a></li>																							
-					<li><a href="statistics/administrator/show.do"><spring:message code="master.page.administrator.statistics" /></a></li>	
 					<li><a href="administrator/createAdmin.do"><spring:message code="master.page.administrator.createAdmin" /></a></li>																								
 				</ul>
 			</li>
@@ -67,7 +66,7 @@
 		<security:authorize access="isAnonymous()">
 			<li><a class="fNiv" href="security/login.do"><spring:message code="master.page.login" /></a></li>
 			<li><a class="fNiv" href="showAll/annonymous/brotherhood/list.do"><spring:message code="master.page.annonymous" /></a></li>
-			<li><a class="fNiv"><spring:message	code="master.page.anonymous" /></a>
+			<li><a class="fNiv"><spring:message	code="master.page.register" /></a>
 				<ul>
 					<li class="arrow"></li>	
 					<li><a href="anonymous/createMember.do"><spring:message code="master.page.createMember" /> </a></li>

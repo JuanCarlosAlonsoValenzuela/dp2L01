@@ -23,7 +23,6 @@ import domain.Actor;
 import domain.Admin;
 import domain.Area;
 import domain.Box;
-import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
 import domain.Position;
@@ -55,9 +54,6 @@ public class AdminService {
 
 	@Autowired
 	private AreaService			areaService;
-
-	@Autowired
-	private BrotherhoodService	brotherhoodService;
 
 	@Autowired
 	private PositionService		positionService;
@@ -354,8 +350,6 @@ public class AdminService {
 	public void banSuspiciousActor(final Actor a) {
 		this.loggedAsAdmin();
 
-		Assert.isTrue(a.getHasSpam());
-
 		a.getUserAccount().setIsNotLocked(false);
 		this.actorService.save(a);
 	}
@@ -467,15 +461,19 @@ public class AdminService {
 			return this.nameStatisticsArea(this.adminRepository.ratioBrotherhoodPerArea());
 	}
 	public Map<String, Float> ratioRequestApprovedByProcession() {
-		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions()));
+		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions()));
 	}
 
 	public Map<String, Float> ratioRequestPendingByProcession() {
-		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions()));
+		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions()));
 	}
 
 	public Map<String, Float> ratioRequestRejectedByProcession() {
-		return this.nameStatisticsBrotherhood(this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions()));
+		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions()));
+	}
+
+	public List<Float> prueba() {
+		return this.adminRepository.ratioRejectedRequestsByProcessions();
 	}
 
 	public List<String> processionsOfNextMonth() {
@@ -510,8 +508,11 @@ public class AdminService {
 		List<Procession> pro = this.processionService.findAll();
 		Assert.isTrue(result.size() == pro.size());
 		for (Procession p : pro)
-			if (p.getRequests().size() == 0)
+			try {
+				Assert.notNull(result.get(pro.indexOf(p)));
+			} catch (Exception e) {
 				result.set(pro.indexOf(p), (float) 0);
+			}
 		return result;
 
 	}
@@ -542,13 +543,13 @@ public class AdminService {
 		return result;
 	}
 
-	public Map<String, Float> nameStatisticsBrotherhood(List<Float> statistics) {
+	public Map<String, Float> nameStatisticsProcession(List<Float> statistics) {
 		Map<String, Float> result = new HashMap<String, Float>();
-		List<Brotherhood> brotherhood = this.brotherhoodService.findAll();
-		Assert.isTrue(statistics.size() == brotherhood.size());
+		List<Procession> processions = this.processionService.findAll();
+		Assert.isTrue(statistics.size() == processions.size());
 
-		for (Brotherhood b : brotherhood)
-			result.put(b.getName() + "" + b.getMiddleName() + "" + b.getSurname(), statistics.get(brotherhood.indexOf(b)));
+		for (Procession p : processions)
+			result.put(p.getTitle(), statistics.get(processions.indexOf(p)));
 
 		return result;
 	}

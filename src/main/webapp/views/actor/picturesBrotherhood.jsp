@@ -22,9 +22,12 @@
 	</display:table>
 	
 	
+<spring:url var="add" value="/authenticated/picture/create.do?brotherhoodId=${brotherhoodId}"/>
+
+<p><a href="${add}"><spring:message code="annonymous.addPicture"/></a></p>	
 	
 	
-<spring:url var="cancelar" value="/showAll/annonymous/brotherhood/list.do"/>
+<spring:url var="cancelar" value="/authenticated/showProfile.do"/>
 
 <p><a href="${cancelar}"><spring:message code="annonymous.cancel"/></a></p>
 

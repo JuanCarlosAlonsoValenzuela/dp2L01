@@ -30,6 +30,16 @@
 		<put-attribute name="title" value="Edit Personal data" />
 		<put-attribute name="body" value="/views/actor/editPersonalData.jsp" />
 	</definition>
+	
+	<definition name="authenticated/picture/list" extends="master.page">	
+		<put-attribute name="title" value="Pictures of the brotherhood" />
+		<put-attribute name="body" value="/views/actor/picturesBrotherhood.jsp" />
+	</definition>
+	
+	<definition name="authenticated/picture/create" extends="master.page">	
+		<put-attribute name="title" value="Add Picture" />
+		<put-attribute name="body" value="/views/actor/createPictureBrotherhood.jsp" />
+	</definition>
 
 	
 </tiles-definitions>

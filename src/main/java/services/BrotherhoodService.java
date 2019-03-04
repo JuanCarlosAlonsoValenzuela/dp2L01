@@ -127,27 +127,27 @@ public class BrotherhoodService {
 		//BOXES
 		List<Box> boxes = new ArrayList<>();
 		Box box1 = this.boxService.createSystem();
-		box1.setName("Spam");
+		box1.setName("SPAMBOX");
 		Box saved1 = this.boxService.saveSystem(box1);
 		boxes.add(saved1);
 
 		Box box2 = this.boxService.createSystem();
-		box2.setName("Trash");
+		box2.setName("TRASHBOX");
 		Box saved2 = this.boxService.saveSystem(box2);
 		boxes.add(saved2);
 
 		Box box3 = this.boxService.createSystem();
-		box3.setName("Sent messages");
+		box3.setName("OUTBOX");
 		Box saved3 = this.boxService.saveSystem(box3);
 		boxes.add(saved3);
 
 		Box box4 = this.boxService.createSystem();
-		box4.setName("Notifications");
+		box4.setName("NOTIFICATIONBOX");
 		Box saved4 = this.boxService.saveSystem(box4);
 		boxes.add(saved4);
 
 		Box box5 = this.boxService.createSystem();
-		box5.setName("Received messages");
+		box5.setName("INBOX");
 		Box saved5 = this.boxService.saveSystem(box5);
 		boxes.add(saved5);
 
@@ -340,6 +340,7 @@ public class BrotherhoodService {
 		result.setHasSpam(pururu.getHasSpam());
 		result.setSocialProfiles(pururu.getSocialProfiles());
 		result.setPolarity(pururu.getPolarity());
+		result.setEstablishmentDate(pururu.getEstablishmentDate());
 
 		result.setEnrolments(pururu.getEnrolments());
 		result.setFloats(pururu.getFloats());
@@ -352,4 +353,9 @@ public class BrotherhoodService {
 		return result;
 	}
 
+	public Brotherhood addPicture(String picture, Brotherhood brotherhood) {
+		this.loggedAsBrotherhood();
+		brotherhood.getPictures().add(picture);
+		return this.save(brotherhood);
+	}
 }
