@@ -181,17 +181,21 @@ new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
 <br />
 <table style="width: 100%">
 	<tr>
-		<td><b><spring:message code="statistics.ratioRequestApprovedByProcession" />:</b></td> 
+		<td><h4><spring:message code="statistics.ratioRequestApprovedByProcession" />:</h4></td> 
 		<td></td>
 	</tr>
 	<jstl:forEach items="${processionNames}" var="nameP">
   		<tr>
   			<td><jstl:out value="${nameP}"/></td>
   			<td><jstl:out value="${ratioRequestApprovedByProcession.get(nameP)}"/></td>
+  			
  		</tr>
+ 		
+ 		
+ 		
  	</jstl:forEach>
 	<tr>
-		<td><b><spring:message code="statistics.ratioRequestPendingByProcession" />:</b></td>
+		<td><h4><spring:message code="statistics.ratioRequestPendingByProcession" />:</h4></td>
 		<td></td>
 	</tr>
 	<jstl:forEach items="${processionNames}" var="nameP">
@@ -200,8 +204,9 @@ new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
   			<td><jstl:out value="${ratioRequestPendingByProcession.get(nameP)}"/></td>
  		</tr>
  	</jstl:forEach>
+ 	
  	<tr>
-		<td><b><spring:message code="statistics.ratioRequestRejectedByProcession" />:</b></td>
+		<td><h4><spring:message code="statistics.ratioRequestRejectedByProcession" />:</h4></td>
 		<td></td>
 	</tr>
 	<jstl:forEach items="${processionNames}" var="nameP">

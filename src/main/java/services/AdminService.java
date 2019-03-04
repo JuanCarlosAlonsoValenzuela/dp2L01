@@ -354,8 +354,6 @@ public class AdminService {
 	public void banSuspiciousActor(final Actor a) {
 		this.loggedAsAdmin();
 
-		Assert.isTrue(a.getHasSpam());
-
 		a.getUserAccount().setIsNotLocked(false);
 		this.actorService.save(a);
 	}

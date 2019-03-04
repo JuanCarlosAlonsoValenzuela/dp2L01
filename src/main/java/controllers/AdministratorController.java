@@ -99,16 +99,7 @@ public class AdministratorController extends AbstractController {
 		else
 			try {
 
-				if (admin.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
-					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-						binding.addError(new FieldError("admin", "email", admin.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
-						return this.createEditModelAndView(admin);
-					} else {
-						binding.addError(new FieldError("member", "email", admin.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
-						return this.createEditModelAndView(admin);
-					}
-
-				} else if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
 					this.adminService.saveCreate(admin);
 				else if (admin.getPhoneNumber().matches("([0-9]{4,})$")) {
 					admin.setPhoneNumber(prefix + admin.getPhoneNumber());
