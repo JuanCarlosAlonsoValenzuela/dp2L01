@@ -126,7 +126,7 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
 	public Float stddevNumberBrotherhoodPerArea();
 
-	@Query("select a.title from Procession a where a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
+	@Query("select a.title from Procession a where a.isDraftMode = false and a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
 	public List<String> listProcessionNext30Days();
 
 	@Query("select min(a.processions.size) from Finder a")
