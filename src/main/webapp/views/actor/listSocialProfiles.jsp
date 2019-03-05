@@ -77,7 +77,7 @@
 <table>
 	<tr>
 		<td><spring:message code="actor.fullName" /></td> 
-		<td><jstl:out value="${broherhood.name} ${actor.middleName} ${actor.surname}" /> </td>
+		<td><jstl:out value="${broherhood.name} ${broherhood.middleName} ${broherhood.surname}" /> </td>
 	</tr>
 	
 	<tr>

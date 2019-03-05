@@ -35,6 +35,7 @@ public class BoxService {
 	@Autowired
 	private Validator		validator;
 
+
 	public Box flushSave(Box box) {
 		return this.boxRepository.saveAndFlush(box);
 	}
@@ -214,16 +215,18 @@ public class BoxService {
 
 		Box result;
 		List<Message> messages = new ArrayList<Message>();
+		Box pururu;
 
 		if (box.getId() == 0) {
 			result = box;
 			result.setIsSystem(false);
 			result.setMessages(messages);
 		} else {
-			result = this.boxRepository.findOne(box.getId());
+			pururu = this.boxRepository.findOne(box.getId());
+			result = box;
 
-			result.setFatherBox(box.getFatherBox());
-			result.setName(box.getName());
+			result.setIsSystem(pururu.getIsSystem());
+			result.setMessages(pururu.getMessages());
 
 		}
 
