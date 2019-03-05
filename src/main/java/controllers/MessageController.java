@@ -160,7 +160,7 @@ public class MessageController extends AbstractController {
 		boxes = this.boxService.getCurrentBoxByMessage(message);
 		box = boxes.get(0);
 
-		message = this.messageService.reconstructDelete(message);
+		message = this.messageService.reconstruct(message, binding);
 
 		if (!(userAccount.getUsername().equals(message.getSender().getUserAccount().getUsername())))
 			return new ModelAndView("redirect:list.do?boxId=" + box.getId());
