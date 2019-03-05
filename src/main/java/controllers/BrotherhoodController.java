@@ -139,8 +139,13 @@ public class BrotherhoodController extends AbstractController {
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
 
 		domain.Float floatt = this.floatService.findOne(floatId);
+
+		if (floatFinalMode.contains(floatt))
+			return this.list();
 
 		Assert.notNull(floatt);
 		Assert.isTrue(loggedBrotherhood.getFloats().contains(floatt));
@@ -154,11 +159,14 @@ public class BrotherhoodController extends AbstractController {
 	public ModelAndView saveFloat(@ModelAttribute("floatt") domain.Float floatt, BindingResult binding) {
 
 		ModelAndView result;
+
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
 
 		Assert.notNull(loggedBrotherhood.getArea());
-
+		Assert.isTrue(!floatFinalMode.contains(floatt));
 		domain.Float f;
 
 		f = this.floatService.reconstruct(floatt, binding);

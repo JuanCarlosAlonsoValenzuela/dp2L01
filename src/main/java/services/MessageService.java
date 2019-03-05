@@ -439,10 +439,12 @@ public class MessageService {
 		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		domain.Message result;
-		result = this.create();
 		if (messageTest.getId() == 0) {
 			result = messageTest;
 			result.setSender(actor);
+			Date thisMoment = new Date();
+			thisMoment.setTime(thisMoment.getTime() - 1000);
+			result.setMoment(thisMoment);
 
 		} else {
 			result = this.messageRepository.findOne(messageTest.getId());
@@ -452,6 +454,7 @@ public class MessageService {
 			result.setTags(messageTest.getTags());
 			result.setSubject(messageTest.getSubject());
 			result.setReceiver(messageTest.getReceiver());
+			//result.setMoment(messageTest.getMoment());
 		}
 
 		this.validator.validate(result, binding);
@@ -466,16 +469,8 @@ public class MessageService {
 		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		Message result;
-		result = this.create();
 
 		result = this.messageRepository.findOne(messageTest.getId());
-
-		result.setBody(messageTest.getBody());
-		result.setPriority(messageTest.getPriority());
-		result.setTags(messageTest.getTags());
-		result.setSubject(messageTest.getSubject());
-		result.setReceiver(messageTest.getReceiver());
-		result.setSender(actor);
 
 		return result;
 
