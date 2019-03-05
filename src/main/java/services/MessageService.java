@@ -13,44 +13,43 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.MessageRepository;
-import security.LoginService;
-import security.UserAccount;
 import domain.Actor;
 import domain.Admin;
 import domain.Box;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
+import repositories.MessageRepository;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
 public class MessageService {
 
 	@Autowired
-	private MessageRepository		messageRepository;
+	private MessageRepository messageRepository;
 
 	@Autowired
-	private ActorService			actorService;
+	private ActorService actorService;
 
 	@Autowired
-	private BoxService				boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private ConfigurationService	configurationService;
+	private ConfigurationService configurationService;
 
 	@Autowired
-	private MemberService			memberService;
+	private MemberService memberService;
 
 	@Autowired
-	private AdminService			adminService;
+	private AdminService adminService;
 
 	@Autowired
-	private BrotherhoodService		brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private Validator				validator;
-
+	private Validator validator;
 
 	// Actualizar caja que tiene el mensaje EN ESTE ORDEN
 	// ACTUALIZAR CAJA SIN EL MENSAJE
@@ -68,7 +67,8 @@ public class MessageService {
 		Box boxSent = new Box();
 
 		Message messageSaved = this.messageRepository.saveAndFlush(message);
-		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(),
+				messageSaved.getReceiver());
 		messageCopy.setTags(messageSaved.getTags());
 
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
@@ -80,7 +80,7 @@ public class MessageService {
 
 		boxNotification.getMessages().add(messageCopySaved);
 		boxSent.getMessages().add(messageSaved);
-		//boxRecieved.setMessages(list);
+		// boxRecieved.setMessages(list);
 		this.boxService.saveSystem(boxSent);
 		this.boxService.saveSystem(boxNotification);
 		this.actorService.save(messageSaved.getSender());
@@ -88,6 +88,7 @@ public class MessageService {
 
 		return messageSaved;
 	}
+
 	// Metodo para enviar un mensaje a un ACTOR (O varios, que tambien puede ser)
 	public Message sendMessage(Message message) {
 
@@ -105,7 +106,8 @@ public class MessageService {
 		spam = this.configurationService.getSpamWords();
 
 		Message messageSaved = this.messageRepository.save(message);
-		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(),
+				messageSaved.getReceiver());
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
 
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
@@ -114,7 +116,8 @@ public class MessageService {
 
 		// Guardar la box con ese mensaje;
 
-		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam) || this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
+		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
+				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
 			boxSent.getMessages().add(messageSaved);
 			boxSpam.getMessages().add(messageCopySaved);
 
@@ -126,14 +129,14 @@ public class MessageService {
 		} else {
 			boxRecieved.getMessages().add(messageCopySaved);
 			boxSent.getMessages().add(messageSaved);
-			//boxRecieved.setMessages(list);
+			// boxRecieved.setMessages(list);
 			this.boxService.saveSystem(boxSent);
 			this.boxService.saveSystem(boxRecieved);
 			this.actorService.save(messageSaved.getSender());
 			this.actorService.save(actorRecieved);
 		}
 
-		//Calculamos la Polarity y el hasSpam
+		// Calculamos la Polarity y el hasSpam
 		this.actorService.updateActorSpam(senderActor);
 		this.configurationService.computeScore(senderActor);
 		return messageSaved;
@@ -150,18 +153,26 @@ public class MessageService {
 		Message messageBro = new Message();
 		Message messageMem = new Message();
 		if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("EN")) {
-			messageBro = this.createNotification("Drop out notification", "The user " + loggedMember.getUserAccount().getUsername() + " has dropped out the brotherhood.", "HIGH", "DROP OUT", bro);
-			messageMem = this.createNotification("Drop out notification", "you have dropped out the brotherhood " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
+			messageBro = this.createNotification("Drop out notification",
+					"The user " + loggedMember.getUserAccount().getUsername() + " has dropped out the brotherhood.",
+					"HIGH", "DROP OUT", bro);
+			messageMem = this.createNotification("Drop out notification",
+					"you have dropped out the brotherhood " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
 		} else if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-			messageBro = this.createNotification("Notificaci�n de salida", "El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH", "DROP OUT", bro);
-			messageMem = this.createNotification("Notificaci�n de salida", "Has dejado la hermandad " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
+			messageBro = this.createNotification("Notificaci�n de salida",
+					"El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH",
+					"DROP OUT", bro);
+			messageMem = this.createNotification("Notificaci�n de salida",
+					"Has dejado la hermandad " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
 
 		}
 
 		Message copyBro = new Message();
 		Message copyMem = new Message();
-		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getTags(), messageBro.getSender());
-		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getTags(), messageMem.getSender());
+		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(),
+				messageBro.getTags(), messageBro.getSender());
+		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(),
+				messageMem.getTags(), messageMem.getSender());
 		copyBro.setReceiver(bro);
 		copyMem.setReceiver(loggedMember);
 		Message saveBro = this.messageRepository.save(copyBro);
@@ -197,18 +208,27 @@ public class MessageService {
 		Message messageBro = null;
 		Message messageMem = null;
 		if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("EN")) {
-			messageBro = this.createNotification("Enrol notification", "You have accepted the user " + mem.getUserAccount().getUsername() + " to the brotherhood.", "HIGH", "ENROLMENT", loggedBrotherhood);
-			messageMem = this.createNotification("Enrol notification", "You have been accepted into the brotherhood " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT", mem);
+			messageBro = this.createNotification("Enrol notification",
+					"You have accepted the user " + mem.getUserAccount().getUsername() + " to the brotherhood.", "HIGH",
+					"ENROLMENT", loggedBrotherhood);
+			messageMem = this.createNotification("Enrol notification",
+					"You have been accepted into the brotherhood " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT",
+					mem);
 		} else if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-			messageBro = this.createNotification("Notificaci�n de inscripci�n", "Has aceptado al usuario " + mem.getUserAccount().getUsername() + " a la hermandad.", "HIGH", "ENROLMENT", loggedBrotherhood);
-			messageMem = this.createNotification("Notificaci�n de inscripci�n", "Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT", mem);
+			messageBro = this.createNotification("Notificaci�n de inscripci�n",
+					"Has aceptado al usuario " + mem.getUserAccount().getUsername() + " a la hermandad.", "HIGH",
+					"ENROLMENT", loggedBrotherhood);
+			messageMem = this.createNotification("Notificaci�n de inscripci�n",
+					"Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT", mem);
 		}
 		this.messageRepository.save(messageBro);
 		this.messageRepository.save(messageMem);
 		Message copyBro = new Message();
 		Message copyMem = new Message();
-		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(), messageBro.getTags(), messageBro.getSender());
-		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(), messageMem.getTags(), messageMem.getSender());
+		copyBro = this.createNotification(messageBro.getSubject(), messageBro.getBody(), messageBro.getPriority(),
+				messageBro.getTags(), messageBro.getSender());
+		copyMem = this.createNotification(messageMem.getSubject(), messageMem.getBody(), messageMem.getPriority(),
+				messageMem.getTags(), messageMem.getSender());
 		copyBro.setReceiver(loggedBrotherhood);
 		copyMem.setReceiver(mem);
 		Message saveBro = this.messageRepository.save(copyBro);
@@ -244,37 +264,40 @@ public class MessageService {
 
 		Box boxRecieved = new Box();
 		Box boxSpam = new Box();
-		Box boxSent = new Box();
+		Box boxNotification = new Box();
 
 		Message messageSaved = this.messageRepository.save(message);
-		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
+		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(),
+				messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
-		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
 		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
 		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
+		boxNotification = this.boxService.getNotificationBoxByActor(actorRecieved);
 
 		// Guardar la box con ese mensaje;
 
-		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam) || this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
-			boxSent.getMessages().add(messageSaved);
+		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
+				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
+			boxNotification.getMessages().add(messageSaved);
 			boxSpam.getMessages().add(messageCopySaved);
 
-			this.boxService.saveSystem(boxSent);
+			this.boxService.saveSystem(boxNotification);
 			this.boxService.saveSystem(boxSpam);
 			this.actorService.save(messageSaved.getSender());
 			this.actorService.save(actorRecieved);
 
 		} else {
 			boxRecieved.getMessages().add(messageCopySaved);
-			boxSent.getMessages().add(messageSaved);
-			//boxRecieved.setMessages(list);
-			this.boxService.saveSystem(boxSent);
+			boxNotification.getMessages().add(messageSaved);
+			// boxRecieved.setMessages(list);
+			this.boxService.saveSystem(boxNotification);
 			this.boxService.saveSystem(boxRecieved);
 			this.actorService.save(messageSaved.getSender());
 			this.actorService.save(actorRecieved);
 		}
 		return messageSaved;
 	}
+
 	public Message save(Message message) {
 		return this.messageRepository.save(message);
 
@@ -361,8 +384,8 @@ public class MessageService {
 		for (Box b : actor.getBoxes()) {
 			if (b.getMessages().contains(message))
 				b.getMessages().remove(message);
-			//list.remove(message);
-			//b.setMessages(list);
+			// list.remove(message);
+			// b.setMessages(list);
 			if (b.getName().equals(box.getName())) {
 				List<Message> list = b.getMessages();
 				list.add(message);
@@ -376,7 +399,7 @@ public class MessageService {
 		userAccount = LoginService.getPrincipal();
 		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
-		//Box currentBox = this.boxService.getCurrentBoxByMessage(message);
+		// Box currentBox = this.boxService.getCurrentBoxByMessage(message);
 
 		List<Box> currentBoxes = new ArrayList<>();
 
@@ -454,7 +477,7 @@ public class MessageService {
 			result.setTags(messageTest.getTags());
 			result.setSubject(messageTest.getSubject());
 			result.setReceiver(messageTest.getReceiver());
-			//result.setMoment(messageTest.getMoment());
+			// result.setMoment(messageTest.getMoment());
 		}
 
 		this.validator.validate(result, binding);
