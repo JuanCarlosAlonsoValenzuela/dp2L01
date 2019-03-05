@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -306,7 +307,6 @@ public class BrotherhoodService {
 					positions.add(e.getPosition().getTitleSpanish());
 		return positions;
 	}
-
 	public Enrolment getEnrolment(Member m) {
 		Enrolment en = null;
 		Brotherhood bro = this.loggedBrotherhood();
