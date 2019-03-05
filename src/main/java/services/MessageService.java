@@ -152,20 +152,16 @@ public class MessageService {
 
 		Message messageBro = new Message();
 		Message messageMem = new Message();
-		if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("EN")) {
-			messageBro = this.createNotification("Drop out notification",
-					"The user " + loggedMember.getUserAccount().getUsername() + " has dropped out the brotherhood.",
-					"HIGH", "DROP OUT", bro);
-			messageMem = this.createNotification("Drop out notification",
-					"you have dropped out the brotherhood " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
-		} else if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-			messageBro = this.createNotification("Notificaci�n de salida",
-					"El usuario " + loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.", "HIGH",
-					"DROP OUT", bro);
-			messageMem = this.createNotification("Notificaci�n de salida",
-					"Has dejado la hermandad " + bro.getTitle(), "HIGH", "DROP OUT", loggedMember);
 
-		}
+		messageBro = this.createNotification("Drop out notification / Notificacion de salida",
+				"The user " + loggedMember.getUserAccount().getUsername()
+						+ " has dropped out the brotherhood. / El usuario "
+						+ loggedMember.getUserAccount().getUsername() + " ha dejado la hermandad.",
+				"HIGH", "DROP OUT", bro);
+		messageMem = this.createNotification(
+				"Drop out notification / Notificacion de salida", "You have dropped out the brotherhood "
+						+ bro.getTitle() + ". / Has dejado la hermandad " + bro.getTitle() + ".",
+				"HIGH", "DROP OUT", loggedMember);
 
 		Message copyBro = new Message();
 		Message copyMem = new Message();
@@ -207,20 +203,17 @@ public class MessageService {
 		Box notBro = this.boxService.getNotificationBoxByActor(loggedBrotherhood);
 		Message messageBro = null;
 		Message messageMem = null;
-		if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("EN")) {
-			messageBro = this.createNotification("Enrol notification",
-					"You have accepted the user " + mem.getUserAccount().getUsername() + " to the brotherhood.", "HIGH",
-					"ENROLMENT", loggedBrotherhood);
-			messageMem = this.createNotification("Enrol notification",
-					"You have been accepted into the brotherhood " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT",
-					mem);
-		} else if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-			messageBro = this.createNotification("Notificaci�n de inscripci�n",
-					"Has aceptado al usuario " + mem.getUserAccount().getUsername() + " a la hermandad.", "HIGH",
-					"ENROLMENT", loggedBrotherhood);
-			messageMem = this.createNotification("Notificaci�n de inscripci�n",
-					"Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle(), "HIGH", "ENROLMENT", mem);
-		}
+
+		messageBro = this.createNotification("Enrol notification / Notificacion de inscripcion",
+				"You have accepted the user " + mem.getUserAccount().getUsername()
+						+ " to the brotherhood. / Has aceptado al usuario " + mem.getUserAccount().getUsername()
+						+ " a la hermandad.",
+				"HIGH", "ENROLMENT", loggedBrotherhood);
+		messageMem = this.createNotification("Enrol notification / Notificacion de inscripcion",
+				"You have been accepted into the brotherhood " + loggedBrotherhood.getTitle()
+						+ ". / Has sido aceptado en la hermandad " + loggedBrotherhood.getTitle() + ".",
+				"HIGH", "ENROLMENT", mem);
+
 		this.messageRepository.save(messageBro);
 		this.messageRepository.save(messageMem);
 		Message copyBro = new Message();
