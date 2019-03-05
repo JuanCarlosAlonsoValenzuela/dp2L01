@@ -6,12 +6,17 @@ import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 @Entity
 @Access(AccessType.PROPERTY)
+@Table(indexes = {
+	@Index(columnList = "status"), @Index(columnList = "status, procession"), @Index(columnList = "status, member"), @Index(columnList = "member")
+})
 public class Request extends DomainEntity {
 
 	private Status		status;
