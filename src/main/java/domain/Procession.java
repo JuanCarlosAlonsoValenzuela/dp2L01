@@ -25,7 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Access(AccessType.PROPERTY)
 @Table(indexes = {
-	@Index(columnList = "isDraftMode, moment"), @Index(columnList = "title, description"), @Index(columnList = "moment")
+	@Index(columnList = "isDraftMode, moment"), @Index(columnList = "title, description"), @Index(columnList = "moment"), @Index(columnList = "isDraftMode")
 })
 public class Procession extends DomainEntity {
 
