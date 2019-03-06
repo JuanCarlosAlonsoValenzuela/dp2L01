@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -127,27 +128,27 @@ public class BrotherhoodService {
 		//BOXES
 		List<Box> boxes = new ArrayList<>();
 		Box box1 = this.boxService.createSystem();
-		box1.setName("Spam");
+		box1.setName("SPAMBOX");
 		Box saved1 = this.boxService.saveSystem(box1);
 		boxes.add(saved1);
 
 		Box box2 = this.boxService.createSystem();
-		box2.setName("Trash");
+		box2.setName("TRASHBOX");
 		Box saved2 = this.boxService.saveSystem(box2);
 		boxes.add(saved2);
 
 		Box box3 = this.boxService.createSystem();
-		box3.setName("Sent messages");
+		box3.setName("OUTBOX");
 		Box saved3 = this.boxService.saveSystem(box3);
 		boxes.add(saved3);
 
 		Box box4 = this.boxService.createSystem();
-		box4.setName("Notifications");
+		box4.setName("NOTIFICATIONBOX");
 		Box saved4 = this.boxService.saveSystem(box4);
 		boxes.add(saved4);
 
 		Box box5 = this.boxService.createSystem();
-		box5.setName("Received messages");
+		box5.setName("INBOX");
 		Box saved5 = this.boxService.saveSystem(box5);
 		boxes.add(saved5);
 
@@ -292,6 +293,20 @@ public class BrotherhoodService {
 		return members;
 	}
 
+	public List<String> getPositions() {
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+		Brotherhood bro = new Brotherhood();
+		bro = this.loggedBrotherhood();
+		List<String> positions = new ArrayList<String>();
+		List<Enrolment> enrolmentsBro = bro.getEnrolments();
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED)
+				if (locale.contains("EN"))
+					positions.add(e.getPosition().getTitleEnglish());
+				else if (locale.contains("ES"))
+					positions.add(e.getPosition().getTitleSpanish());
+		return positions;
+	}
 	public Enrolment getEnrolment(Member m) {
 		Enrolment en = null;
 		Brotherhood bro = this.loggedBrotherhood();
@@ -340,6 +355,7 @@ public class BrotherhoodService {
 		result.setHasSpam(pururu.getHasSpam());
 		result.setSocialProfiles(pururu.getSocialProfiles());
 		result.setPolarity(pururu.getPolarity());
+		result.setEstablishmentDate(pururu.getEstablishmentDate());
 
 		result.setEnrolments(pururu.getEnrolments());
 		result.setFloats(pururu.getFloats());
@@ -352,4 +368,9 @@ public class BrotherhoodService {
 		return result;
 	}
 
+	public Brotherhood addPicture(String picture, Brotherhood brotherhood) {
+		this.loggedAsBrotherhood();
+		brotherhood.getPictures().add(picture);
+		return this.save(brotherhood);
+	}
 }

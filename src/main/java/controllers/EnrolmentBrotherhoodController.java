@@ -85,7 +85,8 @@ public class EnrolmentBrotherhoodController extends AbstractController {
 		Enrolment enrolment = this.enrolmentService.findOne(enrolmentId);
 
 		List<Position> positions = this.positionService.findAll();
-		if (enrolment.getId() != 0) {
+		if (enrolment.getId() != 0 && brotherhood.getEnrolments().contains(enrolment)
+				&& enrolment.getStatusEnrolment() == StatusEnrolment.PENDING) {
 			result = new ModelAndView("enrolment/brotherhood/assignPosition");
 			result.addObject("positions", positions);
 			result.addObject("enrolment", enrolment);

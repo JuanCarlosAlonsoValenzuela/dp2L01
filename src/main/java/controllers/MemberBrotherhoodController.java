@@ -41,11 +41,14 @@ public class MemberBrotherhoodController extends AbstractController {
 	public ModelAndView list() {
 		ModelAndView result;
 		List<Member> members = new ArrayList<Member>();
+		List<String> positions = new ArrayList<String>();
 		members = this.brotherhoodService.getMembersOfBrotherhood();
+		positions = this.brotherhoodService.getPositions();
 
 		result = new ModelAndView("member/brotherhood/list");
 
 		result.addObject("members", members);
+		result.addObject("positions", positions);
 		result.addObject("requestURI", "member/brotherhood/list.do");
 		return result;
 	}

@@ -81,19 +81,19 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a")
 	public Float stddevMembersPerBrotherhood();
 
-	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='APPROVED') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='APPROVED') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioApprovedRequests();
 
 	@Query("select (cast((select count(a1.status) from Request a1 where status='APPROVED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
 	public List<Float> ratioApprovedRequestsByProcessions();
 
-	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='PENDING') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='PENDING') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioPendingRequests();
 
 	@Query("select (cast((select count(a1.status) from Request a1 where status='PENDING' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
 	public List<Float> ratioPendingRequestsByProcessions();
 
-	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='REJECTED') as float)/ (select count(a2.status) from Request a2) * 100) from Configuration a")
+	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='REJECTED') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioRejectedRequests();
 
 	@Query("select (cast((select count(a1.status) from Request a1 where status='REJECTED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
@@ -126,7 +126,7 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
 	public Float stddevNumberBrotherhoodPerArea();
 
-	@Query("select a.title from Procession a where a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
+	@Query("select a.title from Procession a where a.isDraftMode = false and a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
 	public List<String> listProcessionNext30Days();
 
 	@Query("select min(a.processions.size) from Finder a")
