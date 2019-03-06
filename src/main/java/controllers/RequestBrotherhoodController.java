@@ -173,9 +173,14 @@ public class RequestBrotherhoodController extends AbstractController {
 
 		Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getProcessions().contains(procession));
 
-		if (fselect.equals("ALL"))
-			result = new ModelAndView("redirect:listProcession.do");
-		else {
+		if (fselect.equals("ALL")) {
+			result = new ModelAndView("procession/brotherhood/requests");
+
+			List<Request> requests = this.processionService.findOne(processionId).getRequests();
+
+			result.addObject("requests", requests);
+			result.addObject("processionId", processionId);
+		} else {
 
 			Status status = Status.APPROVED;
 			if (fselect.equals("PENDING"))

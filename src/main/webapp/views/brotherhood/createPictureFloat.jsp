@@ -19,4 +19,6 @@
 
 <input type="submit" name="save" value="<spring:message code="borhterhoodFloat.create" />" />
 </form>
+
+<a href="float/brotherhood/picture/list.do?floatId=${floatId}&procession=true"><button><spring:message code="procession.back" /></button></a>
 </security:authorize>
