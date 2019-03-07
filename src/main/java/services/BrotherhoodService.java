@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -292,6 +293,20 @@ public class BrotherhoodService {
 		return members;
 	}
 
+	public List<String> getPositions() {
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+		Brotherhood bro = new Brotherhood();
+		bro = this.loggedBrotherhood();
+		List<String> positions = new ArrayList<String>();
+		List<Enrolment> enrolmentsBro = bro.getEnrolments();
+		for (Enrolment e : enrolmentsBro)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED)
+				if (locale.contains("EN"))
+					positions.add(e.getPosition().getTitleEnglish());
+				else if (locale.contains("ES"))
+					positions.add(e.getPosition().getTitleSpanish());
+		return positions;
+	}
 	public Enrolment getEnrolment(Member m) {
 		Enrolment en = null;
 		Brotherhood bro = this.loggedBrotherhood();
